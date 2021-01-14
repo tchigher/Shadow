@@ -12,21 +12,24 @@ import java.util.concurrent.Executors;
 
 public class PluginHelper {
 
-    /**
-     * 动态加载的插件管理apk
+    /*
+     * 动态加载的插件管理 APK
      */
-    public final static String sPluginManagerName = "pluginmanager.apk";
+    public final static String sPluginManagerApkFileName = "pluginManager.apk";
 
-    /**
-     * 动态加载的插件包，里面包含以下几个部分，插件apk，插件框架apk（loader apk和runtime apk）, apk信息配置关系json文件
+    /*
+     * 动态加载的插件包, 里面包含以下几个部分:
+     * 插件 APK,
+     * 插件框架 APK(loader APK 和 runtime APK),
+     * APK 信息配置关系 JSON 文件
      */
-    public final static String sPluginZip = BuildConfig.DEBUG ? "plugin-debug.zip" : "plugin-release.zip";
+    public final static String sPluginApksZipFileName = BuildConfig.DEBUG ? "pluginsForDebug.zip" : "pluginsForRelease.zip";
 
-    public File pluginManagerFile;
+    public File mPluginManagerFile;
 
-    public File pluginZipFile;
+    public File mPluginZipFile;
 
-    public ExecutorService singlePool = Executors.newSingleThreadExecutor();
+    public ExecutorService mSinglePool = Executors.newSingleThreadExecutor();
 
     private Context mContext;
 
@@ -40,32 +43,30 @@ public class PluginHelper {
     }
 
     public void init(Context context) {
-        pluginManagerFile = new File(context.getFilesDir(), sPluginManagerName);
-        pluginZipFile = new File(context.getFilesDir(), sPluginZip);
+        mPluginManagerFile = new File(context.getFilesDir(), sPluginManagerApkFileName);
+        mPluginZipFile = new File(context.getFilesDir(), sPluginApksZipFileName);
 
         mContext = context.getApplicationContext();
 
-        singlePool.execute(new Runnable() {
+        mSinglePool.execute(new Runnable() {
             @Override
             public void run() {
                 preparePlugin();
             }
         });
-
     }
 
     private void preparePlugin() {
         try {
-            InputStream is = mContext.getAssets().open(sPluginManagerName);
-            FileUtils.copyInputStreamToFile(is, pluginManagerFile);
+            InputStream is = mContext.getAssets().open(sPluginManagerApkFileName);
+            FileUtils.copyInputStreamToFile(is, mPluginManagerFile);
 
-            InputStream zip = mContext.getAssets().open(sPluginZip);
-            FileUtils.copyInputStreamToFile(zip, pluginZipFile);
+            InputStream zip = mContext.getAssets().open(sPluginApksZipFileName);
+            FileUtils.copyInputStreamToFile(zip, mPluginZipFile);
 
         } catch (IOException e) {
-            throw new RuntimeException("从assets中复制apk出错", e);
+            throw new RuntimeException("从 assets 中复制 APK 出错", e);
         }
     }
-
 
 }
