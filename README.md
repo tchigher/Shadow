@@ -32,14 +32,14 @@ Shadow 不仅开源分享了插件技术の关键代码, 还完整地分享了�
 第一次 `clone` Shadow 的代码到本地后, 建议先在命令行编译一次. 
 
 * 在编译前, **必须**设置 `ANDROID_HOME` 环境变量. 
-* 在编译时, **必须**使用 `gradlew` 脚本, 以保证采用了项目配置的 Gradle 版本. 
+* 在编译时, **必须**使用 `gradlew` 脚本, 以保证使用了项目配置的 Gradle 版本. 
 
 在命令行测试编译时可以执行这个任务：
 ```
 ./gradlew build
 ```
 
-如果没有出错, 再尝试用 Android Studio 打开工程. 
+如果没有出错, 再使用 Android Studio 打开工程. 
 
 * **必须**使用 3.5 或更高版本的 Android Studio 打开工程. (业务插件开发时没有限制)
 * **必须**关闭 Android Studio 的 **Instant Run** 功能. 
