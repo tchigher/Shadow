@@ -39,4 +39,6 @@ dependencies {
 
     compileOnly 'com.tencent.shadow.core:common-debug'
     compileOnly 'com.tencent.shadow.dynamic:dynamic-host-debug'
+
+    implementation 'com.android.support:support-annotations:28.0.0'
 }
