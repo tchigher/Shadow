@@ -21,45 +21,48 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setTheme(R.style.TestHostTheme);
 
         LinearLayout rootView = new LinearLayout(this);
         rootView.setOrientation(LinearLayout.VERTICAL);
 
-        TextView infoTextView = new TextView(this);
-        infoTextView.setText(R.string.main_activity_info);
-        rootView.addView(infoTextView);
+        TextView tvInfo = new TextView(this);
+        tvInfo.setText(R.string.main_activity__info);
+        rootView.addView(tvInfo);
 
-        final Spinner partKeySpinner = new Spinner(this);
-        ArrayAdapter<String> partKeysAdapter = new ArrayAdapter<>(this, R.layout.part_key_adapter);
-        partKeysAdapter.addAll(
-                Constant.PART_KEY_PLUGIN_MAIN_APP,
-                Constant.PART_KEY_PLUGIN_ANOTHER_APP
-        );
-        partKeySpinner.setAdapter(partKeysAdapter);
+        final Spinner spinnerTargetPluginApp = new Spinner(this);
+        ArrayAdapter<String> targetPluginAppAdapter = new ArrayAdapter<>(this, R.layout.adapter__target_plugin_app);
+        targetPluginAppAdapter.addAll(Constant.KEY__TARGET_PLUGIN_APP__ONE, Constant.KEY__TARGET_PLUGIN_APP__TWO);
+        spinnerTargetPluginApp.setAdapter(targetPluginAppAdapter);
+        rootView.addView(spinnerTargetPluginApp);
 
-        rootView.addView(partKeySpinner);
-
-        Button startPluginButton = new Button(this);
-        startPluginButton.setText(R.string.start_plugin);
-        startPluginButton.setOnClickListener(new View.OnClickListener() {
+        Button btnStartPluginApp = new Button(this);
+        btnStartPluginApp.setText(R.string.main_activity__start_plugin_app);
+        btnStartPluginApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String partKey = (String) partKeySpinner.getSelectedItem();
+                String targetPluginAppKey = (String) spinnerTargetPluginApp.getSelectedItem();
+
                 Intent intent = new Intent(MainActivity.this, PluginLoadActivity.class);
-                intent.putExtra(Constant.KEY_PLUGIN_PART_KEY, partKey);
-                switch (partKey) {
-                    //为了演示多进程多插件，其实两个插件内容完全一样，除了所在进程
-                    case Constant.PART_KEY_PLUGIN_MAIN_APP:
-                    case Constant.PART_KEY_PLUGIN_ANOTHER_APP:
-                        intent.putExtra(Constant.KEY_ACTIVITY_CLASSNAME, "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity");
+                intent.putExtra(Constant.KEY__TARGET_PLUGIN_APP, targetPluginAppKey);
+                switch (targetPluginAppKey) {
+                    /// 为了演示多进程多插件
+                    /// 其实两个插件の内容完全一样, 除了其所在进程
+                    case Constant.KEY__TARGET_PLUGIN_APP__ONE:
+                    case Constant.KEY__TARGET_PLUGIN_APP__TWO:
+                        intent.putExtra(
+                                Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME,
+                                "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity"
+                        );
                         break;
 
                 }
+
                 startActivity(intent);
             }
         });
-        rootView.addView(startPluginButton);
+        rootView.addView(btnStartPluginApp);
 
         setContentView(rootView);
 
@@ -68,8 +71,6 @@ public class MainActivity extends Activity {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
-
-
     }
 
     @Override
