@@ -7,7 +7,6 @@ dependencies {
     compile "com.android.tools.build:gradle:$build_gradle_version"
     compile 'org.javassist:javassist:3.22.0-GA'
     compile gradleApi()
-    testCompile 'junit:junit:4.12'
 }
 
 compileKotlin {
@@ -16,21 +15,3 @@ compileKotlin {
     }
 }
 
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
-
-task testJar(type: Jar, dependsOn: testClasses) {
-    baseName = "test-${project.archivesBaseName}"
-    from sourceSets.test.output
-}
-
-configurations {
-    tests
-}
-
-artifacts {
-    tests testJar
-}

@@ -6,7 +6,6 @@ task buildSdk() {
     dependsOn gradle.includedBuild('core').task(':runtime:jarReleasePackage')
     dependsOn gradle.includedBuild('core').task(':activity-container:jarReleasePackage')
     dependsOn gradle.includedBuild('core').task(':transform-kit:assemble')
-    dependsOn gradle.includedBuild('core').task(':transform-kit:testJar')
     dependsOn gradle.includedBuild('core').task(':transform:assemble')
     dependsOn gradle.includedBuild('core').task(':load-parameters:assembleRelease')
 
@@ -31,23 +30,6 @@ task lintSdk() {
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager:lint')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-host-multi-loader-ext:lint')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager-multi-loader-ext:lint')
-}
-
-task jvmTestSdk() {
-    dependsOn gradle.includedBuild('core').task(':transform-kit:test')
-    dependsOn gradle.includedBuild('core').task(':transform:test')
-    dependsOn gradle.includedBuild('core').task(':gradle-plugin:test')
-    dependsOn ':test_third-party-transform_androidx:assembleDebug'
-}
-
-task androidTestSdk() {
-    dependsOn gradle.includedBuild('core').task(':manager:connectedDebugAndroidTest')
-    dependsOn ':test-dynamic-host:connectedDebugAndroidTest'
-}
-
-task testSdk() {
-    dependsOn jvmTestSdk
-    dependsOn androidTestSdk
 }
 
 apply plugin: 'maven-publish'
@@ -245,22 +227,6 @@ publishing {
             }
         }
 
-        transformKitTest(MavenPublication) {
-            groupId coreGroupId
-            artifactId 'transform-kit-test'
-            version publicationVersion
-            artifact("$corePath/transform-kit/build/libs/test-transform-kit.jar")
-
-            pom.withXml {
-                def root = asNode()
-                def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', 'junit', 'junit', '4.12'))
-
-                def scm = root.appendNode('scm')
-                setScm(scm)
-            }
-        }
-
         transform(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform'
@@ -399,7 +365,6 @@ setGeneratePomFileAndDepends('coreManager')
 setGeneratePomFileAndDepends('runtime')
 setGeneratePomFileAndDepends('activityContainer')
 setGeneratePomFileAndDepends('transformKit')
-setGeneratePomFileAndDepends('transformKitTest')
 setGeneratePomFileAndDepends('transform')
 setGeneratePomFileAndDepends('dynamicHost')
 setGeneratePomFileAndDepends('dynamicHostMultiLoaderExt')

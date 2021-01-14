@@ -14,9 +14,6 @@ android {
         targetSdkVersion project.TARGET_SDK_VERSION
         versionCode project.VERSION_CODE
         versionName project.VERSION_NAME
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -36,13 +33,11 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         main.java.srcDirs += project(':generate-delegate-code').buildDir.path + '/generated/DelegateCode/loader'
-        test.java.srcDirs += 'src/test/kotlin'
     }
 }
 
 dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
 
     api project(':runtime')
     compileOnly project(':activity-container')

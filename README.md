@@ -47,7 +47,7 @@ Shadow不仅开源分享了插件技术的关键代码，还完整的分享了�
 
 然后就可以在IDE中选择`sample-host`模块直接运行了。
 
-![选择sample-host直接运行](pics/run-sample-host-in-ide.png)
+![选择sample-host直接运行]
 
 Shadow的所有代码都位于`projects`目录下的3个目录，分别是：
 
