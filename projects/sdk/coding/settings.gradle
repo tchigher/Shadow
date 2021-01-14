@@ -1,2 +1,3 @@
-include 'checks', 'lint'
+include 'checks'
+include 'lint'
 include 'code-generator'
