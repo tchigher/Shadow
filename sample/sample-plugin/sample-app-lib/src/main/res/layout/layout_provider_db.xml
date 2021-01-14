@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:onClick="insert"
+            android:text="插入数据" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:onClick="query"
+            android:text="读取数据" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:onClick="update"
+            android:text="更新数据" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:onClick="delete"
+            android:text="删除数据" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:onClick="bulkInsert"
+            android:text="批量插入" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:onClick="call"
+            android:text="call" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white" />
+
+
+</LinearLayout>
