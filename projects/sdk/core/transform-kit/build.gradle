@@ -4,13 +4,13 @@ group 'com.tencent.shadow.core'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.android.tools.build:gradle:$build_gradle_version"
-    implementation 'org.javassist:javassist:3.22.0-GA'
-    implementation gradleApi()
+    api "com.android.tools.build:gradle:$build_gradle_version"
+    api 'org.javassist:javassist:3.22.0-GA'
+    api gradleApi()
 }
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.6"
+        jvmTarget = "1.8"
     }
 }
