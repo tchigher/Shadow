@@ -1,11 +1,11 @@
 /**
- * shadow-runtime是运行时Shadow App所依赖的类。
+ * shadow-runtime 是运行时 Shadow APP 所依赖的类
  *
- * 这里面的类混淆意义不大，对体积缩减需求也不强。
- * shadow-loader的Debug版依赖这个模块的Debug版
- * shadow-loader的Release版依赖这个模块的Release版
- * shadow-transform依赖这个模块的Release版
- * 因此暂定这个模块不混淆，保持Debug版和Release版无差别。
+ * 这里面的类混淆意义不大，对体积缩减需求也不强
+ * shadow-loader 的 Debug 版依赖这个模块的 Debug 版
+ * shadow-loader 的 Release 版依赖这个模块的 Release 版
+ * shadow-transform 依赖这个模块的 Release 版
+ * 因此暂定这个模块不混淆，保持 Debug 版和 Release 版无差别
  */
 
 apply plugin: 'com.android.library'
