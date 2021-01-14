@@ -7,8 +7,8 @@ import android.util.Log;
 import com.tencent.shadow.dynamic.host.PluginProcessService;
 import com.tencent.shadow.sample.host.lib.LoadPluginCallback;
 
-public class PluginProcessPPS extends PluginProcessService {
-    public PluginProcessPPS() {
+public class Plugin1ProcessPPS extends PluginProcessService {
+    public Plugin1ProcessPPS() {
         LoadPluginCallback.setCallback(new LoadPluginCallback.Callback() {
 
             @Override
