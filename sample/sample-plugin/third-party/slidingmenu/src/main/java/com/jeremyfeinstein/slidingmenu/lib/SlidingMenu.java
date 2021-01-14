@@ -939,7 +939,7 @@ public class SlidingMenu extends RelativeLayout {
 			return mItem;
 		}
 
-		/* (non-Javadoc)
+		/** (non-Javadoc)
 		 * @see android.view.AbsSavedState#writeToParcel(android.os.Parcel, int)
 		 */
 		public void writeToParcel(Parcel out, int flags) {
@@ -960,7 +960,7 @@ public class SlidingMenu extends RelativeLayout {
 
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see android.view.View#onSaveInstanceState()
 	 */
 	@Override
@@ -970,7 +970,7 @@ public class SlidingMenu extends RelativeLayout {
 		return ss;
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see android.view.View#onRestoreInstanceState(android.os.Parcelable)
 	 */
 	@Override
@@ -980,7 +980,7 @@ public class SlidingMenu extends RelativeLayout {
 		mViewAbove.setCurrentItem(ss.getItem());
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see android.view.ViewGroup#fitSystemWindows(android.graphics.Rect)
 	 */
 	@SuppressLint("NewApi")
