@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用于在plugin-loader中调用假的Application方法的接口
+ * 用于在 plugin-loader 中调用假的 Application 方法的接口
  */
 public class ShadowApplication extends ShadowContext {
 
