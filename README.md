@@ -41,7 +41,7 @@ Shadow 不仅开源分享了插件技术の关键代码, 还完整地分享了�
 
 如果没有出错, 再使用 Android Studio 打开工程. 
 
-* **必须**使用 3.5 或更高版本的 Android Studio 打开工程. (业务插件开发时没有限制)
+* **必须**使用 Android Studio **3.5+** 打开工程. (业务插件开发时没有限制)
 * **必须**关闭 Android Studio 的 **Instant Run** 功能. 
 
 然后就可以在 IDE 中选择 `sample-host` 模块直接运行了. 
