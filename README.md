@@ -34,7 +34,7 @@ Shadow 不仅开源分享了插件技术の关键代码, 还完整地分享了�
 * 在编译前, **必须**设置 `ANDROID_HOME` 环境变量. 
 * 在编译时, **必须**使用 `gradlew` 脚本, 以保证使用了项目配置的 Gradle 版本. 
 
-在命令行测试编译时可以执行这个任务：
+在命令行执行这个任务：
 ```
 ./gradlew build
 ```
@@ -44,7 +44,7 @@ Shadow 不仅开源分享了插件技术の关键代码, 还完整地分享了�
 * **必须**使用 Android Studio **3.5+** 打开工程. (业务插件开发时没有限制)
 * **必须**关闭 Android Studio 的 **Instant Run** 功能. 
 
-然后就可以在 IDE 中选择 `sample-host` 模块直接运行了. 
+然后就可以在 IDE 中选择 `sample-host` 模块运行了. 
 
 Shadowの所有代码都位于 `projects` 目录下の 3 个目录, 分别是：
 
