@@ -24,5 +24,3 @@ task('generateDelegateCode') {
         codeGenerator.generate(outputDir)
     }
 }
-
-

@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 group 'com.tencent.shadow.core'
 
 dependencies {
-    compile project(':transform-kit')
+    api project(':transform-kit')
 }
 
 compileKotlin {
@@ -11,4 +11,3 @@ compileKotlin {
         jvmTarget = "1.6"
     }
 }
-

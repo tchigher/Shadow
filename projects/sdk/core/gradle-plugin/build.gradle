@@ -24,4 +24,3 @@ compileKotlin {
         jvmTarget = "1.6"
     }
 }
-

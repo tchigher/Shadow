@@ -3,10 +3,10 @@ apply plugin: 'kotlin'
 group 'com.tencent.shadow.core'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile "com.android.tools.build:gradle:$build_gradle_version"
-    compile 'org.javassist:javassist:3.22.0-GA'
-    compile gradleApi()
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.tools.build:gradle:$build_gradle_version"
+    implementation 'org.javassist:javassist:3.22.0-GA'
+    implementation gradleApi()
 }
 
 compileKotlin {
@@ -14,4 +14,3 @@ compileKotlin {
         jvmTarget = "1.6"
     }
 }
-
