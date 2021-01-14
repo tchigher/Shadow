@@ -15,7 +15,7 @@ public class PluginHelper {
     /*
      * 动态加载的插件管理 APK
      */
-    public final static String sPluginManagerApkFileName = "pluginManager.apk";
+    public final static String sPluginManagerApkFileName = "samplePluginManager.apk";
 
     /*
      * 动态加载的插件包, 里面包含以下几个部分:
@@ -23,7 +23,7 @@ public class PluginHelper {
      * 插件框架 APK(loader APK 和 runtime APK),
      * APK 信息配置关系 JSON 文件
      */
-    public final static String sPluginsZipFileName = BuildConfig.DEBUG ? "plugins-debug.zip" : "plugins-release.zip";
+    public final static String sPluginsZipFileName = BuildConfig.DEBUG ? "samplePlugins-debug.zip" : "samplePlugins-release.zip";
 
     public File mPluginManagerApkFile;
 
