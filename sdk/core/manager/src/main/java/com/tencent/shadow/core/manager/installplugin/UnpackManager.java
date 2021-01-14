@@ -1,5 +1,7 @@
 package com.tencent.shadow.core.manager.installplugin;
 
+import android.support.annotation.Nullable;
+
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
 
@@ -20,7 +22,7 @@ public class UnpackManager {
     private static final Logger mLogger = LoggerFactory.getLogger(UnpackManager.class);
 
     private static final String UNPACK_DONE_PRE_FIX = "unpacked.";
-    private static final String CONFIG_FILENAME = "config.json";//todo #28 json的格式需要沉淀文档。
+    private static final String CONFIG_JSON_FILE_NAME = "config.json"; //todo #28 config.json 的格式需要沉淀文档
     private static final String DEFAULT_STORE_DIR_NAME = "ShadowPluginManager";
 
     private final File mPluginUnpackedDir;
@@ -78,27 +80,33 @@ public class UnpackManager {
 
     /**
      * 解包一个下载好的插件
-     *  @param zipHash 插件包的hash
+     *
+     * @param zipHash 插件包的hash
      * @param target  插件包
      */
-    public PluginConfig unpackPlugin(String zipHash, File target) throws IOException, JSONException {
+    public PluginConfig unpackPlugin(
+            @Nullable String zipHash,
+            File target
+    ) throws IOException, JSONException {
         if (zipHash == null) {
             zipHash = MinFileUtils.md5File(target);
         }
-        File pluginUnpackDir = getPluginUnpackDir(zipHash, target);
 
+        File pluginUnpackDir = getPluginUnpackDir(zipHash, target);
         pluginUnpackDir.mkdirs();
+
         File tag = getUnpackedTag(pluginUnpackDir);
 
         if (isDirUnpacked(pluginUnpackDir)) {
             try {
-                return getDownloadedPluginInfoFromPluginUnpackedDir(pluginUnpackDir, zipHash);
+                return getDownloadedPluginInfoFromPluginUnpackedDir(pluginUnpackDir);
             } catch (Exception e) {
                 if (!tag.delete()) {
                     throw new IOException("解析版本信息失败，且无法删除标记:" + tag.getAbsolutePath());
                 }
             }
         }
+
         MinFileUtils.cleanDirectory(pluginUnpackDir);
 
         ZipFile zipFile = null;
@@ -112,7 +120,7 @@ public class UnpackManager {
                 }
             }
 
-            PluginConfig pluginConfig = getDownloadedPluginInfoFromPluginUnpackedDir(pluginUnpackDir, zipHash);
+            PluginConfig pluginConfig = getDownloadedPluginInfoFromPluginUnpackedDir(pluginUnpackDir);
 
             // 外边创建完成标记
             tag.createNewFile();
@@ -124,7 +132,7 @@ public class UnpackManager {
                     zipFile.close();
                 }
             } catch (IOException e) {
-                mLogger.warn("zip关闭时出错忽略", e);
+                mLogger.warn("zip 关闭时出错忽略", e);
             }
         }
     }
@@ -133,22 +141,25 @@ public class UnpackManager {
         return new File(pluginUnpackDir.getParentFile(), UNPACK_DONE_PRE_FIX + pluginUnpackDir.getName());
     }
 
-    PluginConfig getDownloadedPluginInfoFromPluginUnpackedDir(File pluginUnpackDir, String appHash)
-            throws IOException, JSONException {
-        File config = new File(pluginUnpackDir, CONFIG_FILENAME);
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(config)));
+    PluginConfig getDownloadedPluginInfoFromPluginUnpackedDir(
+            File pluginUnpackedDir
+    ) throws IOException, JSONException {
+        File configJsonFile = new File(pluginUnpackedDir, CONFIG_JSON_FILE_NAME);
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(configJsonFile)));
         StringBuilder stringBuilder = new StringBuilder("");
         String lineStr;
         try {
-            while ((lineStr = br.readLine()) != null) {
+            while ((lineStr = bufferedReader.readLine()) != null) {
                 stringBuilder.append(lineStr).append("\n");
             }
         } finally {
             //noinspection ThrowFromFinallyBlock
-            br.close();
+            bufferedReader.close();
         }
-        String versionJson = stringBuilder.toString();
-        return PluginConfig.parseFromJson(versionJson, pluginUnpackDir);
+        String versionedJsonStr = stringBuilder.toString();
+
+        return PluginConfig.parseFromJson(versionedJsonStr, pluginUnpackedDir);
     }
 
 }
