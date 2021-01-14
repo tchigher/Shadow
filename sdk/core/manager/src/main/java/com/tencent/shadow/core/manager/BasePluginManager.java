@@ -3,6 +3,7 @@ package com.tencent.shadow.core.manager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
@@ -25,27 +26,28 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BasePluginManager {
+
     private static final Logger mLogger = LoggerFactory.getLogger(BasePluginManager.class);
+
     /*
      * 宿主的context对象
      */
     public Context mHostContext;
 
-    /**
+    /*
      * 从压缩包中将插件解压出来，解析成InstalledPlugin
      */
     private UnpackManager mUnpackManager;
 
-    /**
+    /*
      * 插件信息查询数据库接口
      */
     private InstalledDao mInstalledDao;
 
-    /**
+    /*
      * UI线程的handler
      */
     protected Handler mUiHandler = new Handler(Looper.getMainLooper());
-
 
     public BasePluginManager(Context context) {
         this.mHostContext = context.getApplicationContext();
@@ -53,7 +55,7 @@ public abstract class BasePluginManager {
         this.mInstalledDao = new InstalledDao(new InstalledPluginDBHelper(mHostContext, getName()));
     }
 
-    /**
+    /*
      * PluginManager的名字
      * 用于和其他PluginManager区分持续化存储的名字
      */
@@ -76,7 +78,10 @@ public abstract class BasePluginManager {
      * @param hash 压缩包hash
      * @return PluginConfig
      */
-    public final PluginConfig installPluginFromZip(File zip, String hash) throws IOException, JSONException {
+    public final PluginConfig installPluginFromZip(
+            File zip,
+            @Nullable String hash
+    ) throws IOException, JSONException {
         return mUnpackManager.unpackPlugin(hash, zip);
     }
 
@@ -143,11 +148,11 @@ public abstract class BasePluginManager {
         }
     }
 
-
     /**
      * odex优化
-     * @param uuid 插件包的uuid
-     * @param type 要oDex的插件类型 @class IntalledType  loader or runtime
+     *
+     * @param uuid    插件包的uuid
+     * @param type    要oDex的插件类型 @class IntalledType  loader or runtime
      * @param apkFile 插件apk文件
      */
     public final void oDexPluginLoaderOrRunTime(String uuid, int type, File apkFile) throws InstallPluginException {
@@ -163,7 +168,6 @@ public abstract class BasePluginManager {
             throw e;
         }
     }
-
 
     /**
      * 插件apk的so解压
@@ -190,8 +194,8 @@ public abstract class BasePluginManager {
     /**
      * 插件apk的so解压
      *
-     * @param uuid 插件包的uuid
-     * @param type 要oDex的插件类型 @class IntalledType  loader or runtime
+     * @param uuid    插件包的uuid
+     * @param type    要oDex的插件类型 @class IntalledType  loader or runtime
      * @param apkFile 插件apk文件
      */
     public final void extractLoaderOrRunTimeSo(String uuid, int type, File apkFile) throws InstallPluginException {
@@ -210,7 +214,6 @@ public abstract class BasePluginManager {
         }
     }
 
-
     /**
      * 获取已安装的插件，最后安装的排在返回List的最前面
      *
@@ -219,7 +222,6 @@ public abstract class BasePluginManager {
     public final List<InstalledPlugin> getInstalledPlugins(int limit) {
         return mInstalledDao.getLastPlugins(limit);
     }
-
 
     /**
      * 删除指定uuid的插件
@@ -269,13 +271,11 @@ public abstract class BasePluginManager {
         return suc;
     }
 
-
     /**
      * 业务插件的abi
-     *
-     * @return
      */
     public String getAbi() {
         return null;
     }
+
 }
