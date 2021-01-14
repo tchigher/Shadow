@@ -51,7 +51,7 @@ Shadowの所有代码都位于 `projects` 目录下の 3 个目录, 分别是：
 * `sdk` 包含 SDK 的所有代码
 * `sample` 包含演示代码
 
-其中 `sample` 是大家体验 Shadow 的最佳环境. 
+其中 `sample` 是体验 Shadow 的最佳环境. 
 详见 `sample` 目录中的 [README](projects/sample/README.md) 介绍. 
 
 ## 自己写の测试代码出错？
