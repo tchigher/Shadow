@@ -15,7 +15,7 @@ manager 在加载"插件"时, 首先需要先加载"插件"中的 runtime 和 lo
 
 ## 源码依赖 SDK 的 sample(`sample`)
 ***
-要测试这个 sample 请用 Android Studio 直接打开 clone 版本库の根目录. 
+要测试这个 sample 请用 Android Studio 直接打开 `clone` 代码库の根目录. 
 ***
 
 * `sample-host` 是宿主应用
