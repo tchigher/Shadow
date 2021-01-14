@@ -30,10 +30,10 @@ public class PluginLoadActivity extends Activity {
         PluginHelper.getInstance().mSinglePool.execute(new Runnable() {
             @Override
             public void run() {
-                HostApplication.getApp().loadPluginManager(PluginHelper.getInstance().mPluginManagerFile);
+                HostApplication.getApp().loadPluginManager(PluginHelper.getInstance().mPluginManagerApkFile);
 
                 Bundle bundle = new Bundle();
-                bundle.putString(Constant.KEY__PLUGINS_ZIP_FILE__ABSOLUTE_PATH, PluginHelper.getInstance().mPluginZipFile.getAbsolutePath());
+                bundle.putString(Constant.KEY__PLUGINS_ZIP_FILE__ABSOLUTE_PATH, PluginHelper.getInstance().mPluginsZipFile.getAbsolutePath());
                 bundle.putString(Constant.KEY__TARGET_PLUGIN_APP, getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_APP));
                 bundle.putString(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME, getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME));
 
