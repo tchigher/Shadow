@@ -1,8 +1,8 @@
 # Sample
 
-在Shadow框架下，应用由几部分构成。
-宿主应用打包了很简单的一些接口，并在Manifest中注册了壳子代理组件，
-还打包了插件管理器（manager）的动态升级逻辑。
+在 Shadow 框架下，应用由几部分构成。
+宿主应用打包了很简单的一些接口，并在 Manifest 中注册了壳子代理组件，
+还打包了插件管理器(manager)的动态升级逻辑。
 manager负责下载、安装插件，还带有一个动态的View表达Loading态。
 而"插件"则不光包含业务App，还包含Shadow的核心实现，即loader和runtime。
 "插件"中的业务App和loader、runtime是同一个版本的代码编译出的，
@@ -31,63 +31,5 @@ manager在加载"插件"时，首先需要先加载"插件"中的runtime和loade
 
 使用时可以直接在Android Studio中选择运行`sample-host`模块。
 `sample-host`在构建中会自动打包manager和"插件"到assets中，在运行时自动释放模拟下载过程。
+`sample-plugin`里的`sample-normal-apk`模块也可以直接安装运行，演示不使用Shadow时插件的运行情况。
 
-## 二进制Maven依赖SDK的Sample(`projects/sample/maven`)
-***
-要测试这个Sample请用Android Studio *分别* 打开`projects/sample/maven/host-project`,`projects/sample/maven/manager-project`,`projects/sample/maven/plugin-project`三个目录。
-***
-
-源码依赖SDK的Sample中对Shadow SDK的依赖配置不适用于正式业务接入。
-Shadow实现了完整的Maven发布脚本，支持方便的Maven依赖。
-
-`maven`目录下的3个目录分别演示了3个工程。
-这3个工程在实际业务中大概率上是3个不同的代码库。
-因此，在这个演示中没有试图做着3个工程间的任何依赖关系，
-甚至**3个工程中依赖的Shadow版本都是独立配置的**，
-使用时请注意这一点。
-
-***
-特别注意，这3个工程中以maven方式引用的SDK，都是需要自行发布到`mavenLocal()`才能使用的。
-因为，对于业务来说，不太可能会跟其他业务使用完全一致的二进制实现。所以Shadow直接发布一份二进制意义不大。
-建议真正接入时按下面介绍，将二进制发布到自己的maven仓库中。
-***
-
-在`buildScripts/gradle/maven.gradle`文件中配置了Shadow的Maven发布脚本。
-正式使用时，请修改其中的两个GroupID变量：`coreGroupId`、`dynamicGroupId`，
-以及`setScm`方法中的两个URL到自己的版本库地址上。
-
-然后将`mavenLocal()`改为自己发布的目标Maven仓库。
-
-执行`./gradlew publish`即可将Shadow SDK发布到Maven仓库。
-
-构件的版本号可以在`build/pom`目录中查看生成的pom文件中查看。
-
-在这个Sample的3个工程的`build.gradle`文件中都有`shadow_version`定义，
-将这个定义值改为刚刚发布的版本号（生成的pom中写的版本号）。
-
-### 运行方法
-
-这个演示工程没有实现下载功能，而是假设下载的文件直接位于指定路径。
-因此运行前需要手工用adb命令将指定内容push到指定位置。
-
-编译插件，在`plugin-project`目录中运行：
-```
-./gradlew packageDebugPlugin
-
-adb push build/plugin-debug.zip /data/local/tmp
-```
-
-编译PluginManager，在`manager-project`目录中运行：
-```
-./gradlew assembleDebug
-adb push sample-manager/build/outputs/apk/debug/sample-manager-debug.apk /data/local/tmp
-```
-
-最后可以用Android Studio打开`host-project`直接运行`sample-host`模块。
-
-`plugin-project`中的`plugin-normal-apk`模块也可以直接安装运行，演示不使用Shadow时插件的运行情况。
-
-## 演示AndroidX正常工作的Sample(`projects/sample/sunflower`)
-这个Sample和`projects/sample/maven`的组织结构是一样的。
-
-主要是将https://github.com/android/sunflower/改造成插件运行起来。
