@@ -11,11 +11,11 @@ manager 负责下载、安装插件, 还带有一个动态的 View 表达 Loadin
 manager 在加载"插件"时, 首先需要先加载"插件"中的 runtime 和 loader, 
 再通过 loader 的 Binder (插件应该处于独立进程中避免 native 库冲突) 操作 loader 进而加载业务 App. 
 
-在这个 Sample 目录下, 提供了示例工程: 
+在这个 sample 目录下, 提供了示例工程: 
 
-## 源码依赖 SDK 的 Sample(`sample`)
+## 源码依赖 SDK 的 sample(`sample`)
 ***
-要测试这个 Sample 请用 Android Studio 直接打开 clone 版本库の根目录. 
+要测试这个 sample 请用 Android Studio 直接打开 clone 版本库の根目录. 
 ***
 
 * `sample-host` 是宿主应用
