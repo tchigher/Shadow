@@ -31,7 +31,7 @@ def createDuplicateApkTask(buildType) {
 
     return tasks.create("duplicate${buildType.capitalize()}ApkTask", Copy) {
         group = 'build'
-        description = "复制一个sample-plugin-app-${buildType}.apk用于测试目的"
+        description = "复制一个 sample-plugin-app-${buildType}.apk 用于测试"
         from(apkDir) {
             include("sample-plugin-app-${buildType}.apk")
             rename { "sample-plugin-app-${buildType}2.apk" }
@@ -54,7 +54,6 @@ tasks.whenTaskAdded { task ->
 
 apply plugin: 'com.tencent.shadow.plugin'
 
-
 shadow {
     transform {
 //        useHostContext = ['abc']
@@ -67,8 +66,8 @@ shadow {
                 runtimeApkConfig = new Tuple2('sample-runtime-debug.apk', ':sample-runtime:assembleDebug')
                 pluginApks {
                     pluginApk1 {
-                        businessName = 'sample-plugin-app'
-                        partKey = 'sample-plugin-app'
+                        businessName = 'sample-plugin-app1'
+                        partKey = 'sample-plugin-app1'
                         buildTask = ':sample-plugin-app:assembleDebug'
                         apkName = 'sample-plugin-app-debug.apk'
                         apkPath = 'sample/sample-plugin/sample-plugin-app/build/outputs/apk/debug/sample-plugin-app-debug.apk'
@@ -90,8 +89,8 @@ shadow {
                 runtimeApkConfig = new Tuple2('sample-runtime-release.apk', ':sample-runtime:assembleRelease')
                 pluginApks {
                     pluginApk1 {
-                        businessName = 'sample-plugin-app'
-                        partKey = 'sample-plugin-app'
+                        businessName = 'sample-plugin-app1'
+                        partKey = 'sample-plugin-app1'
                         buildTask = ':sample-plugin-app:assembleRelease'
                         apkName = 'sample-plugin-app-release.apk'
                         apkPath = 'sample/sample-plugin/sample-plugin-app/build/outputs/apk/release/sample-plugin-app-release.apk'
@@ -113,7 +112,7 @@ shadow {
         runtimeApkProjectPath = 'sample/sample-plugin/sample-runtime'
 
         archiveSuffix = System.getenv("PluginSuffix") ?: ""
-        archivePrefix = 'plugin'
+        archivePrefix = 'samplePlugins'
         destinationDir = "${getRootProject().getBuildDir()}"
 
         version = 4
