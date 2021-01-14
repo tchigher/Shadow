@@ -46,7 +46,7 @@ Shadow 不仅开源分享了插件技术の关键代码, 还完整地分享了�
 
 然后就可以在 IDE 中选择 `sample-host` 模块直接运行了. 
 
-Shadowの所有代码都位于 `projects` 目录下の3个目录, 分别是：
+Shadowの所有代码都位于 `projects` 目录下の 3 个目录, 分别是：
 
 * `sdk` 包含 SDK 的所有代码
 * `sample` 包含演示代码
