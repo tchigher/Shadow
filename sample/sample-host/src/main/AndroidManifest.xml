@@ -89,7 +89,7 @@
             android:grantUriPermissions="true"
             android:process=":plugin"
             />
-        <service android:name="com.tencent.shadow.sample.host.PluginProcessPPS"
+        <service android:name="com.tencent.shadow.sample.host.Plugin1ProcessPPS"
             android:process=":plugin"
             />
         <service
