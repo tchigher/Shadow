@@ -3,7 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion project.COMPILE_SDK_VERSION
 
-
     defaultConfig {
         //noinspection MinSdkTooLow
         minSdkVersion 8

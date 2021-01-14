@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation 'commons-io:commons-io:2.6' // sample-host从assets中复制插件用的
+    implementation 'commons-io:commons-io:2.6' // sample-host 从 assets 中复制插件用
     implementation 'org.slf4j:slf4j-api:1.7.30'
 
     implementation 'com.tencent.shadow.core:common'

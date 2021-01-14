@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion project.COMPILE_SDK_VERSION
+
     defaultConfig {
         applicationId project.SAMPLE_HOST_APP_APPLICATION_ID
         minSdkVersion project.MIN_SDK_VERSION
@@ -9,6 +10,7 @@ android {
         versionCode project.VERSION_CODE
         versionName project.VERSION_NAME
     }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -23,6 +25,7 @@ android {
             signingConfig.initWith(buildTypes.debug.signingConfig)
         }
     }
+
     lintOptions {
         abortOnError false
     }
