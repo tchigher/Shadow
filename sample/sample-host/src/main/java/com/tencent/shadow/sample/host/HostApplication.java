@@ -18,6 +18,7 @@ import java.io.File;
 import static android.os.Process.myPid;
 
 public class HostApplication extends Application {
+
     private static HostApplication sApp;
 
     private PluginManager mPluginManager;
@@ -32,9 +33,10 @@ public class HostApplication extends Application {
         LoggerFactory.setILoggerFactory(new AndroidLogLoggerFactory());
 
         if (isProcess(this, ":plugin")) {
-            //在全动态架构中，Activity组件没有打包在宿主而是位于被动态加载的runtime，
-            //为了防止插件crash后，系统自动恢复crash前的Activity组件，此时由于没有加载runtime而发生classNotFound异常，导致二次crash
-            //因此这里恢复加载上一次的runtime
+            /// 在全动态架构中，Activity 组件没有打包在宿主而是位于被动态加载的 runtime，
+            /// 为了防止插件 crash 后，系统自动恢复 crash 前的 Activity 组件，
+            /// 此时由于没有加载 runtime 而发生 classNotFound 异常，导致二次 crash
+            /// 因此这里恢复加载上一次的 runtime
             DynamicRuntime.recoveryRuntime(this);
         }
 
@@ -42,12 +44,7 @@ public class HostApplication extends Application {
 
         HostUiLayerProvider.init(this);
     }
-    private static void setWebViewDataDirectorySuffix(){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            return;
-        }
-        WebView.setDataDirectorySuffix(Application.getProcessName());
-    }
+
     private static void detectNonSdkApiUsageOnAndroidP() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             return;
@@ -55,6 +52,13 @@ public class HostApplication extends Application {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         builder.detectNonSdkApiUsage();
         StrictMode.setVmPolicy(builder.build());
+    }
+
+    private static void setWebViewDataDirectorySuffix() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return;
+        }
+        WebView.setDataDirectorySuffix(Application.getProcessName());
     }
 
     public static HostApplication getApp() {
@@ -71,17 +75,19 @@ public class HostApplication extends Application {
         return mPluginManager;
     }
 
-    private static boolean isProcess(Context context, String processName) {
-        String currentProcName = "";
-        ActivityManager manager =
-                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == myPid()) {
-                currentProcName = processInfo.processName;
+    private static boolean isProcess(
+            Context context,
+            String processName
+    ) {
+        String currentProcessName = "";
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : activityManager.getRunningAppProcesses()) {
+            if (runningAppProcessInfo.pid == myPid()) {
+                currentProcessName = runningAppProcessInfo.processName;
                 break;
             }
         }
 
-        return currentProcName.endsWith(processName);
+        return currentProcessName.endsWith(processName);
     }
 }
