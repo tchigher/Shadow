@@ -45,7 +45,7 @@ open class PackagePluginExtension {
         val json = JSONObject()
 
         if (loaderApkName.isNotEmpty()) {
-            //Json文件中 plugin-loader部分信息
+            // Json 文件中 plugin-loader 部分信息
             val pluginLoaderObj = JSONObject()
             pluginLoaderObj["apkName"] = loaderApkName
             val loaderFile = ShadowPluginHelper.getLoaderApkFile(project, buildType, true)
@@ -55,7 +55,7 @@ open class PackagePluginExtension {
 
 
         if (runtimeApkName.isNotEmpty()) {
-            //Json文件中 plugin-runtime部分信息
+            // Json文件中 plugin-runtime 部分信息
             val runtimeObj = JSONObject()
             runtimeObj["apkName"] = runtimeApkName
             val runtimeFile = ShadowPluginHelper.getRuntimeApkFile(project, buildType, true)
