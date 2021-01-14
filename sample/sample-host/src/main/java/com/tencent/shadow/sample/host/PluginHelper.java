@@ -23,11 +23,11 @@ public class PluginHelper {
      * 插件框架 APK(loader APK 和 runtime APK),
      * APK 信息配置关系 JSON 文件
      */
-    public final static String sPluginApksZipFileName = BuildConfig.DEBUG ? "plugins-debug.zip" : "plugins-release.zip";
+    public final static String sPluginsZipFileName = BuildConfig.DEBUG ? "plugins-debug.zip" : "plugins-release.zip";
 
-    public File mPluginManagerFile;
+    public File mPluginManagerApkFile;
 
-    public File mPluginZipFile;
+    public File mPluginsZipFile;
 
     public ExecutorService mSinglePool = Executors.newSingleThreadExecutor();
 
@@ -43,8 +43,8 @@ public class PluginHelper {
     }
 
     public void init(Context context) {
-        mPluginManagerFile = new File(context.getFilesDir(), sPluginManagerApkFileName);
-        mPluginZipFile = new File(context.getFilesDir(), sPluginApksZipFileName);
+        mPluginManagerApkFile = new File(context.getFilesDir(), sPluginManagerApkFileName);
+        mPluginsZipFile = new File(context.getFilesDir(), sPluginsZipFileName);
 
         mContext = context.getApplicationContext();
 
@@ -58,14 +58,14 @@ public class PluginHelper {
 
     private void preparePlugin() {
         try {
-            InputStream is = mContext.getAssets().open(sPluginManagerApkFileName);
-            FileUtils.copyInputStreamToFile(is, mPluginManagerFile);
+            InputStream pluginManagerApkInputStream = mContext.getAssets().open(sPluginManagerApkFileName);
+            FileUtils.copyInputStreamToFile(pluginManagerApkInputStream, mPluginManagerApkFile);
 
-            InputStream zip = mContext.getAssets().open(sPluginApksZipFileName);
-            FileUtils.copyInputStreamToFile(zip, mPluginZipFile);
+            InputStream pluginsZipInputStream = mContext.getAssets().open(sPluginsZipFileName);
+            FileUtils.copyInputStreamToFile(pluginsZipInputStream, mPluginsZipFile);
 
         } catch (IOException e) {
-            throw new RuntimeException("从 assets 中复制 APK 出错", e);
+            throw new RuntimeException("从 assets 中复制 APK/ZIP 出错", e);
         }
     }
 
