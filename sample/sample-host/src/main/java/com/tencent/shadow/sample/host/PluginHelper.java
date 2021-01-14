@@ -23,7 +23,7 @@ public class PluginHelper {
      * 插件框架 APK(loader APK 和 runtime APK),
      * APK 信息配置关系 JSON 文件
      */
-    public final static String sPluginApksZipFileName = BuildConfig.DEBUG ? "pluginsForDebug.zip" : "pluginsForRelease.zip";
+    public final static String sPluginApksZipFileName = BuildConfig.DEBUG ? "plugins-debug.zip" : "plugins-release.zip";
 
     public File mPluginManagerFile;
 
