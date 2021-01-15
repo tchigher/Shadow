@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class InstalledDao {
 
-    private InstalledPluginDBHelper mDBHelper;
+    private final InstalledPluginDBHelper mDBHelper;
 
     public InstalledDao(InstalledPluginDBHelper dbHelper) {
         mDBHelper = dbHelper;
@@ -24,13 +24,15 @@ public class InstalledDao {
     /**
      * 根据插件配置信息插入一组数据
      *
-     * @param pluginConfig 插件配置信息
-     * @param soDir
-     * @param oDexDir
+     * @param pluginsConfig 插件配置信息
      */
-    public void insert(PluginConfig pluginConfig, String soDir, String oDexDir) {
+    public void insert(
+            PluginsConfig pluginsConfig,
+            String soDir,
+            String odexDir
+    ) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        List<ContentValues> contentValuesList = parseConfig(pluginConfig, soDir, oDexDir);
+        List<ContentValues> contentValuesList = parseConfig(pluginsConfig, soDir, odexDir);
         db.beginTransaction();
         try {
             for (ContentValues contentValues : contentValuesList) {
@@ -38,8 +40,8 @@ public class InstalledDao {
             }
             //把最后一次uuid的插件安装时间作为所有相同uuid的插件的安装时间
             ContentValues values = new ContentValues();
-            values.put(InstalledPluginDBHelper.COLUMN_INSTALL_TIME, pluginConfig.storageDir.lastModified());
-            db.update(InstalledPluginDBHelper.TABLE_NAME_MANAGER, values, InstalledPluginDBHelper.COLUMN_UUID + " = ?", new String[]{pluginConfig.UUID});
+            values.put(InstalledPluginDBHelper.COLUMN_INSTALL_TIME, pluginsConfig.storageDir.lastModified());
+            db.update(InstalledPluginDBHelper.TABLE_NAME_MANAGER, values, InstalledPluginDBHelper.COLUMN_UUID + " = ?", new String[]{pluginsConfig.UUID});
 
             db.setTransactionSuccessful();
         } finally {
@@ -48,13 +50,15 @@ public class InstalledDao {
     }
 
     /**
-     * 删除UUID相关的数据
+     * 删除 UUID 相关的数据
      *
-     * @param UUID 插件的发布id
+     * @param UUID 插件的发布 id
      * @return 影响的数据行数
      */
-    public int deleteByUUID(String UUID) {
-        int row ;
+    public int deleteByUUID(
+            String UUID
+    ) {
+        int row;
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -67,12 +71,14 @@ public class InstalledDao {
     }
 
     /**
-     * 根据uuid和APPID获取对应的插件信息
+     * 根据 UUID 获取对应的插件信息
      *
-     * @param UUID  插件的发布id
+     * @param UUID 插件的发布 id
      * @return 插件安装数据
      */
-    public InstalledPlugin getInstalledPluginByUUID(String UUID) {
+    public InstalledPlugin getInstalledPluginByUUID(
+            String UUID
+    ) {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from shadowPluginManager where uuid = ?", new String[]{UUID});
         InstalledPlugin installedPlugin = new InstalledPlugin();
@@ -83,8 +89,8 @@ public class InstalledDao {
                 installedPlugin.UUID_NickName = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_VERSION));
             } else {
                 File pluginFile = new File(cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PATH)));
-                String oDexPath = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PLUGIN_ODEX));
-                File oDexDir = oDexPath == null ? null : new File(oDexPath);
+                String odexPath = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PLUGIN_ODEX));
+                File oDexDir = odexPath == null ? null : new File(odexPath);
                 String libPath = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PLUGIN_LIB));
                 File libDir = libPath == null ? null : new File(libPath);
                 if (type == InstalledType.TYPE_PLUGIN_LOADER) {
@@ -110,7 +116,10 @@ public class InstalledDao {
         return installedPlugin;
     }
 
-    private String[] getArrayStringByColumnName(String columnName, Cursor cursor) {
+    private String[] getArrayStringByColumnName(
+            String columnName,
+            Cursor cursor
+    ) {
         int columnIndex = cursor.getColumnIndex(columnName);
         boolean hasColumn = !cursor.isNull(columnIndex);
         String[] arrayString;
@@ -137,7 +146,9 @@ public class InstalledDao {
      * @param limit 获取的数据数量
      * @return 插件列表数据
      */
-    public List<InstalledPlugin> getLastPlugins(int limit) {
+    public List<InstalledPlugin> getLastPlugins(
+            int limit
+    ) {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select uuid from shadowPluginManager where  type = ?   order by installedTime desc limit " + limit, new String[]{String.valueOf(InstalledType.TYPE_UUID)});
         List<String> uuids = new ArrayList<>();
@@ -154,20 +165,24 @@ public class InstalledDao {
         return installedPlugins;
     }
 
-    private List<ContentValues> parseConfig(PluginConfig pluginConfig, String soDir, String oDexDir) {
+    private List<ContentValues> parseConfig(
+            PluginsConfig pluginsConfig,
+            String soDir,
+            String odexDir
+    ) {
         List<InstalledRow> installedRows = new ArrayList<>();
-        if (pluginConfig.pluginLoader != null) {
-            installedRows.add(new InstalledRow(pluginConfig.pluginLoader.hash, null, pluginConfig.pluginLoader.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_LOADER,
-                    soDir, oDexDir));
+        if (pluginsConfig.pluginLoader != null) {
+            installedRows.add(new InstalledRow(pluginsConfig.pluginLoader.hash, null, pluginsConfig.pluginLoader.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_LOADER,
+                    soDir, odexDir));
         }
-        if (pluginConfig.runTime != null) {
-            installedRows.add(new InstalledRow(pluginConfig.runTime.hash, null, pluginConfig.runTime.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_RUNTIME,
-                    soDir, oDexDir));
+        if (pluginsConfig.runTime != null) {
+            installedRows.add(new InstalledRow(pluginsConfig.runTime.hash, null, pluginsConfig.runTime.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_RUNTIME,
+                    soDir, odexDir));
         }
-        if (pluginConfig.plugins != null) {
-            Set<Map.Entry<String, PluginConfig.PluginFileInfo>> plugins = pluginConfig.plugins.entrySet();
-            for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : plugins) {
-                PluginConfig.PluginFileInfo fileInfo = plugin.getValue();
+        if (pluginsConfig.plugins != null) {
+            Set<Map.Entry<String, PluginsConfig.PluginFileInfo>> plugins = pluginsConfig.plugins.entrySet();
+            for (Map.Entry<String, PluginsConfig.PluginFileInfo> plugin : plugins) {
+                PluginsConfig.PluginFileInfo fileInfo = plugin.getValue();
                 installedRows.add(
                         new InstalledRow(
                                 fileInfo.hash,
@@ -177,24 +192,23 @@ public class InstalledDao {
                                 fileInfo.file.getAbsolutePath(),
                                 InstalledType.TYPE_PLUGIN,
                                 fileInfo.hostWhiteList,
-                                soDir, oDexDir
+                                soDir, odexDir
                         )
                 );
             }
         }
         InstalledRow uuidRow = new InstalledRow();
         uuidRow.type = InstalledType.TYPE_UUID;
-        uuidRow.filePath = pluginConfig.UUID;
+        uuidRow.filePath = pluginsConfig.UUID;
         installedRows.add(uuidRow);
         List<ContentValues> contentValues = new ArrayList<>();
         for (InstalledRow row : installedRows) {
-            row.installedTime = pluginConfig.storageDir.lastModified();
-            row.UUID = pluginConfig.UUID;
-            row.version = pluginConfig.UUID_NickName;
+            row.installedTime = pluginsConfig.storageDir.lastModified();
+            row.UUID = pluginsConfig.UUID;
+            row.version = pluginsConfig.UUID_NickName;
             contentValues.add(row.toContentValues());
         }
         return contentValues;
     }
-
 
 }
