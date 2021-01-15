@@ -7,33 +7,44 @@ import com.tencent.shadow.core.common.InstalledApk;
 import dalvik.system.DexClassLoader;
 
 /**
- * Apk插件加载专用ClassLoader
+ * Apk插件加载专用 ClassLoader
  * <p>
- * 将宿主apk和插件apk隔离。但例外的是,插件可以从宿主apk中加载到约定的接口。
- * 这样隔离的目的是让宿主apk中的类可以通过约定的接口使用插件apk中的实现。而插件中的类不会使用到和宿主同名的类。
+ * 将宿主 APK 和插件 APK 隔离,
+ * 但例外的是, 插件可以从宿主 APK 中加载到约定的接口.
+ * 这样隔离的目的是让宿主 APK 中的类可以通过约定的接口使用插件 APK 中的实现,
+ * 而插件中的类不会使用到和宿主同名的类.
  * <p>
- * 如果目标类符合构造时传入的包名,则从parent ClassLoader中查找,否则先从自己的dexPath中查找,如果找不到,则再从
- * parent的parent ClassLoader中查找。
- *
- * @author cubershi
+ * 如果目标类符合构造时传入的包名, 则从 parent ClassLoader 中查找,
+ * 否则先从自己的 dexPath 中查找,
+ * 如果找不到,则再从 parent 的 parent ClassLoader中查找.
  */
 class ApkClassLoader extends DexClassLoader {
+
     private ClassLoader mGrandParent;
     private final String[] mInterfacePackageNames;
 
-    ApkClassLoader(InstalledApk installedApk,
-                   ClassLoader parent, String[] mInterfacePackageNames, int grandTimes) {
+    ApkClassLoader(
+            InstalledApk installedApk,
+            ClassLoader parent,
+            String[] interfacePackageNames,
+            int grandTimes
+    ) {
         super(installedApk.apkFilePath, installedApk.oDexPath, installedApk.libraryPath, parent);
+
         ClassLoader grand = parent;
         for (int i = 0; i < grandTimes; i++) {
             grand = grand.getParent();
         }
         mGrandParent = grand;
-        this.mInterfacePackageNames = mInterfacePackageNames;
+
+        mInterfacePackageNames = interfacePackageNames;
     }
 
     @Override
-    protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(
+            String className,
+            boolean resolve
+    ) throws ClassNotFoundException {
         String packageName;
         int dot = className.lastIndexOf('.');
         if (dot != -1) {
@@ -86,9 +97,11 @@ class ApkClassLoader extends DexClassLoader {
      * @param className 实现类的类名
      * @param <T>       接口类型
      * @return 所需接口
-     * @throws Exception
      */
-    <T> T getInterface(Class<T> clazz, String className) throws Exception {
+    <T> T getInterface(
+            Class<T> clazz,
+            String className
+    ) throws Exception {
         try {
             Class<?> interfaceImplementClass = loadClass(className);
             Object interfaceImplement = interfaceImplementClass.newInstance();
