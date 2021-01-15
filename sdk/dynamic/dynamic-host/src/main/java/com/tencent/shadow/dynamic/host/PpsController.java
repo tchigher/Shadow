@@ -52,13 +52,13 @@ public class PpsController {
         }
     }
 
-    public void setUuidManager(IBinder uuidManagerBinder) throws RemoteException {
+    public void setUUIDManager(IBinder uuidManagerBinder) throws RemoteException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
         try {
             _data.writeInterfaceToken(PpsBinder.DESCRIPTOR);
             _data.writeStrongBinder(uuidManagerBinder);
-            mRemote.transact(PpsBinder.TRANSACTION_setUuidManager, _data, _reply, 0);
+            mRemote.transact(PpsBinder.TRANSACTION_setUUIDManager, _data, _reply, 0);
             _reply.readException();
         } finally {
             _reply.recycle();

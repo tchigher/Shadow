@@ -65,7 +65,7 @@ public class PluginProcessService extends BasePluginProcessService {
         }
     }
 
-    private void checkUuidManagerNotNull() throws FailedException {
+    private void checkUUIDManagerNotNull() throws FailedException {
         if (mUUIDManager == null) {
             throw new FailedException(ERROR_CODE_UUID_MANAGER_NULL_EXCEPTION, "mUUIDManager == null");
         }
@@ -74,7 +74,7 @@ public class PluginProcessService extends BasePluginProcessService {
     void loadRuntime(
             String uuid
     ) throws FailedException {
-        checkUuidManagerNotNull();
+        checkUUIDManagerNotNull();
         setUUID(uuid);
         if (mRuntimeLoaded) {
             throw new FailedException(ERROR_CODE_RELOAD_RUNTIME_EXCEPTION, "重复调用 loadRuntime");
@@ -116,7 +116,7 @@ public class PluginProcessService extends BasePluginProcessService {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("loadPluginLoader uuid: " + uuid + ", mPluginLoader: " + mPluginLoader);
         }
-        checkUuidManagerNotNull();
+        checkUUIDManagerNotNull();
         setUUID(uuid);
         if (mPluginLoader != null) {
             throw new FailedException(ERROR_CODE_RELOAD_LOADER_EXCEPTION, "重复调用 loadPluginLoader ");
@@ -160,11 +160,11 @@ public class PluginProcessService extends BasePluginProcessService {
         }
     }
 
-    void setUuidManager(
+    void setUUIDManager(
             UUIDManager uuidManager
     ) {
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("setUuidManager uuidManager == " + uuidManager);
+            mLogger.info("setUUIDManager uuidManager == " + uuidManager);
         }
         mUUIDManager = uuidManager;
         if (mPluginLoader != null) {

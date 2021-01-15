@@ -13,7 +13,7 @@ class PpsBinder extends android.os.Binder {
 
     static final int TRANSACTION_loadRuntime = (FIRST_CALL_TRANSACTION);
     static final int TRANSACTION_loadPluginLoader = (FIRST_CALL_TRANSACTION + 1);
-    static final int TRANSACTION_setUuidManager = (FIRST_CALL_TRANSACTION + 2);
+    static final int TRANSACTION_setUUIDManager = (FIRST_CALL_TRANSACTION + 2);
     static final int TRANSACTION_exit = (FIRST_CALL_TRANSACTION + 3);
     static final int TRANSACTION_getPpsStatus = (FIRST_CALL_TRANSACTION + 4);
     static final int TRANSACTION_getPluginLoader = (FIRST_CALL_TRANSACTION + 5);
@@ -57,11 +57,11 @@ class PpsBinder extends android.os.Binder {
                 }
                 return true;
             }
-            case TRANSACTION_setUuidManager: {
+            case TRANSACTION_setUUIDManager: {
                 data.enforceInterface(DESCRIPTOR);
                 IBinder iBinder = data.readStrongBinder();
                 UUIDManager uuidManager = iBinder != null ? new BinderUUIDManager(iBinder) : null;
-                mPps.setUuidManager(uuidManager);
+                mPps.setUUIDManager(uuidManager);
                 reply.writeNoException();
                 return true;
             }

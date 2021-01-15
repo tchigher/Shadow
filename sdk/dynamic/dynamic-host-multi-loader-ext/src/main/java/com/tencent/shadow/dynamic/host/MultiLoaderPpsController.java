@@ -58,14 +58,14 @@ public class MultiLoaderPpsController {
         }
     }
 
-    public void setUuidManagerForPlugin(String pluginKey, IBinder uuidManagerBinder) throws RemoteException {
+    public void setUUIDManagerForPlugin(String pluginKey, IBinder uuidManagerBinder) throws RemoteException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
         try {
             _data.writeInterfaceToken(MultiLoaderPpsBinder.DESCRIPTOR);
             _data.writeString(pluginKey);
             _data.writeStrongBinder(uuidManagerBinder);
-            mRemote.transact(MultiLoaderPpsBinder.TRANSACTION_setUuidManagerForPlugin, _data, _reply, 0);
+            mRemote.transact(MultiLoaderPpsBinder.TRANSACTION_setUUIDManagerForPlugin, _data, _reply, 0);
             _reply.readException();
         } finally {
             _reply.recycle();

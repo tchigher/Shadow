@@ -15,7 +15,7 @@ public class MultiLoaderPpsBinder extends Binder {
 
     static final int TRANSACTION_loadRuntimeForPlugin = (FIRST_CALL_TRANSACTION);
     static final int TRANSACTION_loadPluginLoaderForPlugin = (FIRST_CALL_TRANSACTION + 1);
-    static final int TRANSACTION_setUuidManagerForPlugin = (FIRST_CALL_TRANSACTION + 2);
+    static final int TRANSACTION_setUUIDManagerForPlugin = (FIRST_CALL_TRANSACTION + 2);
     static final int TRANSACTION_getPpsStatusForPlugin = (FIRST_CALL_TRANSACTION + 3);
     static final int TRANSACTION_getPluginLoaderForPlugin = (FIRST_CALL_TRANSACTION + 4);
     static final int TRANSACTION_exit = (FIRST_CALL_TRANSACTION + 5);
@@ -68,7 +68,7 @@ public class MultiLoaderPpsBinder extends Binder {
                 }
                 return true;
             }
-            case TRANSACTION_setUuidManagerForPlugin: {
+            case TRANSACTION_setUUIDManagerForPlugin: {
                 data.enforceInterface(DESCRIPTOR);
                 String _arg0 = data.readString();
                 IBinder iBinder = data.readStrongBinder();

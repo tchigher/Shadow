@@ -41,7 +41,7 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
     ) {
         mPpsController = PluginProcessService.wrapBinder(service);
         try {
-            mPpsController.setUuidManager(new UUIDManagerBinder(PluginManagerThatUseDynamicLoader.this));
+            mPpsController.setUUIDManager(new UUIDManagerBinder(PluginManagerThatUseDynamicLoader.this));
         } catch (DeadObjectException e) {
             if (mLogger.isErrorEnabled()) {
                 mLogger.error("onServiceConnected RemoteException: " + e);

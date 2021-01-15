@@ -9,12 +9,12 @@ import com.tencent.shadow.dynamic.host.UUIDManager;
 
 class UUIDManagerBinder extends android.os.Binder {
 
-    final private UUIDManagerImpl mUuidManager;
+    final private UUIDManagerImpl mUUIDManager;
 
     UUIDManagerBinder(
             UUIDManagerImpl uuidManager
     ) {
-        mUuidManager = uuidManager;
+        mUUIDManager = uuidManager;
     }
 
     @Override
@@ -36,7 +36,7 @@ class UUIDManagerBinder extends android.os.Binder {
                 String _arg1;
                 _arg1 = data.readString();
                 try {
-                    InstalledApk _result = mUuidManager.getPlugin(_arg0, _arg1);
+                    InstalledApk _result = mUUIDManager.getPlugin(_arg0, _arg1);
                     reply.writeInt(UUIDManager.TRANSACTION_CODE_NO_EXCEPTION);
                     if ((_result != null)) {
                         reply.writeInt(1);
@@ -58,7 +58,7 @@ class UUIDManagerBinder extends android.os.Binder {
                 String _arg0;
                 _arg0 = data.readString();
                 try {
-                    InstalledApk _result = mUuidManager.getPluginLoader(_arg0);
+                    InstalledApk _result = mUUIDManager.getPluginLoader(_arg0);
                     reply.writeInt(UUIDManager.TRANSACTION_CODE_NO_EXCEPTION);
                     if ((_result != null)) {
                         reply.writeInt(1);
@@ -80,7 +80,7 @@ class UUIDManagerBinder extends android.os.Binder {
                 String _arg0;
                 _arg0 = data.readString();
                 try {
-                    InstalledApk _result = mUuidManager.getRuntime(_arg0);
+                    InstalledApk _result = mUUIDManager.getRuntime(_arg0);
                     reply.writeInt(UUIDManager.TRANSACTION_CODE_NO_EXCEPTION);
                     if ((_result != null)) {
                         reply.writeInt(1);

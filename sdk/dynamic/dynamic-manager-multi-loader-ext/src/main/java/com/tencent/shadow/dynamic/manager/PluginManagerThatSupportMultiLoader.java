@@ -48,7 +48,7 @@ abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPlu
     ) {
         mPpsController = MultiLoaderPluginProcessService.wrapBinder(service);
         try {
-            mPpsController.setUuidManagerForPlugin(getPluginKey(), new UUIDManagerBinder(PluginManagerThatSupportMultiLoader.this));
+            mPpsController.setUUIDManagerForPlugin(getPluginKey(), new UUIDManagerBinder(PluginManagerThatSupportMultiLoader.this));
         } catch (DeadObjectException e) {
             if (mLogger.isErrorEnabled()) {
                 mLogger.error("onServiceConnected RemoteException: " + e);
