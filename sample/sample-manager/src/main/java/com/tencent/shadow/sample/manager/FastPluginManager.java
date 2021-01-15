@@ -3,12 +3,11 @@ package com.tencent.shadow.sample.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 
-import com.tencent.shadow.core.common.Logger;
-import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
 import com.tencent.shadow.core.manager.installplugin.InstalledType;
-import com.tencent.shadow.core.manager.installplugin.PluginConfig;
+import com.tencent.shadow.core.manager.installplugin.PluginsConfig;
 import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.manager.PluginManagerThatUseDynamicLoader;
 
@@ -29,105 +28,135 @@ import java.util.concurrent.TimeoutException;
 
 public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoader {
 
-    private static final Logger mLogger = LoggerFactory.getLogger(FastPluginManager.class);
-
-    private ExecutorService mFixedPool = Executors.newFixedThreadPool(4);
+    private final ExecutorService mFixedPool = Executors.newFixedThreadPool(4);
 
     public FastPluginManager(Context context) {
         super(context);
     }
 
+    @SuppressWarnings("rawtypes")
+    public InstalledPlugin installPlugin(
+            String pluginsZipFileAbsolutePath,
+            @Nullable String pluginsZipFileHash,
+            boolean odex
+    ) throws IOException, JSONException, InterruptedException, ExecutionException {
+        final PluginsConfig pluginsConfig = installPluginsFromZipFile(
+                new File(pluginsZipFileAbsolutePath),
+                pluginsZipFileHash
+        );
+        final String pluginsUUID = pluginsConfig.UUID;
 
-    public InstalledPlugin installPlugin(String zip, String hash , boolean odex) throws IOException, JSONException, InterruptedException, ExecutionException {
-        final PluginConfig pluginConfig = installPluginFromZip(new File(zip), hash);
-        final String uuid = pluginConfig.UUID;
         List<Future> futures = new LinkedList<>();
-        if (pluginConfig.runTime != null && pluginConfig.pluginLoader != null) {
+
+        if (pluginsConfig.runTime != null && pluginsConfig.pluginLoader != null) {
             Future odexRuntime = mFixedPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    oDexPluginLoaderOrRunTime(uuid, InstalledType.TYPE_PLUGIN_RUNTIME,
-                            pluginConfig.runTime.file);
+                    odexPluginLoaderOrRunTime(
+                            pluginsUUID,
+                            InstalledType.TYPE_PLUGIN_RUNTIME,
+                            pluginsConfig.runTime.file
+                    );
                     return null;
                 }
             });
             futures.add(odexRuntime);
+
             Future odexLoader = mFixedPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    oDexPluginLoaderOrRunTime(uuid, InstalledType.TYPE_PLUGIN_LOADER,
-                            pluginConfig.pluginLoader.file);
+                    odexPluginLoaderOrRunTime(
+                            pluginsUUID,
+                            InstalledType.TYPE_PLUGIN_LOADER,
+                            pluginsConfig.pluginLoader.file
+                    );
                     return null;
                 }
             });
             futures.add(odexLoader);
         }
-        for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : pluginConfig.plugins.entrySet()) {
-            final String partKey = plugin.getKey();
-            final File apkFile = plugin.getValue().file;
-            Future extractSo = mFixedPool.submit(new Callable() {
+
+        for (Map.Entry<String, PluginsConfig.PluginFileInfo> plugin : pluginsConfig.plugins.entrySet()) {
+            final String pluginAppPartKey = plugin.getKey();
+            final File pluginApkFile = plugin.getValue().file;
+            Future extractedSo = mFixedPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    extractSo(uuid, partKey, apkFile);
+                    extractSo(pluginsUUID, pluginAppPartKey, pluginApkFile);
                     return null;
                 }
             });
-            futures.add(extractSo);
+            futures.add(extractedSo);
+
             if (odex) {
-                Future odexPlugin = mFixedPool.submit(new Callable() {
+                Future odexedPlugin = mFixedPool.submit(new Callable() {
                     @Override
                     public Object call() throws Exception {
-                        oDexPlugin(uuid, partKey, apkFile);
+                        odexPlugin(pluginsUUID, pluginAppPartKey, pluginApkFile);
                         return null;
                     }
                 });
-                futures.add(odexPlugin);
+                futures.add(odexedPlugin);
             }
         }
 
         for (Future future : futures) {
             future.get();
         }
-        onInstallCompleted(pluginConfig);
+
+        onPluginsInstallCompleted(pluginsConfig);
 
         return getInstalledPlugins(1).get(0);
     }
 
-
-    public void startPluginActivity( InstalledPlugin installedPlugin, String partKey, Intent pluginIntent) throws RemoteException, TimeoutException, FailedException {
-        Intent intent = convertActivityIntent(installedPlugin, partKey, pluginIntent);
+    public void startPluginActivity(
+            InstalledPlugin installedPlugins,
+            String pluginAppPartKey,
+            Intent pluginActivityIntent
+    ) throws RemoteException, TimeoutException, FailedException {
+        Intent intent = convertActivityIntent(installedPlugins, pluginAppPartKey, pluginActivityIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mPluginLoader.startActivityInPluginProcess(intent);
-
     }
 
-    public Intent convertActivityIntent(InstalledPlugin installedPlugin, String partKey, Intent pluginIntent) throws RemoteException, TimeoutException, FailedException {
-        loadPlugin(installedPlugin.UUID, partKey);
-        Map map = mPluginLoader.getLoadedPlugin();
-        Boolean isCall = (Boolean) map.get(partKey);
+    @SuppressWarnings("rawtypes")
+    public Intent convertActivityIntent(
+            InstalledPlugin installedPlugins,
+            String pluginAppPartKey,
+            Intent pluginActivityIntent
+    ) throws RemoteException, TimeoutException, FailedException {
+        loadPlugin(installedPlugins.UUID, pluginAppPartKey);
+        Map loadedPlugins = mPluginLoader.getLoadedPlugin();
+        Boolean isCall = (Boolean) loadedPlugins.get(pluginAppPartKey);
         if (isCall == null || !isCall) {
-            mPluginLoader.callApplicationOnCreate(partKey);
+            mPluginLoader.callApplicationOnCreate(pluginAppPartKey);
         }
-        return mPluginLoader.convertActivityIntent(pluginIntent);
+        return mPluginLoader.convertActivityIntent(pluginActivityIntent);
     }
 
-    private void loadPluginLoaderAndRuntime(String uuid, String partKey) throws RemoteException, TimeoutException, FailedException {
+    @SuppressWarnings("rawtypes")
+    private void loadPlugin(
+            String uuid,
+            String pluginAppPartKey
+    ) throws RemoteException, TimeoutException, FailedException {
+        loadPluginLoaderAndRuntime(uuid, pluginAppPartKey);
+        Map map = mPluginLoader.getLoadedPlugin();
+        if (!map.containsKey(pluginAppPartKey)) {
+            mPluginLoader.loadPlugin(pluginAppPartKey);
+        }
+    }
+
+    private void loadPluginLoaderAndRuntime(
+            String uuid,
+            String pluginAppPartKey
+    ) throws RemoteException, TimeoutException, FailedException {
         if (mPpsController == null) {
-            bindPluginProcessService(getPluginProcessServiceName(partKey));
+            bindPluginProcessService(getPluginProcessServiceName(pluginAppPartKey));
             waitServiceConnected(10, TimeUnit.SECONDS);
         }
         loadRunTime(uuid);
         loadPluginLoader(uuid);
     }
-
-    private void loadPlugin(String uuid, String partKey) throws RemoteException, TimeoutException, FailedException {
-        loadPluginLoaderAndRuntime(uuid, partKey);
-        Map map = mPluginLoader.getLoadedPlugin();
-        if (!map.containsKey(partKey)) {
-            mPluginLoader.loadPlugin(partKey);
-        }
-    }
-
 
     protected abstract String getPluginProcessServiceName(String partKey);
 
