@@ -21,7 +21,7 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
     fun setUuidManager(p0: UuidManager?) {
         if (p0 != null)
             mUuidManager = p0
-        //todo #30 兼容mUuidManager为null时的逻辑
+        // TODO #30 兼容 mUuidManager 为 null 时的逻辑
     }
 
     private val mPluginLoader: ShadowPluginLoader
