@@ -19,50 +19,36 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * 复制自
- *
- * @version $Id: FileUtils.java 1722481 2016-01-01 01:42:04Z dbrosius $
- * <p>
  * 没有使用完整的commons-io是因为要控制方法数
  */
 public class MinFileUtils {
 
     private static final Logger mLogger = LoggerFactory.getLogger(MinFileUtils.class);
-    /**
-     * 保证文件的父目录存在，如果不存在，则从不存在的祖先目录开始创建完成路径
-     *
-     * @param file 需要
-     * @throws IOException
-     */
-    public static void ensureParentDirExists(File file) throws IOException {
-        File parent = file.getParentFile();
-        if (!parent.isDirectory() && !parent.mkdirs()) {
-            throw new IOException("创建父目录失败,文件目录:" + file.getAbsolutePath() + " parent dir exists=" + parent.exists());
-        }
-    }
 
     /**
-     * 获取 文件的md5
+     * 获取文件的 MD5
      *
      * @param file 文件
-     * @return md5
+     * @return MD5
      */
-    public static String md5File(File file) {
-        String value = null;
-        FileInputStream in = null;
+    public static String getMD5(
+            File file
+    ) {
+        String value;
+        FileInputStream fileInputStream = null;
         try {
-            in = new FileInputStream(file);
-            MappedByteBuffer byteBuffer = in.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+            fileInputStream = new FileInputStream(file);
+            MappedByteBuffer byteBuffer = fileInputStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(byteBuffer);
-            BigInteger bi = new BigInteger(1, md5.digest());
-            value = bi.toString(16);
+            BigInteger bigInteger = new BigInteger(1, md5.digest());
+            value = bigInteger.toString(16);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            if (null != in) {
+            if (null != fileInputStream) {
                 try {
-                    in.close();
+                    fileInputStream.close();
                 } catch (IOException ignored) {
                 }
             }
@@ -77,7 +63,9 @@ public class MinFileUtils {
      * @throws IOException              in case cleaning is unsuccessful
      * @throws IllegalArgumentException if {@code directory} does not exist or is not a directory
      */
-    public static void cleanDirectory(final File directory) throws IOException {
+    public static void cleanDirectory(
+            final File directory
+    ) throws IOException {
         final File[] files = verifiedListFiles(directory);
 
         IOException exception = null;
@@ -96,20 +84,16 @@ public class MinFileUtils {
 
     /**
      * Deletes a file. If file is a directory, delete it and all sub-directories.
-     * <p>
-     * The difference between File.delete() and this method are:
-     * <ul>
-     * <li>A directory to be deleted does not have to be empty.</li>
-     * <li>You get exceptions when a file or directory cannot be deleted.
-     * (java.io.File methods returns a boolean)</li>
-     * </ul>
+     * A directory to be deleted does not have to be empty.
      *
      * @param file file or directory to delete, must not be {@code null}
      * @throws NullPointerException  if the directory is {@code null}
      * @throws FileNotFoundException if the file was not found
      * @throws IOException           in case deletion is unsuccessful
      */
-    private static void forceDelete(final File file) throws IOException {
+    private static void forceDelete(
+            final File file
+    ) throws IOException {
         if (file.isDirectory()) {
             deleteDirectory(file);
         } else {
@@ -132,7 +116,9 @@ public class MinFileUtils {
      * @throws IOException              in case deletion is unsuccessful
      * @throws IllegalArgumentException if {@code directory} does not exist or is not a directory
      */
-    private static void deleteDirectory(final File directory) throws IOException {
+    private static void deleteDirectory(
+            final File directory
+    ) throws IOException {
         if (!directory.exists()) {
             return;
         }
@@ -153,7 +139,9 @@ public class MinFileUtils {
      * @return The files in the directory, never null.
      * @throws IOException if an I/O error occurs
      */
-    private static File[] verifiedListFiles(File directory) throws IOException {
+    private static File[] verifiedListFiles(
+            File directory
+    ) throws IOException {
         if (!directory.exists()) {
             final String message = directory + " does not exist";
             throw new IllegalArgumentException(message);
@@ -165,17 +153,21 @@ public class MinFileUtils {
         }
 
         final File[] files = directory.listFiles();
-        if (files == null) {  // null if security restricted
+        if (files == null) { // null if security restricted
             throw new IOException("Failed to list contents of " + directory);
         }
         return files;
     }
 
-    public static void writeOutZipEntry(ZipFile zipFile, ZipEntry entry,
-                                        File outputDir, String outputFileName) throws IOException {
+    public static void writeOutZipEntry(
+            ZipFile zipFile,
+            ZipEntry zipEntry,
+            File outputDir,
+            String outputFileName
+    ) throws IOException {
         InputStream inputStream = null;
         try {
-            inputStream = zipFile.getInputStream(entry);
+            inputStream = zipFile.getInputStream(zipEntry);
             writeOutInputStream(outputDir, outputFileName, inputStream);
         } finally {
             if (inputStream != null) {
@@ -184,23 +176,26 @@ public class MinFileUtils {
         }
     }
 
-    public static void writeOutInputStream(File outputDir, String outputFileName,
-                                           InputStream inputStream) throws IOException {
-        BufferedOutputStream output = null;
+    public static void writeOutInputStream(
+            File outputDir,
+            String outputFileName,
+            InputStream inputStream
+    ) throws IOException {
+        BufferedOutputStream bufferedOutputStream = null;
         try {
-            File file = new File(outputDir, outputFileName);
-            output = new BufferedOutputStream(
-                    new FileOutputStream(file));
-            BufferedInputStream input = new BufferedInputStream(inputStream);
-            byte b[] = new byte[8192];
+            File outputFile = new File(outputDir, outputFileName);
+            bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            byte[] bytes = new byte[8192];
             int n;
-            while ((n = input.read(b, 0, 8192)) >= 0) {
-                output.write(b, 0, n);
+            while ((n = bufferedInputStream.read(bytes, 0, 8192)) >= 0) {
+                bufferedOutputStream.write(bytes, 0, n);
             }
         } finally {
-            if (output != null) {
-                output.close();
+            if (bufferedOutputStream != null) {
+                bufferedOutputStream.close();
             }
         }
     }
+
 }
