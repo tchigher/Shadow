@@ -22,12 +22,19 @@ public class MultiLoaderPpsBinder extends Binder {
 
     private final MultiLoaderPluginProcessService mPps;
 
-    MultiLoaderPpsBinder(MultiLoaderPluginProcessService pps) {
+    MultiLoaderPpsBinder(
+            MultiLoaderPluginProcessService pps
+    ) {
         mPps = pps;
     }
 
     @Override
-    public boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
+    public boolean onTransact(
+            int code,
+            Parcel data,
+            Parcel reply,
+            int flags
+    ) {
         switch (code) {
             case INTERFACE_TRANSACTION: {
                 reply.writeString(DESCRIPTOR);
@@ -65,8 +72,8 @@ public class MultiLoaderPpsBinder extends Binder {
                 data.enforceInterface(DESCRIPTOR);
                 String _arg0 = data.readString();
                 IBinder iBinder = data.readStrongBinder();
-                UuidManager uuidManager = iBinder != null ? new BinderUuidManager(iBinder) : null;
-                mPps.setUuidManagerForPlugin(_arg0, uuidManager);
+                UUIDManager uuidManager = iBinder != null ? new BinderUUIDManager(iBinder) : null;
+                mPps.setUUIDManagerForPlugin(_arg0, uuidManager);
                 reply.writeNoException();
                 return true;
             }
@@ -96,4 +103,5 @@ public class MultiLoaderPpsBinder extends Binder {
                 return false;
         }
     }
+
 }

@@ -28,23 +28,28 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
      */
     protected PluginLoader mPluginLoader;
 
-    protected PluginManagerThatUseDynamicLoader(Context context) {
+    protected PluginManagerThatUseDynamicLoader(
+            Context context
+    ) {
         super(context);
     }
 
     @Override
-    protected void onPluginServiceConnected(ComponentName name, IBinder service) {
+    protected void onPluginServiceConnected(
+            ComponentName name,
+            IBinder service
+    ) {
         mPpsController = PluginProcessService.wrapBinder(service);
         try {
-            mPpsController.setUuidManager(new UuidManagerBinder(PluginManagerThatUseDynamicLoader.this));
+            mPpsController.setUuidManager(new UUIDManagerBinder(PluginManagerThatUseDynamicLoader.this));
         } catch (DeadObjectException e) {
             if (mLogger.isErrorEnabled()) {
-                mLogger.error("onServiceConnected RemoteException:" + e);
+                mLogger.error("onServiceConnected RemoteException: " + e);
             }
         } catch (RemoteException e) {
             if (e.getClass().getSimpleName().equals("TransactionTooLargeException")) {
                 if (mLogger.isErrorEnabled()) {
-                    mLogger.error("onServiceConnected TransactionTooLargeException:" + e);
+                    mLogger.error("onServiceConnected TransactionTooLargeException: " + e);
                 }
             } else {
                 throw new RuntimeException(e);
@@ -58,20 +63,24 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
             }
         } catch (RemoteException ignored) {
             if (mLogger.isErrorEnabled()) {
-                mLogger.error("onServiceConnected mPpsController getPluginLoader:", ignored);
+                mLogger.error("onServiceConnected mPpsController getPluginLoader: ", ignored);
             }
         }
     }
 
     @Override
-    protected void onPluginServiceDisconnected(ComponentName name) {
+    protected void onPluginServiceDisconnected(
+            ComponentName name
+    ) {
         mPpsController = null;
         mPluginLoader = null;
     }
 
-    public final void loadRunTime(String uuid) throws RemoteException, FailedException {
+    public final void loadRunTime(
+            String uuid
+    ) throws RemoteException, FailedException {
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("loadRunTime mPpsController:" + mPpsController);
+            mLogger.info("loadRunTime mPpsController: " + mPpsController);
         }
         PpsStatus ppsStatus = mPpsController.getPpsStatus();
         if (!ppsStatus.runtimeLoaded) {
@@ -79,9 +88,11 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
         }
     }
 
-    public final void loadPluginLoader(String uuid) throws RemoteException, FailedException {
+    public final void loadPluginLoader(
+            String uuid
+    ) throws RemoteException, FailedException {
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("loadPluginLoader mPluginLoader:" + mPluginLoader);
+            mLogger.info("loadPluginLoader mPluginLoader: " + mPluginLoader);
         }
         if (mPluginLoader == null) {
             PpsStatus ppsStatus = mPpsController.getPpsStatus();
@@ -92,4 +103,5 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
             mPluginLoader = new BinderPluginLoader(iBinder);
         }
     }
+
 }

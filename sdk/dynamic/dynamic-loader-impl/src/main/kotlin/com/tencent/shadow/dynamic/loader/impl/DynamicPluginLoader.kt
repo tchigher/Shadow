@@ -10,18 +10,25 @@ import android.os.Looper
 import com.tencent.shadow.core.loader.ShadowPluginLoader
 import com.tencent.shadow.core.runtime.container.ContentProviderDelegateProviderHolder
 import com.tencent.shadow.core.runtime.container.DelegateProviderHolder
-import com.tencent.shadow.dynamic.host.UuidManager
+import com.tencent.shadow.dynamic.host.UUIDManager
 import java.util.concurrent.CountDownLatch
 
-internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
+internal class DynamicPluginLoader(
+        hostContext: Context,
+        uuid: String
+) {
+
     companion object {
-        private const val CORE_LOADER_FACTORY_IMPL_NAME =
-                "com.tencent.shadow.dynamic.loader.impl.CoreLoaderFactoryImpl"
+        private const val CORE_LOADER_FACTORY_IMPL_NAME = "com.tencent.shadow.dynamic.loader.impl.CoreLoaderFactoryImpl"
     }
-    fun setUuidManager(p0: UuidManager?) {
-        if (p0 != null)
-            mUuidManager = p0
-        // TODO #30 兼容 mUuidManager 为 null 时的逻辑
+
+    fun setUUIDManager(
+            uuidManager: UUIDManager?
+    ) {
+        if (uuidManager != null) {
+            mUUIDManager = uuidManager
+        }
+        // TODO #30 兼容 mUUIDManager 为 null 时的逻辑
     }
 
     private val mPluginLoader: ShadowPluginLoader
@@ -30,14 +37,14 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
 
     private var mContext: Context;
 
-    private lateinit var mUuidManager: UuidManager;
+    private lateinit var mUUIDManager: UUIDManager;
 
-    private var mUuid: String;
+    private var mUUID: String
 
-    private val mUiHandler = Handler(Looper.getMainLooper())
+    private val mUIHandler = Handler(Looper.getMainLooper())
 
-    /**
-     * 同一个IServiceConnection只会对应一个ServiceConnection对象，此Map就是保存这种对应关系
+    /*
+     * 同一个 IServiceConnection 只会对应一个 ServiceConnection 对象，此 Map 就是保存这种对应关系
      */
     private val mConnectionMap = HashMap<IBinder, ServiceConnection>()
 
@@ -52,84 +59,98 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
             ContentProviderDelegateProviderHolder.setContentProviderDelegateProvider(mPluginLoader)
             mPluginLoader.onCreate()
         } catch (e: Exception) {
-            throw RuntimeException("当前的classLoader找不到PluginLoader的实现", e)
+            throw RuntimeException("当前的 classLoader 找不到 PluginLoader 的实现: ", e)
         }
-        mContext = hostContext;
-        mUuid = uuid;
+        mContext = hostContext
+        mUUID = uuid
     }
 
-    fun loadPlugin(partKey: String) {
-        val installedApk = mUuidManager.getPlugin(mUuid, partKey)
+    fun loadPlugin(
+            partKey: String
+    ) {
+        val installedApk = mUUIDManager.getPlugin(mUUID, partKey)
         val future = mPluginLoader.loadPlugin(installedApk)
         future.get()
     }
 
     fun getLoadedPlugin(): MutableMap<String, Boolean> {
-        val plugins  = mPluginLoader.getAllPluginPart()
+        val plugins = mPluginLoader.getAllPluginPart()
         val loadPlugins = hashMapOf<String, Boolean>()
-        for(part in plugins){
+        for (part in plugins) {
             loadPlugins[part.key] = part.value.application.isCallOnCreate
         }
         return loadPlugins
     }
 
     @Synchronized
-    fun callApplicationOnCreate(partKey: String) {
+    fun callApplicationOnCreate(
+            partKey: String
+    ) {
         mPluginLoader.callApplicationOnCreate(partKey)
     }
 
-    fun convertActivityIntent(pluginActivityIntent: Intent): Intent? {
+    fun convertActivityIntent(
+            pluginActivityIntent: Intent
+    ): Intent? {
         return mPluginLoader.mComponentManager.convertPluginActivityIntent(pluginActivityIntent)
     }
 
     @Synchronized
-    fun startPluginService(pluginServiceIntent: Intent): ComponentName? {
+    fun startPluginService(
+            pluginServiceIntent: Intent
+    ): ComponentName? {
 
         fun realAction(): ComponentName? {
             return mPluginLoader.getPluginServiceManager().startPluginService(pluginServiceIntent)
         }
 
-
-        // 确保在ui线程调用
+        // 确保在 ui 线程调用
         var componentName: ComponentName? = null
         if (isUiThread()) {
             componentName = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
-            mUiHandler.post {
+            mUIHandler.post {
                 componentName = realAction()
                 waitUiLock.countDown()
             }
-            waitUiLock.await();
+            waitUiLock.await()
         }
 
         return componentName
     }
 
     @Synchronized
-    fun stopPluginService(pluginServiceIntent: Intent): Boolean {
+    fun stopPluginService(
+            pluginServiceIntent: Intent
+    ): Boolean {
 
         fun realAction(): Boolean {
             return mPluginLoader.getPluginServiceManager().stopPluginService(pluginServiceIntent)
         }
 
-        // 确保在ui线程调用
-        var stopped: Boolean = false
+        // 确保在 ui 线程调用
+        var stopped = false
         if (isUiThread()) {
             stopped = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
-            mUiHandler.post {
+            mUIHandler.post {
                 stopped = realAction()
                 waitUiLock.countDown()
             }
             waitUiLock.await();
         }
+
         return stopped
     }
 
     @Synchronized
-    fun bindPluginService(pluginServiceIntent: Intent, binderPsc: BinderPluginServiceConnection, flags: Int): Boolean {
+    fun bindPluginService(
+            pluginServiceIntent: Intent,
+            binderPsc: BinderPluginServiceConnection,
+            flags: Int
+    ): Boolean {
 
         fun realAction(): Boolean {
             if (mConnectionMap[binderPsc.mRemote] == null) {
@@ -139,13 +160,14 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
             val connWrapper = mConnectionMap[binderPsc.mRemote]!!
             return mPluginLoader.getPluginServiceManager().bindPluginService(pluginServiceIntent, connWrapper, flags)
         }
-        // 确保在ui线程调用
-        var stop: Boolean = false
+
+        // 确保在 ui 线程调用
+        var stop = false
         if (isUiThread()) {
             stop = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
-            mUiHandler.post {
+            mUIHandler.post {
                 stop = realAction()
                 waitUiLock.countDown()
             }
@@ -157,8 +179,10 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
     }
 
     @Synchronized
-    fun unbindService(connBinder: IBinder) {
-        mUiHandler.post {
+    fun unbindService(
+            connBinder: IBinder
+    ) {
+        mUIHandler.post {
             mConnectionMap[connBinder]?.let {
                 mConnectionMap.remove(connBinder)
                 mPluginLoader.getPluginServiceManager().unbindPluginService(it)
@@ -168,7 +192,7 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
 
     @Synchronized
     fun startActivityInPluginProcess(intent: Intent) {
-        mUiHandler.post {
+        mUIHandler.post {
             mContext.startActivity(intent)
         }
     }
@@ -182,11 +206,9 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             mConnection.onServiceConnected(name, service)
         }
-
     }
 
     private fun isUiThread(): Boolean {
-
         return Looper.myLooper() == Looper.getMainLooper()
     }
 
@@ -198,9 +220,12 @@ internal class DynamicPluginLoader(hostContext: Context, uuid: String) {
      * @param <T>       接口类型
      * @return 所需接口
      * @throws Exception
-    </T> */
+    */
     @Throws(Exception::class)
-    fun <T> ClassLoader.getInterface(clazz: Class<T>, className: String): T {
+    fun <T> ClassLoader.getInterface(
+            clazz: Class<T>,
+            className: String
+    ): T {
         try {
             val interfaceImplementClass = loadClass(className)
             val interfaceImplement = interfaceImplementClass.newInstance()!!

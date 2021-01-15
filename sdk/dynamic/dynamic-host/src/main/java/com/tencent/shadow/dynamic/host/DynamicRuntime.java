@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import dalvik.system.BaseDexClassLoader;
 
 /**
- * 将runtime apk加载到DexPathClassLoader，形成如下结构的classLoader树结构
+ * 将 runtime apk 加载到 DexPathClassLoader, 形成如下结构的 classLoader 树结构
  * ---BootClassLoader
  * ----RuntimeClassLoader
  * ------PathClassLoader
@@ -33,9 +33,11 @@ public class DynamicRuntime {
     /**
      * 加载runtime apk
      *
-     * @return true 加载了新的runtime
+     * @return true 加载了新的 runtime
      */
-    public static boolean loadRuntime(InstalledApk installedRuntimeApk) {
+    public static boolean loadRuntime(
+            InstalledApk installedRuntimeApk
+    ) {
         ClassLoader contextClassLoader = DynamicRuntime.class.getClassLoader();
         RuntimeClassLoader runtimeClassLoader = getRuntimeClassLoader();
         if (runtimeClassLoader != null) {
@@ -44,13 +46,13 @@ public class DynamicRuntime {
                 mLogger.info("last apkPath:" + apkPath + " new apkPath:" + installedRuntimeApk.apkFilePath);
             }
             if (TextUtils.equals(apkPath, installedRuntimeApk.apkFilePath)) {
-                //已经加载相同版本的runtime了,不需要加载
+                // 已经加载相同版本的 runtime 了,不需要加载
                 if (mLogger.isInfoEnabled()) {
                     mLogger.info("已经加载相同apkPath的runtime了,不需要加载");
                 }
                 return false;
             } else {
-                //版本不一样，说明要更新runtime，先恢复正常的classLoader结构
+                // 版本不一样，说明要更新 runtime, 先恢复正常的 classLoader 结构
                 if (mLogger.isInfoEnabled()) {
                     mLogger.info("加载不相同apkPath的runtime了,先恢复classLoader树结构");
                 }
@@ -61,17 +63,19 @@ public class DynamicRuntime {
                 }
             }
         }
-        //正常处理，将runtime 挂到pathclassLoader之上
+
+        // 正常处理，将 runtime 挂到 pathClassLoader 之上
         try {
             hackParentToRuntime(installedRuntimeApk, contextClassLoader);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         return true;
     }
 
 
-    private static void recoveryClassLoader() throws Exception{
+    private static void recoveryClassLoader() throws Exception {
         ClassLoader contextClassLoader = DynamicRuntime.class.getClassLoader();
         ClassLoader child = contextClassLoader;
         ClassLoader tmpClassLoader = contextClassLoader.getParent();
@@ -95,38 +99,48 @@ public class DynamicRuntime {
             }
             tmpClassLoader = tmpClassLoader.getParent();
         }
+
         return null;
     }
 
 
-    private static void hackParentToRuntime(InstalledApk installedRuntimeApk, ClassLoader contextClassLoader) throws Exception {
-        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(installedRuntimeApk.apkFilePath, installedRuntimeApk.oDexPath,
-                installedRuntimeApk.libraryPath, contextClassLoader.getParent());
+    private static void hackParentToRuntime(
+            InstalledApk installedRuntimeApk,
+            ClassLoader contextClassLoader
+    ) throws Exception {
+        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(
+                installedRuntimeApk.apkFilePath,
+                installedRuntimeApk.odexPath,
+                installedRuntimeApk.libraryPath,
+                contextClassLoader.getParent()
+        );
         hackParentClassLoader(contextClassLoader, runtimeClassLoader);
     }
 
 
     /**
-     * 修改ClassLoader的parent
+     * 修改 ClassLoader 的 parent
      *
-     * @param classLoader          需要修改的ClassLoader
-     * @param newParentClassLoader classLoader的新的parent
+     * @param classLoader          需要修改的 ClassLoader
+     * @param newParentClassLoader classLoader 的新的 parent
      * @throws Exception 失败时抛出
      */
-    static void hackParentClassLoader(ClassLoader classLoader,
-                                              ClassLoader newParentClassLoader) throws Exception {
+    static void hackParentClassLoader(
+            ClassLoader classLoader,
+            ClassLoader newParentClassLoader
+    ) throws Exception {
         Field field = getParentField();
         if (field == null) {
-            throw new RuntimeException("在ClassLoader.class中没找到类型为ClassLoader的parent域");
+            throw new RuntimeException("在 ClassLoader.class 中没找到类型为 ClassLoader 的 parent 域");
         }
         field.setAccessible(true);
         field.set(classLoader, newParentClassLoader);
     }
 
     /**
-     * 安全地获取到ClassLoader类的parent域
+     * 安全地获取到 ClassLoader 类的 parent 域
      *
-     * @return ClassLoader类的parent域.或不能通过反射访问该域时返回null.
+     * @return ClassLoader 类的 parent 域, 或不能通过反射访问该域时返回 null
      */
     private static Field getParentField() {
         ClassLoader classLoader = DynamicRuntime.class.getClassLoader();
@@ -145,18 +159,21 @@ public class DynamicRuntime {
             } catch (IllegalAccessException ignore) {
             }
         }
+
         return field;
     }
 
     /**
-     * 重新恢复runtime
+     * 重新恢复 runtime
      *
-     * @return true 进行了runtime恢复
+     * @return true 进行了 runtime 恢复
      */
-    public static boolean recoveryRuntime(Context context) {
+    public static boolean recoveryRuntime(
+            Context context
+    ) {
         InstalledApk installedApk = getLastRuntimeInfo(context);
         if (installedApk != null && new File(installedApk.apkFilePath).exists()) {
-            if (installedApk.oDexPath != null && !new File(installedApk.oDexPath).exists()) {
+            if (installedApk.odexPath != null && !new File(installedApk.odexPath).exists()) {
                 return false;
             }
             try {
@@ -169,34 +186,42 @@ public class DynamicRuntime {
                 removeLastRuntimeInfo(context);
             }
         }
+
         return false;
     }
 
     @SuppressLint("ApplySharedPref")
-    public static void saveLastRuntimeInfo(Context context, InstalledApk installedRuntimeApk) {
+    public static void saveLastRuntimeInfo(
+            Context context,
+            InstalledApk installedRuntimeApk
+    ) {
         SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         preferences.edit()
                 .putString(KEY_RUNTIME_APK, installedRuntimeApk.apkFilePath)
-                .putString(KEY_RUNTIME_ODEX, installedRuntimeApk.oDexPath)
+                .putString(KEY_RUNTIME_ODEX, installedRuntimeApk.odexPath)
                 .putString(KEY_RUNTIME_LIB, installedRuntimeApk.libraryPath)
                 .commit();
     }
 
-    private static InstalledApk getLastRuntimeInfo(Context context) {
+    private static InstalledApk getLastRuntimeInfo(
+            Context context
+    ) {
         SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         String apkFilePath = preferences.getString(KEY_RUNTIME_APK, null);
-        String oDexPath = preferences.getString(KEY_RUNTIME_ODEX, null);
+        String odexPath = preferences.getString(KEY_RUNTIME_ODEX, null);
         String libraryPath = preferences.getString(KEY_RUNTIME_LIB, null);
 
         if (apkFilePath == null) {
             return null;
         } else {
-            return new InstalledApk(apkFilePath, oDexPath, libraryPath);
+            return new InstalledApk(apkFilePath, odexPath, libraryPath);
         }
     }
 
     @SuppressLint("ApplySharedPref")
-    private static void removeLastRuntimeInfo(Context context) {
+    private static void removeLastRuntimeInfo(
+            Context context
+    ) {
         SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         preferences.edit()
                 .remove(KEY_RUNTIME_APK)
@@ -207,15 +232,26 @@ public class DynamicRuntime {
 
 
     static class RuntimeClassLoader extends BaseDexClassLoader {
-        /**
+        /*
          * 加载的apk路径
          */
         private String apkPath;
 
 
-        RuntimeClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
-            super(dexPath, optimizedDirectory == null ? null : new File(optimizedDirectory), librarySearchPath, parent);
+        RuntimeClassLoader(
+                String dexPath,
+                String optimizedDirectory,
+                String librarySearchPath,
+                ClassLoader parent
+        ) {
+            super(
+                    dexPath,
+                    optimizedDirectory == null ? null : new File(optimizedDirectory),
+                    librarySearchPath,
+                    parent
+            );
             this.apkPath = dexPath;
         }
     }
+
 }

@@ -3,7 +3,7 @@ package com.tencent.shadow.core.manager.installplugin;
 import java.io.File;
 
 /**
- * 目录各模块的目录关系管理
+ * 各模块的目录关系管理
  */
 public class AppCacheFolderManager {
 
@@ -44,7 +44,7 @@ public class AppCacheFolderManager {
     private static File getOdexRootDir(
             File root
     ) {
-        return new File(root, "oDex");
+        return new File(root, "odex");
     }
 
     public static File getLibDir(

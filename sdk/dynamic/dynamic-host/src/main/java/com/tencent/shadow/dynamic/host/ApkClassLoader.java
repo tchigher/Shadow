@@ -7,7 +7,7 @@ import com.tencent.shadow.core.common.InstalledApk;
 import dalvik.system.DexClassLoader;
 
 /**
- * Apk插件加载专用 ClassLoader
+ * APK 插件加载专用 ClassLoader
  * <p>
  * 将宿主 APK 和插件 APK 隔离,
  * 但例外的是, 插件可以从宿主 APK 中加载到约定的接口.
@@ -20,7 +20,7 @@ import dalvik.system.DexClassLoader;
  */
 class ApkClassLoader extends DexClassLoader {
 
-    private ClassLoader mGrandParent;
+    private final ClassLoader mGrandParent;
     private final String[] mInterfacePackageNames;
 
     ApkClassLoader(
@@ -29,7 +29,12 @@ class ApkClassLoader extends DexClassLoader {
             String[] interfacePackageNames,
             int grandTimes
     ) {
-        super(installedApk.apkFilePath, installedApk.oDexPath, installedApk.libraryPath, parent);
+        super(
+                installedApk.apkFilePath,
+                installedApk.odexPath,
+                installedApk.libraryPath,
+                parent
+        );
 
         ClassLoader grand = parent;
         for (int i = 0; i < grandTimes; i++) {

@@ -90,13 +90,13 @@ public class InstalledDao {
             } else {
                 File pluginFile = new File(cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PATH)));
                 String odexPath = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PLUGIN_ODEX));
-                File oDexDir = odexPath == null ? null : new File(odexPath);
+                File odexDir = odexPath == null ? null : new File(odexPath);
                 String libPath = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_PLUGIN_LIB));
                 File libDir = libPath == null ? null : new File(libPath);
                 if (type == InstalledType.TYPE_PLUGIN_LOADER) {
-                    installedPlugin.pluginLoaderFile = new InstalledPlugin.Part(type, pluginFile, oDexDir, libDir);
+                    installedPlugin.pluginLoaderFile = new InstalledPlugin.Part(type, pluginFile, odexDir, libDir);
                 } else if (type == InstalledType.TYPE_PLUGIN_RUNTIME) {
-                    installedPlugin.runtimeFile = new InstalledPlugin.Part(type, pluginFile, oDexDir, libDir);
+                    installedPlugin.runtimeFile = new InstalledPlugin.Part(type, pluginFile, odexDir, libDir);
                 } else {
                     String businessName = cursor.getString(cursor.getColumnIndex(InstalledPluginDBHelper.COLUMN_BUSINESS_NAME));
 
@@ -105,9 +105,9 @@ public class InstalledDao {
                     if (type == InstalledType.TYPE_PLUGIN) {
                         String[] dependsOn = getArrayStringByColumnName(InstalledPluginDBHelper.COLUMN_DEPENDSON, cursor);
                         String[] hostWhiteList = getArrayStringByColumnName(InstalledPluginDBHelper.COLUMN_HOST_WHITELIST, cursor);
-                        installedPlugin.plugins.put(partKey, new InstalledPlugin.PluginPart(type, businessName, pluginFile, oDexDir, libDir, dependsOn, hostWhiteList));
+                        installedPlugin.plugins.put(partKey, new InstalledPlugin.PluginPart(type, businessName, pluginFile, odexDir, libDir, dependsOn, hostWhiteList));
                     } else {
-                        throw new RuntimeException("出现不认识的type==" + type);
+                        throw new RuntimeException("出现不认识的 type = " + type);
                     }
                 }
             }

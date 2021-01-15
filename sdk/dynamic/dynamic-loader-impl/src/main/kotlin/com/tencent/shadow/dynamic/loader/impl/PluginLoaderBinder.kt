@@ -3,16 +3,26 @@ package com.tencent.shadow.dynamic.loader.impl
 import android.content.Intent
 import android.os.IBinder
 import com.tencent.shadow.dynamic.host.PluginLoaderImpl
-import com.tencent.shadow.dynamic.host.UuidManager
+import com.tencent.shadow.dynamic.host.UUIDManager
 import com.tencent.shadow.dynamic.loader.PluginLoader
 
-internal class PluginLoaderBinder(private val mDynamicPluginLoader: DynamicPluginLoader) : android.os.Binder(), PluginLoaderImpl {
-    override fun setUuidManager(uuidManager: UuidManager?) {
-        mDynamicPluginLoader.setUuidManager(uuidManager)
+internal class PluginLoaderBinder(
+        private val mDynamicPluginLoader: DynamicPluginLoader
+        ) : android.os.Binder(), PluginLoaderImpl {
+
+    override fun setUUIDManager(
+            uuidManager: UUIDManager?
+    ) {
+        mDynamicPluginLoader.setUUIDManager(uuidManager)
     }
 
     @Throws(android.os.RemoteException::class)
-    public override fun onTransact(code: Int, data: android.os.Parcel, reply: android.os.Parcel?, flags: Int): Boolean {
+    public override fun onTransact(
+            code: Int,
+            data: android.os.Parcel,
+            reply: android.os.Parcel?,
+            flags: Int
+    ): Boolean {
         when (code) {
             IBinder.INTERFACE_TRANSACTION -> {
                 reply!!.writeString(PluginLoader.DESCRIPTOR)
@@ -121,4 +131,5 @@ internal class PluginLoaderBinder(private val mDynamicPluginLoader: DynamicPlugi
         }
         return super.onTransact(code, data, reply, flags)
     }
+
 }

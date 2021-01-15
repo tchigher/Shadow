@@ -31,7 +31,7 @@ public class OdexBloc {
             /// 如果 odex 存在但是个文件, 而不是目录, 那超出预料了
             /// 删除了也不一定能工作正常
             if (odexDir.exists() && odexDir.isFile()) {
-                throw new InstallPluginException("oDexDir = " + odexDir.getAbsolutePath() + " 已存在, 但它是个文件, 不敢贸然删除");
+                throw new InstallPluginException("odexDir = " + odexDir.getAbsolutePath() + " 已存在, 但它是个文件, 不敢贸然删除");
             }
 
             // 创建 odex 目录

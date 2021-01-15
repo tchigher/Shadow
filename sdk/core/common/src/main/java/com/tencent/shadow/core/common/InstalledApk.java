@@ -10,26 +10,37 @@ public class InstalledApk implements Parcelable {
 
     public final String apkFilePath;
 
-    public final String oDexPath;
+    public final String odexPath;
 
     public final String libraryPath;
 
     public final byte[] parcelExtras;
 
-    public InstalledApk(String apkFilePath, String oDexPath, String libraryPath) {
-        this(apkFilePath, oDexPath, libraryPath, null);
+    public InstalledApk(
+            String apkFilePath,
+            String odexPath,
+            String libraryPath
+    ) {
+        this(apkFilePath, odexPath, libraryPath, null);
     }
 
-    public InstalledApk(String apkFilePath, String oDexPath, String libraryPath, byte[] parcelExtras) {
+    public InstalledApk(
+            String apkFilePath,
+            String odexPath,
+            String libraryPath,
+            byte[] parcelExtras
+    ) {
         this.apkFilePath = apkFilePath;
-        this.oDexPath = oDexPath;
+        this.odexPath = odexPath;
         this.libraryPath = libraryPath;
         this.parcelExtras = parcelExtras;
     }
 
-    protected InstalledApk(Parcel in) {
+    protected InstalledApk(
+            Parcel in
+    ) {
         apkFilePath = in.readString();
-        oDexPath = in.readString();
+        odexPath = in.readString();
         libraryPath = in.readString();
         int parcelExtrasLength = in.readInt();
         if (parcelExtrasLength > 0) {
@@ -43,9 +54,12 @@ public class InstalledApk implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(
+            Parcel dest,
+            int flags
+    ) {
         dest.writeString(apkFilePath);
-        dest.writeString(oDexPath);
+        dest.writeString(odexPath);
         dest.writeString(libraryPath);
         dest.writeInt(parcelExtras == null ? 0 : parcelExtras.length);
         if (parcelExtras != null) {
@@ -69,4 +83,5 @@ public class InstalledApk implements Parcelable {
             return new InstalledApk[size];
         }
     };
+
 }

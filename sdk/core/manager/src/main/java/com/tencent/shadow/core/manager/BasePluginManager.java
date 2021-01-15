@@ -47,7 +47,7 @@ public abstract class BasePluginManager {
     /*
      * UI 线程的 handler
      */
-    protected Handler mUiHandler = new Handler(Looper.getMainLooper());
+    protected Handler mUIHandler = new Handler(Looper.getMainLooper());
 
     public BasePluginManager(
             Context context
@@ -151,7 +151,7 @@ public abstract class BasePluginManager {
             );
         } catch (InstallPluginException e) {
             if (mLogger.isErrorEnabled()) {
-                mLogger.error("oDexPlugin exception:", e);
+                mLogger.error("odexPlugin exception:", e);
             }
             throw e;
         }
@@ -176,7 +176,7 @@ public abstract class BasePluginManager {
             OdexBloc.odexPluginApk(pluginApkFile, odexDir, AppCacheFolderManager.getOdexCopiedTagFile(odexDir, pluginLoaderOrRuntimeKey));
         } catch (InstallPluginException e) {
             if (mLogger.isErrorEnabled()) {
-                mLogger.error("oDexPluginLoaderOrRunTime exception:", e);
+                mLogger.error("odexPluginLoaderOrRunTime exception:", e);
             }
             throw e;
         }
@@ -262,8 +262,8 @@ public abstract class BasePluginManager {
         if (!part.pluginFile.delete()) {
             suc = false;
         }
-        if (part.oDexDir != null) {
-            if (!part.oDexDir.delete()) {
+        if (part.odexDir != null) {
+            if (!part.odexDir.delete()) {
                 suc = false;
             }
         }

@@ -7,15 +7,18 @@ import java.lang.reflect.Field;
 import dalvik.system.DexClassLoader;
 
 abstract class ImplLoader {
+
     private static final String WHITE_LIST_CLASS_NAME = "com.tencent.shadow.dynamic.impl.WhiteList";
     private static final String WHITE_LIST_FIELD_NAME = "sWhiteList";
 
     abstract String[] getCustomWhiteList();
 
-    String[] loadWhiteList(InstalledApk installedApk) {
+    String[] loadWhiteList(
+            InstalledApk installedApk
+    ) {
         DexClassLoader dexClassLoader = new DexClassLoader(
                 installedApk.apkFilePath,
-                installedApk.oDexPath,
+                installedApk.odexPath,
                 installedApk.libraryPath,
                 getClass().getClassLoader()
         );
@@ -42,7 +45,10 @@ abstract class ImplLoader {
         return interfaces;
     }
 
-    private static String[] concatenate(String[] a, String[] b) {
+    private static String[] concatenate(
+            String[] a,
+            String[] b
+    ) {
         int aLen = a.length;
         int bLen = b.length;
         String[] c = new String[aLen + bLen];
@@ -50,4 +56,5 @@ abstract class ImplLoader {
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
     }
+
 }
