@@ -28,12 +28,12 @@ android {
 
     sourceSets {
         debug {
-            assets.srcDir('build/generated/assets/sample-manager/debug/')
-            assets.srcDir('build/generated/assets/plugin-zip/debug/')
+            assets.srcDir('build/generated/assets/samplePluginManager/debug/')
+            assets.srcDir('build/generated/assets/samplePlugins/debug/')
         }
         release {
-            assets.srcDir('build/generated/assets/sample-manager/release/')
-            assets.srcDir('build/generated/assets/plugin-zip/release/')
+            assets.srcDir('build/generated/assets/samplePluginManager/release/')
+            assets.srcDir('build/generated/assets/samplePlugins/release/')
         }
     }
 
@@ -63,37 +63,49 @@ tasks.whenTaskAdded { task ->
 }
 
 def generateAssets(generateAssetsTask, buildType) {
-    def moduleName = 'sample-manager'
-    def pluginManagerApkFile = file(
+    def fromPluginManagerApkFile = file(
             "${project(":sample-manager").getBuildDir()}" +
                     "/outputs/apk/${buildType}/" +
-                    "${moduleName}-${buildType}.apk")
+                    "sample-manager-${buildType}.apk"
+    )
+
     generateAssetsTask.dependsOn createCopyTask(
             ':sample-manager',
             buildType,
-            moduleName,
-            'pluginmanager.apk',
-            pluginManagerApkFile,
+            'samplePluginManager',
+            'samplePluginManager.apk',
+            fromPluginManagerApkFile,
             "assemble${buildType.capitalize()}"
     )
 
-    def pluginZip = file("${getRootProject().getBuildDir()}/plugin-${buildType}.zip")
+    def fromPluginsZipFile = file(
+            "${getRootProject().getBuildDir()}" +
+                    "/samplePlugins-${buildType}.zip"
+    )
+
     generateAssetsTask.dependsOn createCopyTask(
             ':sample-plugin-app',
             buildType,
-            'plugin-zip',
-            "plugin-${buildType}.zip",
-            pluginZip,
+            'samplePlugins',
+            "samplePlugins-${buildType}.zip",
+            fromPluginsZipFile,
             "package${buildType.capitalize()}Plugin"
     )
 }
 
-def createCopyTask(projectName, buildType, name, apkName, inputFile, taskName) {
-    def outputFile = file("${getBuildDir()}/generated/assets/${name}/${buildType}/${apkName}")
+def createCopyTask(
+        projectName,
+        buildType,
+        dirNameInAssets,
+        outputFileName,
+        inputFile,
+        taskName
+) {
+    def outputFile = file("${getBuildDir()}/generated/assets/${dirNameInAssets}/${buildType}/${outputFileName}")
     outputFile.getParentFile().mkdirs()
-    return tasks.create("copy${buildType.capitalize()}${name.capitalize()}Task", Copy) {
+    return tasks.create("copy${buildType.capitalize()}${dirNameInAssets.capitalize()}Task", Copy) {
         group = 'build'
-        description = "复制${name}到assets中."
+        description = "复制到 assets/${dirNameInAssets} 中."
         from(inputFile.getParent()) {
             include(inputFile.name)
             rename { outputFile.name }
