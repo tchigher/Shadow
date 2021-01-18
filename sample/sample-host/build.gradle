@@ -29,12 +29,12 @@ android {
     sourceSets {
         debug {
             assets.srcDir('build/generated/assets/samplePluginManager/debug/')
-            assets.srcDir('build/generated/assets/samplePlugins/debug/')
+//            assets.srcDir('build/generated/assets/samplePlugins/debug/')
             assets.srcDir('build/generated/assets/mgmoviePlugins/debug/')
         }
         release {
             assets.srcDir('build/generated/assets/samplePluginManager/release/')
-            assets.srcDir('build/generated/assets/samplePlugins/release/')
+//            assets.srcDir('build/generated/assets/samplePlugins/release/')
             assets.srcDir('build/generated/assets/mgmoviePlugins/release/')
         }
     }
@@ -80,19 +80,19 @@ def generateAssets(generateAssetsTask, buildType) {
             "assemble${buildType.capitalize()}"
     )
 
-    def fromPluginsZipFile = file(
-            "${getRootProject().getBuildDir()}" +
-                    "/samplePlugins-${buildType}.zip"
-    )
-
-    generateAssetsTask.dependsOn createCopyTask(
-            ':sample-plugin-app',
-            buildType,
-            'samplePlugins',
-            "samplePlugins-${buildType}.zip",
-            fromPluginsZipFile,
-            "package${buildType.capitalize()}Plugin"
-    )
+//    def fromPluginsZipFile = file(
+//            "${getRootProject().getBuildDir()}" +
+//                    "/samplePlugins-${buildType}.zip"
+//    )
+//
+//    generateAssetsTask.dependsOn createCopyTask(
+//            ':sample-plugin-app',
+//            buildType,
+//            'samplePlugins',
+//            "samplePlugins-${buildType}.zip",
+//            fromPluginsZipFile,
+//            "package${buildType.capitalize()}Plugin"
+//    )
 
     def fromMgMoviePluginsZipFile = file(
             "${getRootProject().getBuildDir()}" +
