@@ -55,14 +55,14 @@ public class SampleComponentManager extends ComponentManager {
     @Override
     public List<BroadcastInfo> getBroadcastInfoList(String partKey) {
         List<ComponentManager.BroadcastInfo> broadcastInfos = new ArrayList<>();
-        if (partKey.equals(Constant.KEY__TARGET_PLUGIN_APP__ONE)) {
-            broadcastInfos.add(
-                    new ComponentManager.BroadcastInfo(
-                            "com.tencent.shadow.sample.plugin.app.lib.usecases.receiver.MyReceiver",
-                            new String[]{"com.tencent.test.action"}
-                    )
-            );
-        }
+//        if (partKey.equals(Constant.KEY__TARGET_PLUGIN_APP__ONE)) {
+//            broadcastInfos.add(
+//                    new ComponentManager.BroadcastInfo(
+//                            "com.tencent.shadow.sample.plugin.app.lib.usecases.receiver.MyReceiver",
+//                            new String[]{"com.tencent.test.action"}
+//                    )
+//            );
+//        }
         return broadcastInfos;
     }
 
