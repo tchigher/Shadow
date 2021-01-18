@@ -1,8 +1,12 @@
 package com.tencent.shadow.sample.plugin.app.lib.usecases.host_communication;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tencent.shadow.sample.host.lib.SampleHostUIProvider;
@@ -33,12 +37,17 @@ public class PluginUseHostClassActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
+//        relativeLayout.setBackground(new ColorDrawable(Color.parseColor("#dcedc8")));
+        relativeLayout.setBackground(new ColorDrawable(0xffdcedc8));
 
         SampleHostUIProvider sampleHostUIProvider = SampleHostUIProvider.getInstance();
         View welcomeUIFromHost = sampleHostUIProvider.createWelcomeUIFromHost();
+        welcomeUIFromHost.getRootView().setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_light));
 
         relativeLayout.addView(welcomeUIFromHost);
         addRuleProperty(welcomeUIFromHost, RelativeLayout.CENTER_IN_PARENT);
+
+        ((ViewGroup) welcomeUIFromHost).getChildAt(0).setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
 
         setContentView(relativeLayout);
     }
