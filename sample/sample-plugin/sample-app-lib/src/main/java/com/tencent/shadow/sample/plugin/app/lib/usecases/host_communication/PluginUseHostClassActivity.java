@@ -3,13 +3,14 @@ package com.tencent.shadow.sample.plugin.app.lib.usecases.host_communication;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.tencent.shadow.sample.host.lib.HostUiLayerProvider;
+import com.tencent.shadow.sample.host.lib.SampleHostUIProvider;
 import com.tencent.shadow.sample.plugin.app.lib.gallery.BaseActivity;
 import com.tencent.shadow.sample.plugin.app.lib.gallery.cases.entity.UseCase;
 
 public class PluginUseHostClassActivity extends BaseActivity {
+
     public static class Case extends UseCase {
         @Override
         public String getName() {
@@ -31,12 +32,24 @@ public class PluginUseHostClassActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LinearLayout linearLayout = new LinearLayout(this);
+        RelativeLayout relativeLayout = new RelativeLayout(this);
 
-        HostUiLayerProvider hostUiLayerProvider = HostUiLayerProvider.getInstance();
-        View hostUiLayer = hostUiLayerProvider.buildHostUiLayer();
-        linearLayout.addView(hostUiLayer);
+        SampleHostUIProvider sampleHostUIProvider = SampleHostUIProvider.getInstance();
+        View welcomeUIFromHost = sampleHostUIProvider.createWelcomeUIFromHost();
 
-        setContentView(linearLayout);
+        relativeLayout.addView(welcomeUIFromHost);
+        addRuleProperty(welcomeUIFromHost, RelativeLayout.CENTER_IN_PARENT);
+
+        setContentView(relativeLayout);
     }
+
+    private void addRuleProperty(
+            View view,
+            int property
+    ) {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+        layoutParams.addRule(property);
+        view.setLayoutParams(layoutParams);
+    }
+
 }
