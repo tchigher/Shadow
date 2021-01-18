@@ -266,7 +266,7 @@ dependencies {
     kapt("com.google.dagger:dagger-compiler:2.27")
     kapt("com.google.dagger:dagger-android-processor:2.27")
 
-    implementation(project(":sample-app-lib"))
+//    implementation(project(":sample-app-lib"))
 }
 
 configurations.all {
