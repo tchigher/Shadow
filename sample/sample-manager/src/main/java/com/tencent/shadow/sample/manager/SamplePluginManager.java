@@ -49,6 +49,8 @@ public class SamplePluginManager extends FastPluginManager {
             return "com.tencent.shadow.sample.host.Plugin1ProcessPPS";
         } else if ("sample-plugin-app2".equals(partKey)) {
             return "com.tencent.shadow.sample.host.Plugin2ProcessPPS"; // 在这里支持多个插件
+        } else if ("mgmovie-plugin-app".equals(partKey)) {
+            return "com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"; // 在这里支持多个插件
         } else {
             // 如果有默认 PPS，可用 return 代替 throw
             throw new IllegalArgumentException("unexpected plugin load request: " + partKey);

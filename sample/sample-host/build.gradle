@@ -30,10 +30,12 @@ android {
         debug {
             assets.srcDir('build/generated/assets/samplePluginManager/debug/')
             assets.srcDir('build/generated/assets/samplePlugins/debug/')
+            assets.srcDir('build/generated/assets/mgmoviePlugins/debug/')
         }
         release {
             assets.srcDir('build/generated/assets/samplePluginManager/release/')
             assets.srcDir('build/generated/assets/samplePlugins/release/')
+            assets.srcDir('build/generated/assets/mgmoviePlugins/release/')
         }
     }
 
@@ -89,6 +91,20 @@ def generateAssets(generateAssetsTask, buildType) {
             'samplePlugins',
             "samplePlugins-${buildType}.zip",
             fromPluginsZipFile,
+            "package${buildType.capitalize()}Plugin"
+    )
+
+    def fromMgMoviePluginsZipFile = file(
+            "${getRootProject().getBuildDir()}" +
+                    "/mgmoviePlugins-${buildType}.zip"
+    )
+
+    generateAssetsTask.dependsOn createCopyTask(
+            ':mgmovie-plugin-app',
+            buildType,
+            'mgmoviePlugins',
+            "mgmoviePlugins-${buildType}.zip",
+            fromMgMoviePluginsZipFile,
             "package${buildType.capitalize()}Plugin"
     )
 }

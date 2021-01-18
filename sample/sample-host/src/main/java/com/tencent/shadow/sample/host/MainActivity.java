@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
         final Spinner spinnerTargetPluginApp = new Spinner(this);
         ArrayAdapter<String> targetPluginAppAdapter = new ArrayAdapter<>(this, R.layout.adapter__target_plugin_app);
-        targetPluginAppAdapter.addAll(Constant.KEY__TARGET_PLUGIN_APP__ONE, Constant.KEY__TARGET_PLUGIN_APP__TWO);
+        targetPluginAppAdapter.addAll(Constant.KEY__TARGET_PLUGIN_APP__ONE, Constant.KEY__TARGET_PLUGIN_APP__TWO, Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE);
         spinnerTargetPluginApp.setAdapter(targetPluginAppAdapter);
         rootView.addView(spinnerTargetPluginApp);
 
@@ -51,12 +51,12 @@ public class MainActivity extends Activity {
                     /// 其实两个插件の内容完全一样, 除了其所在进程
                     case Constant.KEY__TARGET_PLUGIN_APP__ONE:
                     case Constant.KEY__TARGET_PLUGIN_APP__TWO:
+                    case Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE:
                         intent.putExtra(
                                 Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME,
                                 "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity"
                         );
                         break;
-
                 }
 
                 startActivity(intent);

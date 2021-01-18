@@ -16,6 +16,31 @@ public class ShadowInstrumentation extends Instrumentation {
         super.callActivityOnDestroy(hostActivity);
     }
 
+    public void callActivityOnStart(ShadowActivity activity) {
+        Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
+        super.callActivityOnStart(hostActivity);
+    }
+
+    public void callActivityOnResume(ShadowActivity activity) {
+        Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
+        super.callActivityOnResume(hostActivity);
+    }
+
+    public void callActivityOnPause(ShadowActivity activity) {
+        Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
+        super.callActivityOnPause(hostActivity);
+    }
+
+    public void callActivityOnStop(ShadowActivity activity) {
+        Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
+        super.callActivityOnStop(hostActivity);
+    }
+
+    public void callActivityOnSaveInstanceState(ShadowActivity activity, Bundle outState) {
+        Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
+        super.callActivityOnSaveInstanceState(hostActivity,outState);
+    }
+
     static public ShadowApplication newShadowApplication(Class<?> clazz, Context context)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {

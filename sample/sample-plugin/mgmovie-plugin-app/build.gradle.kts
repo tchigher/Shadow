@@ -24,14 +24,14 @@ android {
         getByName("debug") {
             keyAlias = "alias_name"
             keyPassword = "cmvideo8"
-            storeFile = file("cmcc-shmc.keystore")
+            storeFile = file("../mgmovie/app/cmcc-shmc.keystore")
             storePassword = "cmvideo8"
         }
 
         create("release") {
             keyAlias = "alias_name"
             keyPassword = "cmvideo8"
-            storeFile = file("cmcc-shmc.keystore")
+            storeFile = file("../mgmovie/app/cmcc-shmc.keystore")
             storePassword = "cmvideo8"
         }
     }
@@ -290,7 +290,8 @@ configurations.all {
 
 android {
     defaultConfig {
-        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
+//        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
+        applicationId = "com.tencent.shadow.sample.host"
     }
 }
 

@@ -95,6 +95,8 @@
         <service
             android:name="com.tencent.shadow.sample.host.Plugin2ProcessPPS"
             android:process=":plugin2" />
+        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"
+            android:process=":pluginMgMovie" />
         <activity
             android:name="com.tencent.shadow.sample.host.PluginLoadActivity"
             android:launchMode="standard"
