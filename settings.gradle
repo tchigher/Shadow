@@ -25,7 +25,10 @@ def includeSample() {
             'slidingmenu',
             'sample-app-lib',
             'sample-normal-app',
-            'sample-plugin-app'
+            'sample-plugin-app',
+
+            'mgmovie-normal-app',
+            'mgmovie-plugin-app'
 
     project(':sample-constant').projectDir = file('sample/sample-constant')
     project(':sample-host').projectDir = file('sample/sample-host')
@@ -38,4 +41,78 @@ def includeSample() {
     project(':sample-app-lib').projectDir = file('sample/sample-plugin/sample-app-lib')
     project(':sample-normal-app').projectDir = file('sample/sample-plugin/sample-normal-app')
     project(':sample-plugin-app').projectDir = file('sample/sample-plugin/sample-plugin-app')
+
+    project(':mgmovie-normal-app').projectDir = file('sample/sample-plugin/mgmovie/app')
+    project(':mgmovie-plugin-app').projectDir = file('sample/sample-plugin/mgmovie-plugin-app')
+
+
+    include ':Cores:BnModelModule',
+            ':Cores:BnUIModule',
+            ':Cores:filedownloader',
+            ':Cores:IDataService',
+            ':Cores:IMapService',
+            ':Cores:IMoviePlayer',
+            ':Cores:IService',
+            ':Cores:MgmMultiType',
+            ':Cores:MgmMultiType:library',
+            ':Cores:libbase'
+
+    project(':Cores:BnModelModule').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/BnModelModule')
+    project(':Cores:BnUIModule').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/BnUIModule')
+    project(':Cores:filedownloader').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/filedownloader')
+    project(':Cores:IDataService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/IDataService')
+    project(':Cores:IMapService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/IMapService')
+    project(':Cores:IMoviePlayer').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/IMoviePlayer')
+    project(':Cores:IService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/IService')
+    project(':Cores:MgmMultiType').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/MgmMultiType')
+    project(':Cores:MgmMultiType:library').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/MgmMultiType/library')
+    project(':Cores:libbase').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/libbase')
+
+    include ':Edges:AILib',
+            ':Edges:IADService',
+            ':Edges:IloginService',
+            ':Edges:IScannerService',
+            ':Edges:libanalytics',
+            ':Edges:MgPushLib'
+
+    project(':Edges:AILib').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/AILib')
+    project(':Edges:IADService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IADService')
+    project(':Edges:IloginService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IloginService')
+    project(':Edges:IScannerService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IScannerService')
+    project(':Edges:libanalytics').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/libanalytics')
+    project(':Edges:MgPushLib').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/MgPushLib')
+
+    include ':Widgets:ConvenientBanner',
+            ':Widgets:CenterRecyclerView', // 已通过 pod 插件管理
+            ':Widgets:Dashline', // 已通过 pod 插件管理
+            ':Widgets:DropDownMenu',
+            ':Widgets:expandabletextview',
+            ':Widgets:libmatisse',
+            ':Widgets:SlideUp',
+            ':Widgets:SmartShow',
+            ':Widgets:starscoreview',
+            ':Widgets:StatusView',
+            ':Widgets:SwipePanel',
+            ':Widgets:TagLayout'
+
+    project(':Widgets:CenterRecyclerView').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/CenterRecyclerView')
+    project(':Widgets:ConvenientBanner').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/ConvenientBanner')
+    project(':Widgets:Dashline').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/Dashline')
+    project(':Widgets:DropDownMenu').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/DropDownMenu')
+    project(':Widgets:expandabletextview').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/expandabletextview')
+    project(':Widgets:libmatisse').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/libmatisse')
+    project(':Widgets:SlideUp').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/SlideUp')
+    project(':Widgets:SmartShow').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/SmartShow')
+    project(':Widgets:starscoreview').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/starscoreview')
+    project(':Widgets:StatusView').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/StatusView')
+    project(':Widgets:SwipePanel').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/SwipePanel')
+    project(':Widgets:TagLayout').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Widgets/TagLayout')
+
+    include ':Tools:annotationprocess',
+            ':Tools:Chucker',
+            ':Tools:ChuckerNoOp'
+
+    project(':Tools:annotationprocess').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Tools/annotationprocess')
+    project(':Tools:Chucker').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Tools/Chucker')
+    project(':Tools:ChuckerNoOp').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Tools/ChuckerNoOp')
 }
