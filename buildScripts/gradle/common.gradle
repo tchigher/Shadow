@@ -22,12 +22,84 @@ allprojects {
     }
     ext.ARTIFACT_VERSION = ext.VERSION_NAME + ext.VERSION_SUFFIX
     ext.SAMPLE_HOST_APP_APPLICATION_ID = 'com.tencent.shadow.sample.host'
+
+    ext {
+        buildTools = "29.0.3"
+        compileSdk = 28
+        minSdk = 19
+        targetSdk = 28
+        androidSupport = "28.0.0"
+        arouterApi = "1.4.1"
+        arouterCompiler = "1.2.2"
+        kotlin = "1.4.21"
+        retrofit = "2.7.2"
+        rxJava = "3.0.1"
+        rxAndroid = "3.0.0"
+        eventBus = "3.2.0"
+        okHttp = "3.12.10"
+    }
+
     repositories {
-        google()
-        jcenter()
+//        google()
+//        jcenter()
+        maven {
+            url = uri("https://dl.bintray.com/wangpengwen/kt/")
+            content {
+                includeGroup("com.mg.widgets")
+            }
+        }
+
+        maven {
+            url = uri("http://maven.aliyun.com/nexus/content/groups/public/")
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
+        mavenCentral {
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
+        google {
+            content {
+                includeGroupByRegex("com.android.*")
+                includeGroupByRegex("android.arch.*")// androidx.databinding
+                includeGroupByRegex("androidx.*")//
+            }
+        }
+        maven {
+            url = uri("https://jitpack.io")
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
+        maven {
+            url = uri("http://mvn.gt.igexin.com/nexus/content/repositories/releases/")
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
+        maven {
+            url = uri("https://dl.bintray.com/umsdk/release")
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
+        jcenter {
+            content {
+                excludeGroupByRegex("""com\\.mg.widgets.*""")
+            }
+        }
     }
     //环境检查
     envCheck()
+
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            substitute module("androidx.annotation:annotation") with module("com.android.support:support-annotations:28.0.0")
+        }
+    }
+
 }
 
 
