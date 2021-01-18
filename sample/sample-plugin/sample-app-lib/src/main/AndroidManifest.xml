@@ -74,7 +74,6 @@
         <activity android:name="com.tencent.shadow.sample.plugin.app.lib.usecases.context.ActivityContextSubDirTestActivity" />
 
         <activity android:name="com.tencent.shadow.sample.plugin.app.lib.usecases.context.ApplicationContextSubDirTestActivity" />
-        <activity android:name=".usecases.host_communication.PluginUseHostClassActivity" />
         <activity android:name=".usecases.webview.WebViewActivity" />
         <activity android:name=".usecases.fragment.TestDialogFragmentActivity" />
 

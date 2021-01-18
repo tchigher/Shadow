@@ -16,7 +16,6 @@ import com.tencent.shadow.sample.plugin.app.lib.usecases.dialog.TestDialogActivi
 import com.tencent.shadow.sample.plugin.app.lib.usecases.fragment.TestDialogFragmentActivity;
 import com.tencent.shadow.sample.plugin.app.lib.usecases.fragment.TestDynamicFragmentActivity;
 import com.tencent.shadow.sample.plugin.app.lib.usecases.fragment.TestXmlFragmentActivity;
-import com.tencent.shadow.sample.plugin.app.lib.usecases.host_communication.PluginUseHostClassActivity;
 import com.tencent.shadow.sample.plugin.app.lib.usecases.packagemanager.TestPackageManagerActivity;
 import com.tencent.shadow.sample.plugin.app.lib.usecases.provider.TestDBContentProviderActivity;
 import com.tencent.shadow.sample.plugin.app.lib.usecases.provider.TestFileProviderActivity;
@@ -91,11 +90,6 @@ public class UseCaseManager {
                 new ApplicationContextSubDirTestActivity.Case(),
         });
         useCases.add(contextCategory);
-
-        UseCaseCategory communicationCategory = new UseCaseCategory("插件和宿主通信相关测试用例", new UseCase[]{
-                new PluginUseHostClassActivity.Case(),
-        });
-        useCases.add(communicationCategory);
     }
 
 
