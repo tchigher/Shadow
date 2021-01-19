@@ -1,0 +1,135 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8770091774643905742",
+      "lastPropertyId": "14:1033709310277885236",
+      "name": "DownloadableMovieEntity",
+      "properties": [
+        {
+          "id": "1:3681586524027308583",
+          "name": "id"
+        },
+        {
+          "id": "2:7270068863712809695",
+          "indexId": "1:521607366470283928",
+          "name": "movieId"
+        },
+        {
+          "id": "3:793906388255102424",
+          "name": "movieName"
+        },
+        {
+          "id": "4:853378998676021865",
+          "name": "posterUrl"
+        },
+        {
+          "id": "5:4737431782693255608",
+          "name": "totalSize"
+        },
+        {
+          "id": "6:7931460897917193767",
+          "name": "downloadedSize"
+        },
+        {
+          "id": "7:176029710786335445",
+          "name": "speed"
+        },
+        {
+          "id": "8:4701416906478481430",
+          "name": "time"
+        },
+        {
+          "id": "9:5152018584420098112",
+          "name": "downLoadUrl"
+        },
+        {
+          "id": "10:3722073762234798213",
+          "name": "status"
+        },
+        {
+          "id": "11:7639726018081563732",
+          "name": "rateType"
+        },
+        {
+          "id": "12:2932525573806051024",
+          "name": "seconds"
+        },
+        {
+          "id": "13:1634075617277818711",
+          "name": "lastUploadedSize"
+        },
+        {
+          "id": "14:1033709310277885236",
+          "name": "resumeTime"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:3496363673845353303",
+      "lastPropertyId": "6:8295248807837640990",
+      "name": "WatchHistoryEntity",
+      "properties": [
+        {
+          "id": "1:4036486889590180104",
+          "name": "id"
+        },
+        {
+          "id": "2:139695383014260691",
+          "name": "mId"
+        },
+        {
+          "id": "3:4869906706082622633",
+          "name": "contId"
+        },
+        {
+          "id": "4:3326721419509119665",
+          "name": "contName"
+        },
+        {
+          "id": "5:189848019339845201",
+          "name": "currTime"
+        },
+        {
+          "id": "6:8295248807837640990",
+          "name": "totalTime"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:1052529993786044074",
+      "lastPropertyId": "3:342474452842607322",
+      "name": "HistoryRecordTagEntity",
+      "properties": [
+        {
+          "id": "1:4408970399401450440",
+          "name": "id"
+        },
+        {
+          "id": "2:258328750281096584",
+          "name": "tag"
+        },
+        {
+          "id": "3:342474452842607322",
+          "name": "time"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:1052529993786044074",
+  "lastIndexId": "1:521607366470283928",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
