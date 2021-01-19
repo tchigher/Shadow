@@ -43,9 +43,9 @@ public class DynamicRuntime {
         if (runtimeClassLoader != null) {
             String apkPath = runtimeClassLoader.apkPath;
             if (mLogger.isInfoEnabled()) {
-                mLogger.info("last apkPath:" + apkPath + " new apkPath:" + installedRuntimeApk.apkFilePath);
+                mLogger.info("last apkPath:" + apkPath + " new apkPath:" + installedRuntimeApk.mApkFilePath);
             }
-            if (TextUtils.equals(apkPath, installedRuntimeApk.apkFilePath)) {
+            if (TextUtils.equals(apkPath, installedRuntimeApk.mApkFilePath)) {
                 // 已经加载相同版本的 runtime 了,不需要加载
                 if (mLogger.isInfoEnabled()) {
                     mLogger.info("已经加载相同apkPath的runtime了,不需要加载");
@@ -109,7 +109,7 @@ public class DynamicRuntime {
             ClassLoader contextClassLoader
     ) throws Exception {
         RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(
-                installedRuntimeApk.apkFilePath,
+                installedRuntimeApk.mApkFilePath,
                 installedRuntimeApk.odexPath,
                 installedRuntimeApk.libraryPath,
                 contextClassLoader.getParent()
@@ -172,7 +172,7 @@ public class DynamicRuntime {
             Context context
     ) {
         InstalledApk installedApk = getLastRuntimeInfo(context);
-        if (installedApk != null && new File(installedApk.apkFilePath).exists()) {
+        if (installedApk != null && new File(installedApk.mApkFilePath).exists()) {
             if (installedApk.odexPath != null && !new File(installedApk.odexPath).exists()) {
                 return false;
             }
@@ -197,7 +197,7 @@ public class DynamicRuntime {
     ) {
         SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         preferences.edit()
-                .putString(KEY_RUNTIME_APK, installedRuntimeApk.apkFilePath)
+                .putString(KEY_RUNTIME_APK, installedRuntimeApk.mApkFilePath)
                 .putString(KEY_RUNTIME_ODEX, installedRuntimeApk.odexPath)
                 .putString(KEY_RUNTIME_LIB, installedRuntimeApk.libraryPath)
                 .commit();

@@ -223,7 +223,7 @@ public class ShadowContext extends SubDirContextThemeWrapper {
         if (mBusinessName == null) {
             return null;
         } else {
-            return "ShadowPlugin_" + mBusinessName;
+            return "shadow_" + mBusinessName;
         }
     }
 

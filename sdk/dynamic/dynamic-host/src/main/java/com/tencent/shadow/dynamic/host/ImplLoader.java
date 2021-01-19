@@ -17,7 +17,7 @@ abstract class ImplLoader {
             InstalledApk installedApk
     ) {
         DexClassLoader dexClassLoader = new DexClassLoader(
-                installedApk.apkFilePath,
+                installedApk.mApkFilePath,
                 installedApk.odexPath,
                 installedApk.libraryPath,
                 getClass().getClassLoader()

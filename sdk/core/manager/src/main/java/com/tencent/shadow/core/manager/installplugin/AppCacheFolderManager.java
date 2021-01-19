@@ -7,22 +7,25 @@ import java.io.File;
  */
 public class AppCacheFolderManager {
 
-    public static File getVersionedPluginsUnpackDirInNamedPluginsManagersDir(
-            File pluginsUnpackDir,
-            String mPluginsManagerName,
-            String pluginsZipFileHash
+    public static File createPluginBaseDir(
+            File pluginManagerBaseDir,
+            String pluginManagerName,
+            String pluginZipFileHash
     ) {
         return new File(
-                getNamedPluginsManagerDirInPluginsUnpackDir(pluginsUnpackDir, mPluginsManagerName),
-                pluginsZipFileHash
+                createPluginManagerDir(
+                        pluginManagerBaseDir,
+                        pluginManagerName
+                ),
+                pluginZipFileHash
         );
     }
 
-    public static File getNamedPluginsManagerDirInPluginsUnpackDir(
-            File pluginsUnpackDir,
-            String pluginsManagerName
+    public static File createPluginManagerDir(
+            File pluginManagerBaseDir,
+            String pluginManagerName
     ) {
-        return new File(pluginsUnpackDir, pluginsManagerName);
+        return new File(pluginManagerBaseDir, pluginManagerName);
     }
 
 

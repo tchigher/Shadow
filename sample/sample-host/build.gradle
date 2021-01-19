@@ -9,17 +9,19 @@ android {
         targetSdkVersion project.TARGET_SDK_VERSION
         versionCode project.VERSION_CODE
         versionName project.VERSION_NAME
+
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
     }
 
     buildTypes {
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
 
             signingConfig signingConfigs.create("release")
             signingConfig.initWith(buildTypes.debug.signingConfig)
@@ -29,13 +31,14 @@ android {
     sourceSets {
         debug {
             assets.srcDir('build/generated/assets/samplePluginManager/debug/')
-//            assets.srcDir('build/generated/assets/samplePlugins/debug/')
             assets.srcDir('build/generated/assets/mgmoviePlugins/debug/')
         }
         release {
             assets.srcDir('build/generated/assets/samplePluginManager/release/')
-//            assets.srcDir('build/generated/assets/samplePlugins/release/')
             assets.srcDir('build/generated/assets/mgmoviePlugins/release/')
+        }
+        main {
+            jniLibs.srcDir(['libs'])
         }
     }
 
@@ -52,7 +55,6 @@ dependencies {
     implementation 'com.tencent.shadow.core:common'
     implementation 'com.tencent.shadow.dynamic:dynamic-host'
     implementation project(':sample-constant')
-//    implementation project(':sample-host-lib')
 }
 
 tasks.whenTaskAdded { task ->
@@ -79,20 +81,6 @@ def generateAssets(generateAssetsTask, buildType) {
             fromPluginManagerApkFile,
             "assemble${buildType.capitalize()}"
     )
-
-//    def fromPluginsZipFile = file(
-//            "${getRootProject().getBuildDir()}" +
-//                    "/samplePlugins-${buildType}.zip"
-//    )
-//
-//    generateAssetsTask.dependsOn createCopyTask(
-//            ':sample-plugin-app',
-//            buildType,
-//            'samplePlugins',
-//            "samplePlugins-${buildType}.zip",
-//            fromPluginsZipFile,
-//            "package${buildType.capitalize()}Plugin"
-//    )
 
     def fromMgMoviePluginsZipFile = file(
             "${getRootProject().getBuildDir()}" +

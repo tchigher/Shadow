@@ -1,5 +1,3 @@
-apply(plugin = "plugins.ktlint")
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -151,7 +149,6 @@ android {
                     "VIVO_APP_KEY" to "82601a2a-9a20-42da-9802-97aa6815a21f"
             )
         }
-
     }
 
     packagingOptions {
@@ -162,10 +159,18 @@ android {
     dataBinding {
         isEnabled = true
     }
+
+    for (sourceSet in sourceSets) {
+        sourceSet.java.srcDirs("../mgmovie/app/src/${sourceSet.name}/java")
+        sourceSet.assets.srcDirs("../mgmovie/app/src/${sourceSet.name}/assets")
+        sourceSet.aidl.srcDirs("../mgmovie/app/src/${sourceSet.name}/aidl")
+        sourceSet.res.srcDirs("../mgmovie/app/src/${sourceSet.name}/res")
+        sourceSet.manifest.srcFile("../mgmovie/app/src/${sourceSet.name}/AndroidManifest.xml")
+    }
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(fileTree(mapOf("dir" to "../mgmovie/app/libs", "include" to listOf("*.jar", "*.aar"))))
     implementation("com.alibaba:arouter-api:${Versions.arouterApi}")
     kapt("com.alibaba:arouter-compiler:${Versions.arouterCompiler}")
     implementation("com.jakewharton:butterknife:9.0.0")
@@ -288,9 +293,7 @@ configurations.all {
 
 android {
     defaultConfig {
-//        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
-//        applicationId = "com.cmvideo.migumovie"
-        applicationId = "com.tencent.shadow.sample.host"
+        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
     }
 }
 
@@ -313,32 +316,6 @@ buildscript {
         classpath("org.javassist:javassist:3.22.0-GA")
     }
 }
-
-//fun createDuplicateApkTask(buildType: String): Task {
-//    val apkDir = file("${buildDir}/outputs/apk/$buildType")
-//
-//    return tasks.create<Copy>("duplicate${buildType.capitalize()}ApkTask") {
-//        group = "build"
-//        description = "复制一个 mgmovie-plugin-app-${buildType}.apk 用于测试"
-//        from(apkDir) {
-//            include("mgmovie-plugin-app-${buildType}.apk")
-//            rename { "mgmovie-plugin-app-${buildType}2.apk" }
-//        }
-//        into(apkDir)
-//
-//    }.dependsOn(":mgmovie-plugin-app:assemble${buildType.capitalize()}")
-//}
-//
-//tasks.whenTaskAdded {
-//    if (name == "assembleDebug") {
-//        val createTask = createDuplicateApkTask("debug")
-//        this.finalizedBy(createTask)
-//    }
-//    if (name == "assembleRelease") {
-//        val createTask = createDuplicateApkTask("release")
-//        this.finalizedBy(createTask)
-//    }
-//}
 
 apply(plugin = "com.tencent.shadow.plugin")
 
@@ -367,7 +344,6 @@ extensions.findByType(com.tencent.shadow.core.gradle.ShadowPlugin.ShadowExtensio
                         buildTask = ":mgmovie-plugin-app:assembleDebug"
                         apkName = "mgmovie-plugin-app-debug.apk"
                         apkPath = "sample/sample-plugin/mgmovie-plugin-app/build/outputs/apk/debug/mgmovie-plugin-app-debug.apk"
-//                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
                     }
                 }
             }
@@ -383,7 +359,6 @@ extensions.findByType(com.tencent.shadow.core.gradle.ShadowPlugin.ShadowExtensio
                         buildTask = ":mgmovie-plugin-app:assembleRelease"
                         apkName = "mgmovie-plugin-app-release.apk"
                         apkPath = "sample/sample-plugin/mgmovie-plugin-app/build/outputs/apk/release/mgmovie-plugin-app-release.apk"
-//                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
                     }
                 }
             }

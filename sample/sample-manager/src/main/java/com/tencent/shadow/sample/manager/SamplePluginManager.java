@@ -29,7 +29,7 @@ public class SamplePluginManager extends FastPluginManager {
      */
     @Override
     protected String getName() {
-        return "test-dynamic-manager";
+        return "samplePluginManager";
     }
 
     /**
@@ -37,7 +37,7 @@ public class SamplePluginManager extends FastPluginManager {
      */
     @Override
     public String getAbi() {
-        return "";
+        return "armeabi-v7a";
     }
 
     /**

@@ -63,7 +63,7 @@ public class MinFileUtils {
      * @throws IOException              in case cleaning is unsuccessful
      * @throws IllegalArgumentException if {@code directory} does not exist or is not a directory
      */
-    public static void cleanDirectory(
+    public static void cleanDir(
             final File directory
     ) throws IOException {
         final File[] files = verifiedListFiles(directory);
@@ -123,7 +123,7 @@ public class MinFileUtils {
             return;
         }
 
-        cleanDirectory(directory);
+        cleanDir(directory);
 
         if (!directory.delete()) {
             final String message =

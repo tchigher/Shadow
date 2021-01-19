@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
 import com.tencent.shadow.core.manager.installplugin.InstalledType;
-import com.tencent.shadow.core.manager.installplugin.PluginsConfig;
+import com.tencent.shadow.core.manager.installplugin.PluginConfig;
 import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.manager.PluginManagerThatUseDynamicLoader;
 
@@ -40,22 +40,22 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             @Nullable String pluginsZipFileHash,
             boolean odex
     ) throws IOException, JSONException, InterruptedException, ExecutionException {
-        final PluginsConfig pluginsConfig = installPluginsFromZipFile(
+        final PluginConfig pluginConfig = installPluginsFromZipFile(
                 new File(pluginsZipFileAbsolutePath),
                 pluginsZipFileHash
         );
-        final String pluginsUUID = pluginsConfig.UUID;
+        final String pluginsUUID = pluginConfig.UUID;
 
         List<Future> futures = new LinkedList<>();
 
-        if (pluginsConfig.runTime != null && pluginsConfig.pluginLoader != null) {
+        if (pluginConfig.runTime != null && pluginConfig.pluginLoader != null) {
             Future odexRuntime = mFixedPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     odexPluginLoaderOrRunTime(
                             pluginsUUID,
                             InstalledType.TYPE_PLUGIN_RUNTIME,
-                            pluginsConfig.runTime.file
+                            pluginConfig.runTime.file
                     );
                     return null;
                 }
@@ -68,7 +68,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
                     odexPluginLoaderOrRunTime(
                             pluginsUUID,
                             InstalledType.TYPE_PLUGIN_LOADER,
-                            pluginsConfig.pluginLoader.file
+                            pluginConfig.pluginLoader.file
                     );
                     return null;
                 }
@@ -76,7 +76,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             futures.add(odexLoader);
         }
 
-        for (Map.Entry<String, PluginsConfig.PluginFileInfo> plugin : pluginsConfig.plugins.entrySet()) {
+        for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : pluginConfig.plugins.entrySet()) {
             final String pluginAppPartKey = plugin.getKey();
             final File pluginApkFile = plugin.getValue().file;
             Future extractedSo = mFixedPool.submit(new Callable() {
@@ -104,7 +104,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             future.get();
         }
 
-        onPluginsInstallCompleted(pluginsConfig);
+        onPluginsInstallCompleted(pluginConfig);
 
         return getInstalledPlugins(1).get(0);
     }

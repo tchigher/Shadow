@@ -21,7 +21,7 @@ allprojects {
         ext.VERSION_SUFFIX = "-${gitShortRev()}-SNAPSHOT"
     }
     ext.ARTIFACT_VERSION = ext.VERSION_NAME + ext.VERSION_SUFFIX
-    ext.SAMPLE_HOST_APP_APPLICATION_ID = 'com.tencent.shadow.sample.host'
+    ext.SAMPLE_HOST_APP_APPLICATION_ID = 'com.cmvideo.migumovie'
 
     ext {
         buildTools = "29.0.3"

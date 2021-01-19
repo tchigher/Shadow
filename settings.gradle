@@ -17,34 +17,22 @@ includeSample()
 def includeSample() {
     include 'sample-constant',
             'sample-host',
-//            'sample-host-lib',
+
             'sample-manager',
+
             'sample-loader',
             'sample-runtime',
-
-//            'pinnedheaderexpandablelistview',
-//            'slidingmenu',
-
-//            'sample-app-lib',
-//            'sample-normal-app',
-//            'sample-plugin-app',
 
             'mgmovie-normal-app',
             'mgmovie-plugin-app'
 
     project(':sample-constant').projectDir = file('sample/sample-constant')
     project(':sample-host').projectDir = file('sample/sample-host')
-//    project(':sample-host-lib').projectDir = file('sample/sample-host-lib')
+
     project(':sample-manager').projectDir = file('sample/sample-manager')
+
     project(':sample-loader').projectDir = file('sample/sample-plugin/sample-loader')
     project(':sample-runtime').projectDir = file('sample/sample-plugin/sample-runtime')
-
-//    project(':pinnedheaderexpandablelistview').projectDir = file('sample/sample-plugin/third-party/pinnedheaderexpandablelistview')
-//    project(':slidingmenu').projectDir = file('sample/sample-plugin/third-party/slidingmenu')
-
-//    project(':sample-app-lib').projectDir = file('sample/sample-plugin/sample-app-lib')
-//    project(':sample-normal-app').projectDir = file('sample/sample-plugin/sample-normal-app')
-//    project(':sample-plugin-app').projectDir = file('sample/sample-plugin/sample-plugin-app')
 
     project(':mgmovie-normal-app').projectDir = file('sample/sample-plugin/mgmovie/app')
     project(':mgmovie-plugin-app').projectDir = file('sample/sample-plugin/mgmovie-plugin-app')

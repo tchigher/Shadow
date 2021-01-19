@@ -38,10 +38,10 @@ public class MultiDynamicContainer {
             String apkFilePath = containerClassLoader.apkFilePath;
             if (mLogger.isInfoEnabled()) {
                 mLogger.info("该 containKey 的 apk 已经加载过, containKey = " + containerKey +
-                        ", last apkPath = " + apkFilePath + ", new apkPath = " + containerApk.apkFilePath);
+                        ", last apkPath = " + apkFilePath + ", new apkPath = " + containerApk.mApkFilePath);
             }
 
-            if (TextUtils.equals(apkFilePath, containerApk.apkFilePath)) {
+            if (TextUtils.equals(apkFilePath, containerApk.mApkFilePath)) {
                 // 已经加载相同版本的 containerApk 了, 不需要加载
                 if (mLogger.isInfoEnabled()) {
                     mLogger.info("已经加载相同 apkPath 的 containerApk 了, 不需要加载");
@@ -64,7 +64,7 @@ public class MultiDynamicContainer {
         try {
             hackContainerClassLoader(containerKey, containerApk);
             if (mLogger.isInfoEnabled()) {
-                mLogger.info("containerApk 插入成功, containerKey = " + containerKey + ", path = " + containerApk.apkFilePath);
+                mLogger.info("containerApk 插入成功, containerKey = " + containerKey + ", path = " + containerApk.mApkFilePath);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -126,14 +126,14 @@ public class MultiDynamicContainer {
                 ClassLoader parent
         ) {
             super(
-                    installedApk.apkFilePath,
+                    installedApk.mApkFilePath,
                     installedApk.odexPath != null ? new File(installedApk.odexPath) : null,
                     installedApk.libraryPath,
                     parent
             );
 
             this.containerKey = containerKey;
-            this.apkFilePath = installedApk.apkFilePath;
+            this.apkFilePath = installedApk.mApkFilePath;
         }
     }
 

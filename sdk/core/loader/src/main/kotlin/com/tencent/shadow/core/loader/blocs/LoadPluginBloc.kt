@@ -34,7 +34,7 @@ object LoadPluginBloc {
             installedApk: InstalledApk,
             loadParameters: LoadParameters
     ): Future<*> {
-        if (installedApk.apkFilePath == null) {
+        if (installedApk.mApkFilePath == null) {
             throw LoadPluginException("apkFilePath==null")
         } else {
             val buildClassLoader = executorService.submit(Callable {
@@ -44,7 +44,7 @@ object LoadPluginBloc {
             })
 
             val getPackageInfo = executorService.submit(Callable {
-                val archiveFilePath = installedApk.apkFilePath
+                val archiveFilePath = installedApk.mApkFilePath
                 val packageManager = hostAppContext.packageManager
 
                 val packageArchiveInfo = packageManager.getPackageArchiveInfo(
@@ -89,7 +89,7 @@ object LoadPluginBloc {
 
             val buildResources = executorService.submit(Callable {
                 val packageInfo = getPackageInfo.get()
-                CreateResourceBloc.create(packageInfo, installedApk.apkFilePath, hostAppContext)
+                CreateResourceBloc.create(packageInfo, installedApk.mApkFilePath, hostAppContext)
             })
 
             val buildAppComponentFactory = executorService.submit(Callable<ShadowAppComponentFactory> {
@@ -120,8 +120,8 @@ object LoadPluginBloc {
             })
 
             val buildRunningPlugin = executorService.submit {
-                if (File(installedApk.apkFilePath).exists().not()) {
-                    throw LoadPluginException("插件文件不存在.pluginFile==" + installedApk.apkFilePath)
+                if (File(installedApk.mApkFilePath).exists().not()) {
+                    throw LoadPluginException("插件文件不存在.pluginFile==" + installedApk.mApkFilePath)
                 }
                 val pluginPackageManager = buildPackageManager.get()
                 val pluginClassLoader = buildClassLoader.get()

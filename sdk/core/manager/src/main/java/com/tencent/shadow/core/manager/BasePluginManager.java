@@ -3,6 +3,7 @@ package com.tencent.shadow.core.manager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tencent.shadow.core.common.Logger;
@@ -15,8 +16,8 @@ import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
 import com.tencent.shadow.core.manager.installplugin.InstalledPluginDBHelper;
 import com.tencent.shadow.core.manager.installplugin.InstalledType;
 import com.tencent.shadow.core.manager.installplugin.OdexBloc;
-import com.tencent.shadow.core.manager.installplugin.PluginsConfig;
-import com.tencent.shadow.core.manager.installplugin.UnpackManager;
+import com.tencent.shadow.core.manager.installplugin.PluginConfig;
+import com.tencent.shadow.core.manager.installplugin.PluginManager;
 
 import org.json.JSONException;
 
@@ -37,7 +38,7 @@ public abstract class BasePluginManager {
     /*
      * 从压缩包中将插件解压出来, 解析成 InstalledPlugin
      */
-    private final UnpackManager mUnpackManager;
+    private final PluginManager mUnpackManager;
 
     /*
      * 插件信息查询数据库接口
@@ -53,7 +54,7 @@ public abstract class BasePluginManager {
             Context context
     ) {
         mHostContext = context.getApplicationContext();
-        mUnpackManager = new UnpackManager(mHostContext.getFilesDir(), getName());
+        mUnpackManager = new PluginManager(mHostContext.getFilesDir(), getName());
         mInstalledDao = new InstalledDao(new InstalledPluginDBHelper(mHostContext, getName()));
     }
 
@@ -66,31 +67,34 @@ public abstract class BasePluginManager {
     /**
      * 从压缩包中解压插件
      *
-     * @param pluginsZipFile     压缩包路径
-     * @param pluginsZipFileHash 压缩包 hash
+     * @param pluginZipFile     压缩包路径
+     * @param pluginZipFileHash 压缩包 hash
      * @return PluginConfig
      */
-    public final PluginsConfig installPluginsFromZipFile(
-            File pluginsZipFile,
-            @Nullable String pluginsZipFileHash
+    public final PluginConfig installPluginsFromZipFile(
+            @NonNull File pluginZipFile,
+            @Nullable String pluginZipFileHash
     ) throws IOException, JSONException {
-        return mUnpackManager.unpackPlugins(pluginsZipFileHash, pluginsZipFile);
+        return mUnpackManager.unpackPlugin(
+                pluginZipFileHash,
+                pluginZipFile
+        );
     }
 
     /**
      * 安装完成时调用
      * 将插件信息持久化到数据库
      *
-     * @param pluginsConfig 插件配置信息
+     * @param pluginConfig 插件配置信息
      */
     public final void onPluginsInstallCompleted(
-            PluginsConfig pluginsConfig
+            PluginConfig pluginConfig
     ) {
-        File namedPluginsManagerDir = mUnpackManager.getNamedPluginsManagerDirInPluginsUnpackDir();
-        String soDirAbsolutePath = AppCacheFolderManager.getLibDir(namedPluginsManagerDir, pluginsConfig.UUID).getAbsolutePath();
-        String odexDirAbsolutePath = AppCacheFolderManager.getOdexDir(namedPluginsManagerDir, pluginsConfig.UUID).getAbsolutePath();
+        File namedPluginsManagerDir = mUnpackManager.createPluginManagerDir();
+        String soDirAbsolutePath = AppCacheFolderManager.getLibDir(namedPluginsManagerDir, pluginConfig.UUID).getAbsolutePath();
+        String odexDirAbsolutePath = AppCacheFolderManager.getOdexDir(namedPluginsManagerDir, pluginConfig.UUID).getAbsolutePath();
 
-        mInstalledDao.insert(pluginsConfig, soDirAbsolutePath, odexDirAbsolutePath);
+        mInstalledDao.insert(pluginConfig, soDirAbsolutePath, odexDirAbsolutePath);
     }
 
     protected InstalledPlugin.Part getPluginPartByPartKey(
@@ -142,7 +146,7 @@ public abstract class BasePluginManager {
             File pluginApkFile
     ) throws InstallPluginException {
         try {
-            File namedPluginsManagerDir = mUnpackManager.getNamedPluginsManagerDirInPluginsUnpackDir();
+            File namedPluginsManagerDir = mUnpackManager.createPluginManagerDir();
             File odexDir = AppCacheFolderManager.getOdexDir(namedPluginsManagerDir, pluginsUUID);
             OdexBloc.odexPluginApk(
                     pluginApkFile,
@@ -170,7 +174,7 @@ public abstract class BasePluginManager {
             File pluginApkFile
     ) throws InstallPluginException {
         try {
-            File namedPluginsManagerDir = mUnpackManager.getNamedPluginsManagerDirInPluginsUnpackDir();
+            File namedPluginsManagerDir = mUnpackManager.createPluginManagerDir();
             File odexDir = AppCacheFolderManager.getOdexDir(namedPluginsManagerDir, pluginsUUID);
             String pluginLoaderOrRuntimeKey = pluginType == InstalledType.TYPE_PLUGIN_LOADER ? "loader" : "runtime";
             OdexBloc.odexPluginApk(pluginApkFile, odexDir, AppCacheFolderManager.getOdexCopiedTagFile(odexDir, pluginLoaderOrRuntimeKey));
@@ -195,7 +199,7 @@ public abstract class BasePluginManager {
             File pluginApkFile
     ) throws InstallPluginException {
         try {
-            File root = mUnpackManager.getNamedPluginsManagerDirInPluginsUnpackDir();
+            File root = mUnpackManager.createPluginManagerDir();
             String filter = "lib/" + getAbi() + "/";
             File soDir = AppCacheFolderManager.getLibDir(root, pluginsUUID);
             CopySoBloc.copySo(

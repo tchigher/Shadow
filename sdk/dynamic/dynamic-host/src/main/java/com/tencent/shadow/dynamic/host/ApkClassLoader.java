@@ -30,7 +30,7 @@ class ApkClassLoader extends DexClassLoader {
             int grandTimes
     ) {
         super(
-                installedApk.apkFilePath,
+                installedApk.mApkFilePath,
                 installedApk.odexPath,
                 installedApk.libraryPath,
                 parent

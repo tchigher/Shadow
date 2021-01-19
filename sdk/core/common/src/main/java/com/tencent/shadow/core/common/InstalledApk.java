@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 public class InstalledApk implements Parcelable {
 
-    public final String apkFilePath;
+    public final String mApkFilePath;
 
     public final String odexPath;
 
@@ -30,7 +30,7 @@ public class InstalledApk implements Parcelable {
             String libraryPath,
             byte[] parcelExtras
     ) {
-        this.apkFilePath = apkFilePath;
+        this.mApkFilePath = apkFilePath;
         this.odexPath = odexPath;
         this.libraryPath = libraryPath;
         this.parcelExtras = parcelExtras;
@@ -39,7 +39,7 @@ public class InstalledApk implements Parcelable {
     protected InstalledApk(
             Parcel in
     ) {
-        apkFilePath = in.readString();
+        mApkFilePath = in.readString();
         odexPath = in.readString();
         libraryPath = in.readString();
         int parcelExtrasLength = in.readInt();
@@ -58,7 +58,7 @@ public class InstalledApk implements Parcelable {
             Parcel dest,
             int flags
     ) {
-        dest.writeString(apkFilePath);
+        dest.writeString(mApkFilePath);
         dest.writeString(odexPath);
         dest.writeString(libraryPath);
         dest.writeInt(parcelExtras == null ? 0 : parcelExtras.length);

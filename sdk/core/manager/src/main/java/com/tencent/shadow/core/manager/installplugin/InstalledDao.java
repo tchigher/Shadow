@@ -24,15 +24,15 @@ public class InstalledDao {
     /**
      * 根据插件配置信息插入一组数据
      *
-     * @param pluginsConfig 插件配置信息
+     * @param pluginConfig 插件配置信息
      */
     public void insert(
-            PluginsConfig pluginsConfig,
+            PluginConfig pluginConfig,
             String soDir,
             String odexDir
     ) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        List<ContentValues> contentValuesList = parseConfig(pluginsConfig, soDir, odexDir);
+        List<ContentValues> contentValuesList = parseConfig(pluginConfig, soDir, odexDir);
         db.beginTransaction();
         try {
             for (ContentValues contentValues : contentValuesList) {
@@ -40,8 +40,8 @@ public class InstalledDao {
             }
             //把最后一次uuid的插件安装时间作为所有相同uuid的插件的安装时间
             ContentValues values = new ContentValues();
-            values.put(InstalledPluginDBHelper.COLUMN_INSTALL_TIME, pluginsConfig.storageDir.lastModified());
-            db.update(InstalledPluginDBHelper.TABLE_NAME_MANAGER, values, InstalledPluginDBHelper.COLUMN_UUID + " = ?", new String[]{pluginsConfig.UUID});
+            values.put(InstalledPluginDBHelper.COLUMN_INSTALL_TIME, pluginConfig.storageDir.lastModified());
+            db.update(InstalledPluginDBHelper.TABLE_NAME_MANAGER, values, InstalledPluginDBHelper.COLUMN_UUID + " = ?", new String[]{pluginConfig.UUID});
 
             db.setTransactionSuccessful();
         } finally {
@@ -166,23 +166,23 @@ public class InstalledDao {
     }
 
     private List<ContentValues> parseConfig(
-            PluginsConfig pluginsConfig,
+            PluginConfig pluginConfig,
             String soDir,
             String odexDir
     ) {
         List<InstalledRow> installedRows = new ArrayList<>();
-        if (pluginsConfig.pluginLoader != null) {
-            installedRows.add(new InstalledRow(pluginsConfig.pluginLoader.hash, null, pluginsConfig.pluginLoader.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_LOADER,
+        if (pluginConfig.pluginLoader != null) {
+            installedRows.add(new InstalledRow(pluginConfig.pluginLoader.hash, null, pluginConfig.pluginLoader.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_LOADER,
                     soDir, odexDir));
         }
-        if (pluginsConfig.runTime != null) {
-            installedRows.add(new InstalledRow(pluginsConfig.runTime.hash, null, pluginsConfig.runTime.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_RUNTIME,
+        if (pluginConfig.runTime != null) {
+            installedRows.add(new InstalledRow(pluginConfig.runTime.hash, null, pluginConfig.runTime.file.getAbsolutePath(), InstalledType.TYPE_PLUGIN_RUNTIME,
                     soDir, odexDir));
         }
-        if (pluginsConfig.plugins != null) {
-            Set<Map.Entry<String, PluginsConfig.PluginFileInfo>> plugins = pluginsConfig.plugins.entrySet();
-            for (Map.Entry<String, PluginsConfig.PluginFileInfo> plugin : plugins) {
-                PluginsConfig.PluginFileInfo fileInfo = plugin.getValue();
+        if (pluginConfig.plugins != null) {
+            Set<Map.Entry<String, PluginConfig.PluginFileInfo>> plugins = pluginConfig.plugins.entrySet();
+            for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : plugins) {
+                PluginConfig.PluginFileInfo fileInfo = plugin.getValue();
                 installedRows.add(
                         new InstalledRow(
                                 fileInfo.hash,
@@ -199,13 +199,13 @@ public class InstalledDao {
         }
         InstalledRow uuidRow = new InstalledRow();
         uuidRow.type = InstalledType.TYPE_UUID;
-        uuidRow.filePath = pluginsConfig.UUID;
+        uuidRow.filePath = pluginConfig.UUID;
         installedRows.add(uuidRow);
         List<ContentValues> contentValues = new ArrayList<>();
         for (InstalledRow row : installedRows) {
-            row.installedTime = pluginsConfig.storageDir.lastModified();
-            row.UUID = pluginsConfig.UUID;
-            row.version = pluginsConfig.UUID_NickName;
+            row.installedTime = pluginConfig.storageDir.lastModified();
+            row.UUID = pluginConfig.UUID;
+            row.version = pluginConfig.UUID_NickName;
             contentValues.add(row.toContentValues());
         }
         return contentValues;

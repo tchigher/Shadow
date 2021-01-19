@@ -26,7 +26,7 @@ object LoadApkBloc {
             loadParameters: LoadParameters,
             pluginPartsMap: MutableMap<String, PluginParts>
     ): PluginClassLoader {
-        val apk = File(installedApk.apkFilePath)
+        val apk = File(installedApk.mApkFilePath)
         val odexDir = if (installedApk.odexPath == null) null else File(installedApk.odexPath)
         val dependsOn = loadParameters.dependsOn
         // Logger 类一定打包在宿主中, 所在的 classLoader 即为加载宿主的 classLoader

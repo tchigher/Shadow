@@ -18,10 +18,16 @@ final class ManagerImplLoader extends ImplLoader {
 
     ManagerImplLoader(Context context, File apk) {
         applicationContext = context.getApplicationContext();
-        File root = new File(applicationContext.getFilesDir(), "ManagerImplLoader");
-        File odexDir = new File(root, Long.toString(apk.lastModified(), Character.MAX_RADIX));
+
+        File pluginManagerLoadersDir = new File(applicationContext.getFilesDir(), "shadowPluginManagerLoaders");
+        File odexDir = new File(pluginManagerLoadersDir, "odex_" + Long.toString(apk.lastModified(), Character.MAX_RADIX));
         odexDir.mkdirs();
-        installedApk = new InstalledApk(apk.getAbsolutePath(), odexDir.getAbsolutePath(), null);
+
+        installedApk = new InstalledApk(
+                apk.getAbsolutePath(),
+                odexDir.getAbsolutePath(),
+                null
+        );
     }
 
     PluginManagerImpl load() {
@@ -34,7 +40,7 @@ final class ManagerImplLoader extends ImplLoader {
 
         Context pluginManagerContext = new ChangeApkContextWrapper(
                 applicationContext,
-                installedApk.apkFilePath,
+                installedApk.mApkFilePath,
                 apkClassLoader
         );
 

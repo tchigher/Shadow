@@ -80,7 +80,7 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
                 );
             }
 
-            InstalledApk installedRuntimeApk = new InstalledApk(installedApk.apkFilePath, installedApk.odexPath, installedApk.libraryPath);
+            InstalledApk installedRuntimeApk = new InstalledApk(installedApk.mApkFilePath, installedApk.odexPath, installedApk.libraryPath);
             MultiDynamicContainer.loadContainerApk(pluginKey, installedRuntimeApk);
             markRuntimeLoaded(pluginKey);
         } catch (RuntimeException e) {
@@ -109,7 +109,7 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
             try {
                 installedApk = uuidManager.getPluginLoader(uuid);
                 if (mLogger.isInfoEnabled()) {
-                    mLogger.info("取出 " + logIdentity + " 的 Loader apk: " + installedApk.apkFilePath);
+                    mLogger.info("取出 " + logIdentity + " 的 Loader apk: " + installedApk.mApkFilePath);
                 }
             } catch (RemoteException e) {
                 if (mLogger.isErrorEnabled()) {
@@ -122,7 +122,7 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
                         logIdentity + " 的 PluginLoader 没有找到. Cause: " + e.getMessage()
                 );
             }
-            File file = new File(installedApk.apkFilePath);
+            File file = new File(installedApk.mApkFilePath);
             if (!file.exists()) {
                 throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, file.getAbsolutePath() + " 文件不存在");
             }
