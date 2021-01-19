@@ -55,7 +55,8 @@ public class MainActivity extends Activity {
                     case Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE:
                         intent.putExtra(
                                 Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME,
-                                "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity"
+//                                "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity"
+                                "com.cmvideo.migumovie.activity"
                         );
                         break;
                 }

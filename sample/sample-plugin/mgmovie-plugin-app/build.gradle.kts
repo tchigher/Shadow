@@ -59,8 +59,8 @@ android {
         minSdkVersion(Versions.minSdk)
         targetSdkVersion(Versions.targetSdk)
 
-        multiDexKeepFile = file("multidex-config.txt")
-        multiDexKeepProguard = file("multidexKeep.pro")
+        multiDexKeepFile = file("../mgmovie/app/multidex-config.txt")
+        multiDexKeepProguard = file("../mgmovie/appmultidexKeep.pro")
 
         versionCode = 65000025
         versionName = "5.0.18"
@@ -265,8 +265,6 @@ dependencies {
 
     kapt("com.google.dagger:dagger-compiler:2.27")
     kapt("com.google.dagger:dagger-android-processor:2.27")
-
-//    implementation(project(":sample-app-lib"))
 }
 
 configurations.all {
@@ -291,6 +289,7 @@ configurations.all {
 android {
     defaultConfig {
 //        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
+//        applicationId = "com.cmvideo.migumovie"
         applicationId = "com.tencent.shadow.sample.host"
     }
 }
@@ -368,7 +367,7 @@ extensions.findByType(com.tencent.shadow.core.gradle.ShadowPlugin.ShadowExtensio
                         buildTask = ":mgmovie-plugin-app:assembleDebug"
                         apkName = "mgmovie-plugin-app-debug.apk"
                         apkPath = "sample/sample-plugin/mgmovie-plugin-app/build/outputs/apk/debug/mgmovie-plugin-app-debug.apk"
-                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
+//                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
                     }
                 }
             }
@@ -384,7 +383,7 @@ extensions.findByType(com.tencent.shadow.core.gradle.ShadowPlugin.ShadowExtensio
                         buildTask = ":mgmovie-plugin-app:assembleRelease"
                         apkName = "mgmovie-plugin-app-release.apk"
                         apkPath = "sample/sample-plugin/mgmovie-plugin-app/build/outputs/apk/release/mgmovie-plugin-app-release.apk"
-                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
+//                        hostWhiteList = arrayOf("com.tencent.shadow.sample.host.lib")
                     }
                 }
             }

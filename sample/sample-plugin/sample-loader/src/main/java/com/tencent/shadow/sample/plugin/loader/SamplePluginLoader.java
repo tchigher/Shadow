@@ -11,7 +11,7 @@ import com.tencent.shadow.core.loader.classloaders.PluginClassLoader;
 import com.tencent.shadow.core.loader.exceptions.LoadPluginException;
 import com.tencent.shadow.core.loader.infos.PluginParts;
 import com.tencent.shadow.core.loader.managers.ComponentManager;
-import com.tencent.shadow.sample.host.lib.LoadPluginCallback;
+//import com.tencent.shadow.sample.host.lib.LoadPluginCallback;
 
 import java.util.concurrent.Future;
 
@@ -38,7 +38,7 @@ public class SamplePluginLoader extends ShadowPluginLoader {
         LoadParameters loadParameters = getLoadParameters(installedApk);
         final String partKey = loadParameters.partKey;
 
-        LoadPluginCallback.getCallback().beforeLoadPlugin(partKey);
+//        LoadPluginCallback.getCallback().beforeLoadPlugin(partKey);
 
         final Future<?> future = super.loadPlugin(installedApk);
 
@@ -53,7 +53,7 @@ public class SamplePluginLoader extends ShadowPluginLoader {
                     PluginClassLoader classLoader = pluginParts.getClassLoader();
                     Resources resources = pluginParts.getResources();
 
-                    LoadPluginCallback.getCallback().afterLoadPlugin(partKey, applicationInfo, classLoader, resources);
+//                    LoadPluginCallback.getCallback().afterLoadPlugin(partKey, applicationInfo, classLoader, resources);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
