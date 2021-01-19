@@ -213,7 +213,7 @@ dependencies {
     implementation(project(":Cores:filedownloader"))
     implementation(project(":Widgets:starscoreview"))
     implementation(project(":Widgets:expandabletextview"))
-    implementation(project(":Edges:IADService"))
+//    implementation(project(":Edges:IADService"))
     implementation(project(":Edges:AILib"))
     implementation(project(":Edges:IScannerService"))
     implementation(project(":Widgets:SlideUp"))
@@ -293,8 +293,10 @@ configurations.all {
 
 android {
     defaultConfig {
-        applicationId = project.ext.get("SAMPLE_HOST_APP_APPLICATION_ID").toString()
+        applicationId = "com.cmvideo.migumovie"
     }
+
+    useLibrary("org.apache.http.legacy")
 }
 
 dependencies {

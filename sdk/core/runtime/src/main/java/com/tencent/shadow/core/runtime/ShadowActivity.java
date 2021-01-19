@@ -91,6 +91,8 @@ public class ShadowActivity extends PluginActivity {
         return hostActivityDelegator.navigateUpTo(intent);
     }
 
+
+
     @Override
     public final <T extends View> T requireViewById(int id) {
         T view = findViewById(id);

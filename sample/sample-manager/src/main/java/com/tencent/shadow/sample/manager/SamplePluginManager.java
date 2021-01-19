@@ -13,6 +13,8 @@ import com.tencent.shadow.sample.constant.Constant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.tencent.shadow.sample.constant.Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE;
+
 public class SamplePluginManager extends FastPluginManager {
 
     private final ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
@@ -45,11 +47,7 @@ public class SamplePluginManager extends FastPluginManager {
      */
     @Override
     protected String getPluginProcessServiceName(String partKey) {
-        if ("sample-plugin-app1".equals(partKey)) {
-            return "com.tencent.shadow.sample.host.Plugin1ProcessPPS";
-        } else if ("sample-plugin-app2".equals(partKey)) {
-            return "com.tencent.shadow.sample.host.Plugin2ProcessPPS"; // 在这里支持多个插件
-        } else if ("mgmovie-plugin-app".equals(partKey)) {
+        if (KEY__TARGET_PLUGIN_APP__MGMOVIE.equals(partKey)) {
             return "com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"; // 在这里支持多个插件
         } else {
             // 如果有默认 PPS，可用 return 代替 throw

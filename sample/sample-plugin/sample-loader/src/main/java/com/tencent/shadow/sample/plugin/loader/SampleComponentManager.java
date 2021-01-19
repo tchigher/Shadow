@@ -52,6 +52,8 @@ public class SampleComponentManager extends ComponentManager {
                 "com.tencent.shadow.contentprovider.authority.dynamic");
     }
 
+
+
     @Override
     public List<BroadcastInfo> getBroadcastInfoList(String partKey) {
         List<ComponentManager.BroadcastInfo> broadcastInfos = new ArrayList<>();

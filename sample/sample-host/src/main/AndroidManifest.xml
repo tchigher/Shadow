@@ -69,75 +69,67 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
+        android:name="com.tencent.shadow.sample.host.HostApplication"
         android:allowBackup="true"
         android:label="Shadow Dyanamic测试宿主App"
-        android:name="com.tencent.shadow.sample.host.HostApplication"
         android:theme="@android:style/Theme.DeviceDefault"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.tencent.shadow.sample.host.MainActivity"
-            >
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name="com.tencent.shadow.sample.host.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.tencent.shadow.contentprovider.authority.dynamic"
             android:name="com.tencent.shadow.core.runtime.container.PluginContainerContentProvider"
-            android:grantUriPermissions="true"
-            android:process=":plugin"
-            />
-        <service android:name="com.tencent.shadow.sample.host.Plugin1ProcessPPS"
-            android:process=":plugin"
-            />
-        <service
-            android:name="com.tencent.shadow.sample.host.Plugin2ProcessPPS"
-            android:process=":plugin2" />
-        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"
-            android:process=":pluginMgMovie" />
+            android:authorities="com.tencent.shadow.contentprovider.authority.dynamic"
+            android:grantUriPermissions="true" />
+
+        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS" />
+
         <activity
             android:name="com.tencent.shadow.sample.host.PluginLoadActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
 
-        <!--dynamic activity注册
-          注意configChanges需要全注册
-          theme需要注册成透明
-          -->
+        <!-- dynamic activity 注册
+          注意 configChanges 需要全注册, theme 需要注册成透明 -->
         <activity
             android:name="com.tencent.shadow.sample.plugin.runtime.PluginDefaultProxyActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
+            android:hardwareAccelerated="true"
             android:launchMode="standard"
+            android:multiprocess="false"
             android:screenOrientation="portrait"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
-            android:hardwareAccelerated="true"
-            android:theme="@style/troop_Transparent"
-            android:multiprocess="true"
-            />
+            android:theme="@style/troop_Transparent" />
 
         <activity
-            android:name="com.tencent.shadow.test.dynamic.runtime.container.PluginSingleInstance1ProxyActivity"
+            android:name="com.tencent.shadow.sample.plugin.runtime.PluginSingleInstance1ProxyActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
+            android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
+            android:multiprocess="false"
             android:screenOrientation="portrait"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
-            android:hardwareAccelerated="true"
-            android:theme="@style/troop_Transparent"
-            android:multiprocess="true"
-            />
+            android:theme="@style/troop_Transparent" />
 
         <activity
-            android:name="com.tencent.shadow.test.dynamic.runtime.container.PluginSingleTask1ProxyActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:name="com.tencent.shadow.sample.plugin.runtime.PluginSingleTask1ProxyActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
             android:hardwareAccelerated="true"
-            android:theme="@style/troop_Transparent"
-            android:multiprocess="true"
+            android:launchMode="singleTask"
+            android:multiprocess="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/troop_Transparent" />
 
-            />
-        <!--dynamic activity注册 end -->
+        <!-- dynamic activity 注册 end -->
+
     </application>
 
 </manifest>

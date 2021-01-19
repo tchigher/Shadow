@@ -61,14 +61,14 @@ def includeSample() {
     project(':Cores:libbase').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Cores/libbase')
 
     include ':Edges:AILib',
-            ':Edges:IADService',
+//            ':Edges:IADService',
             ':Edges:IloginService',
             ':Edges:IScannerService',
             ':Edges:libanalytics',
             ':Edges:MgPushLib'
 
     project(':Edges:AILib').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/AILib')
-    project(':Edges:IADService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IADService')
+//    project(':Edges:IADService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IADService')
     project(':Edges:IloginService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IloginService')
     project(':Edges:IScannerService').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/IScannerService')
     project(':Edges:libanalytics').projectDir = new File(settingsDir, './sample/sample-plugin/mgbaselib/Edges/libanalytics')

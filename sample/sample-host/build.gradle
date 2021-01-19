@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion project.COMPILE_SDK_VERSION
 
+    useLibrary "org.apache.http.legacy"
+
     defaultConfig {
         applicationId project.SAMPLE_HOST_APP_APPLICATION_ID
         minSdkVersion project.MIN_SDK_VERSION
