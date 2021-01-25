@@ -17,7 +17,6 @@ import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_RUNTIME
 import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MANAGER_DEAD_EXCEPTION;
 import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MANAGER_NULL_EXCEPTION;
 
-
 public class PluginProcessService
         extends BasePluginProcessService {
 
