@@ -5,6 +5,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.tencent.shadow.dynamic.loader.PluginServiceConnection;
 
@@ -12,62 +14,73 @@ import static com.tencent.shadow.dynamic.loader.PluginServiceConnection.DESCRIPT
 import static com.tencent.shadow.dynamic.loader.PluginServiceConnection.TRANSACTION_onServiceConnected;
 import static com.tencent.shadow.dynamic.loader.PluginServiceConnection.TRANSACTION_onServiceDisconnected;
 
-/**
- * Local-side IPC implementation stub class.
- */
 class PluginServiceConnectionBinder extends Binder {
 
-    private final PluginServiceConnection mPsc;
+    private final PluginServiceConnection mPluginServiceConnection;
 
-    /**
-     * Construct the stub at attach it to the interface.
-     */
-    PluginServiceConnectionBinder(PluginServiceConnection psc) {
-        mPsc = psc;
+    PluginServiceConnectionBinder(
+            PluginServiceConnection pluginServiceConnection
+    ) {
+        mPluginServiceConnection = pluginServiceConnection;
     }
 
     @Override
-    public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+    public boolean onTransact(
+            int code,
+            @NonNull Parcel data,
+            @Nullable Parcel reply,
+            int flags
+    ) throws RemoteException {
         switch (code) {
             case INTERFACE_TRANSACTION: {
-                reply.writeString(DESCRIPTOR);
+                if (reply != null) {
+                    reply.writeString(DESCRIPTOR);
+                }
                 return true;
             }
+
             case TRANSACTION_onServiceConnected: {
                 data.enforceInterface(DESCRIPTOR);
-                final ComponentName name;
+
+                final ComponentName componentName;
                 if (0 != data.readInt()) {
-                    name = ComponentName.CREATOR.createFromParcel(data);
+                    componentName = ComponentName.CREATOR.createFromParcel(data);
                 } else {
-                    name = null;
+                    componentName = null;
                 }
-                IBinder service;
-                service = data.readStrongBinder();
-                mPsc.onServiceConnected(name, service);
 
-                service.linkToDeath(new DeathRecipient() {
-                    @Override
-                    public void binderDied() {
-                        mPsc.onServiceDisconnected(name);
-                    }
-                }, 0);
+                IBinder service = data.readStrongBinder();
+                mPluginServiceConnection.onServiceConnected(componentName, service);
+                service.linkToDeath(() -> mPluginServiceConnection.onServiceDisconnected(componentName), 0);
 
-                reply.writeNoException();
+                if (reply != null) {
+                    reply.writeNoException();
+                }
+
                 return true;
             }
+
             case TRANSACTION_onServiceDisconnected: {
                 data.enforceInterface(DESCRIPTOR);
-                ComponentName _arg0;
+
+                ComponentName componentName;
                 if (0 != data.readInt()) {
-                    _arg0 = ComponentName.CREATOR.createFromParcel(data);
+                    componentName = ComponentName.CREATOR.createFromParcel(data);
                 } else {
-                    _arg0 = null;
+                    componentName = null;
                 }
-                mPsc.onServiceDisconnected(_arg0);
-                reply.writeNoException();
+
+                mPluginServiceConnection.onServiceDisconnected(componentName);
+
+                if (reply != null) {
+                    reply.writeNoException();
+                }
+
                 return true;
             }
         }
+
         return super.onTransact(code, data, reply, flags);
     }
+
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.webkit.WebView;
 
 import com.tencent.shadow.core.common.LoggerFactory;
@@ -62,9 +63,11 @@ public class HostApplication extends Application {
         return sApp;
     }
 
-    public void loadPluginManager(File apk) {
+    public void loadPluginManager(
+            @NonNull File pluginManagerApk
+    ) {
         if (mPluginManager == null) {
-            mPluginManager = Shadow.getPluginManager(apk);
+            mPluginManager = Shadow.getPluginManager(pluginManagerApk);
         }
     }
 

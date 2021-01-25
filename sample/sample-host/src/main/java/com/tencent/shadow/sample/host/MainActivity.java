@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,36 +32,29 @@ public class MainActivity extends Activity {
 
         final Spinner spinnerTargetPluginApp = new Spinner(this);
         ArrayAdapter<String> targetPluginAppAdapter = new ArrayAdapter<>(this, R.layout.adapter__target_plugin_app);
-//        targetPluginAppAdapter.addAll(Constant.KEY__TARGET_PLUGIN_APP__ONE, Constant.KEY__TARGET_PLUGIN_APP__TWO, Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE);
         targetPluginAppAdapter.addAll(Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE);
         spinnerTargetPluginApp.setAdapter(targetPluginAppAdapter);
         rootView.addView(spinnerTargetPluginApp);
 
         Button btnStartPluginApp = new Button(this);
         btnStartPluginApp.setText(R.string.main_activity__start_plugin_app);
-        btnStartPluginApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String targetPluginAppKey = (String) spinnerTargetPluginApp.getSelectedItem();
+        btnStartPluginApp.setOnClickListener(v -> {
+            String targetPluginAppKey = (String) spinnerTargetPluginApp.getSelectedItem();
 
-                Intent intent = new Intent(MainActivity.this, PluginLoadActivity.class);
-                intent.putExtra(Constant.KEY__TARGET_PLUGIN_APP, targetPluginAppKey);
-                switch (targetPluginAppKey) {
-                    /// 为了演示多进程多插件
-                    /// 其实两个插件の内容完全一样, 除了其所在进程
-//                    case Constant.KEY__TARGET_PLUGIN_APP__ONE:
-//                    case Constant.KEY__TARGET_PLUGIN_APP__TWO:
-                    case Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE:
-                        intent.putExtra(
-                                Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_NAME,
-//                                "com.tencent.shadow.sample.plugin.app.lib.gallery.splash.SplashActivity"
-                                "com.cmvideo.migumovie.activity.SplashActivity"
-                        );
-                        break;
-                }
-
-                startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, MgMoviePluginLoadActivity.class);
+            intent.putExtra(Constant.KEY__TARGET_PLUGIN_APP, targetPluginAppKey);
+            switch (targetPluginAppKey) {
+                case Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE:
+                    intent.putExtra(
+                            Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_NAME,
+                            "com.cmvideo.migumovie.activity.SplashActivity"
+                    );
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + targetPluginAppKey);
             }
+
+            startActivity(intent);
         });
         rootView.addView(btnStartPluginApp);
 

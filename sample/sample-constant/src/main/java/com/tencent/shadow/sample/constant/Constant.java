@@ -9,6 +9,6 @@ final public class Constant {
 
     public static final String KEY__TARGET_PLUGIN_APP__MGMOVIE = "mgmovie-plugin-app";
 
-    public static final int FROM_ID_NOOP = 1000;
-    public static final int FROM_ID_START_ACTIVITY = 1002;
+    public static final int FROM_ID__NOOP = 1000;
+    public static final int FROM_ID__START_ACTIVITY = 1002;
 }

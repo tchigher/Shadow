@@ -37,7 +37,8 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
         super(context);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @NonNull
     public InstalledPlugin installPlugin(
             @NonNull String pluginZipFileAbsolutePath,
             @Nullable String pluginsZipFileHash,
@@ -47,35 +48,29 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
                 new File(pluginZipFileAbsolutePath),
                 pluginsZipFileHash
         );
-        final String pluginsUUID = pluginConfig.UUID;
+        final String pluginUUID = pluginConfig.UUID;
 
         List<Future> futures = new LinkedList<>();
 
         if (pluginConfig.runTime != null
                 && pluginConfig.pluginLoader != null) {
-            Future odexRuntime = mFixedThreadPool.submit(new Callable() {
-                @Override
-                public Object call() throws Exception {
-                    odexPluginLoaderOrRunTime(
-                            pluginsUUID,
-                            InstalledType.TYPE_PLUGIN_RUNTIME,
-                            pluginConfig.runTime.file
-                    );
-                    return null;
-                }
+            Future odexRuntime = mFixedThreadPool.submit((Callable) () -> {
+                odexPluginLoaderOrRunTime(
+                        pluginUUID,
+                        InstalledType.TYPE_PLUGIN_RUNTIME,
+                        pluginConfig.runTime.file
+                );
+                return null;
             });
             futures.add(odexRuntime);
 
-            Future odexLoader = mFixedThreadPool.submit(new Callable() {
-                @Override
-                public Object call() throws Exception {
-                    odexPluginLoaderOrRunTime(
-                            pluginsUUID,
-                            InstalledType.TYPE_PLUGIN_LOADER,
-                            pluginConfig.pluginLoader.file
-                    );
-                    return null;
-                }
+            Future odexLoader = mFixedThreadPool.submit((Callable) () -> {
+                odexPluginLoaderOrRunTime(
+                        pluginUUID,
+                        InstalledType.TYPE_PLUGIN_LOADER,
+                        pluginConfig.pluginLoader.file
+                );
+                return null;
             });
             futures.add(odexLoader);
         }
@@ -83,22 +78,16 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
         for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : pluginConfig.plugins.entrySet()) {
             final String pluginAppPartKey = plugin.getKey();
             final File pluginApkFile = plugin.getValue().file;
-            Future extractedSo = mFixedThreadPool.submit(new Callable() {
-                @Override
-                public Object call() throws Exception {
-                    extractSo(pluginsUUID, pluginAppPartKey, pluginApkFile);
-                    return null;
-                }
+            Future extractedSo = mFixedThreadPool.submit((Callable) () -> {
+                extractSo(pluginUUID, pluginAppPartKey, pluginApkFile);
+                return null;
             });
             futures.add(extractedSo);
 
             if (odex) {
-                Future odexedPlugin = mFixedThreadPool.submit(new Callable() {
-                    @Override
-                    public Object call() throws Exception {
-                        odexPlugin(pluginsUUID, pluginAppPartKey, pluginApkFile);
-                        return null;
-                    }
+                Future odexedPlugin = mFixedThreadPool.submit((Callable) () -> {
+                    odexPlugin(pluginUUID, pluginAppPartKey, pluginApkFile);
+                    return null;
                 });
                 futures.add(odexedPlugin);
             }
@@ -114,27 +103,29 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
     }
 
     public void startPluginActivity(
-            InstalledPlugin installedPlugins,
+            @NonNull InstalledPlugin installedPlugin,
             @NonNull String pluginAppPartKey,
-            Intent pluginActivityIntent
+            @NonNull Intent pluginActivityIntent
     ) throws RemoteException, TimeoutException, FailedException {
-        Intent intent = convertActivityIntent(installedPlugins, pluginAppPartKey, pluginActivityIntent);
+        Intent intent = convertActivityIntent(installedPlugin, pluginAppPartKey, pluginActivityIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mPluginLoader.startActivityInPluginProcess(intent);
     }
 
     @SuppressWarnings("rawtypes")
     public Intent convertActivityIntent(
-            InstalledPlugin installedPlugins,
+            @NonNull InstalledPlugin installedPlugin,
             @NonNull String pluginAppPartKey,
-            Intent pluginActivityIntent
+            @NonNull Intent pluginActivityIntent
     ) throws RemoteException, TimeoutException, FailedException {
-        loadPlugin(installedPlugins.UUID, pluginAppPartKey);
-        Map loadedPlugins = mPluginLoader.getLoadedPlugin();
-        Boolean isCall = (Boolean) loadedPlugins.get(pluginAppPartKey);
-        if (isCall == null || !isCall) {
+        loadPlugin(installedPlugin.UUID, pluginAppPartKey);
+
+        Map loadedPlugins = mPluginLoader.getLoadedPlugins();
+        Boolean hasCalled = (Boolean) loadedPlugins.get(pluginAppPartKey);
+        if (hasCalled == null || !hasCalled) {
             mPluginLoader.callApplicationOnCreate(pluginAppPartKey);
         }
+
         return mPluginLoader.convertActivityIntent(pluginActivityIntent);
     }
 
@@ -144,7 +135,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             @NonNull String pluginAppPartKey
     ) throws RemoteException, TimeoutException, FailedException {
         loadPluginLoaderAndRuntime(uuid, pluginAppPartKey);
-        Map map = mPluginLoader.getLoadedPlugin();
+        Map map = mPluginLoader.getLoadedPlugins();
         if (!map.containsKey(pluginAppPartKey)) {
             mPluginLoader.loadPlugin(pluginAppPartKey);
         }

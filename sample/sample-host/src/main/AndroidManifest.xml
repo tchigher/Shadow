@@ -105,7 +105,7 @@
         <service android:name="com.tencent.shadow.sample.host.PPS4MgMovie"/>
 
         <activity
-            android:name="com.tencent.shadow.sample.host.PluginLoadActivity"
+            android:name="com.tencent.shadow.sample.host.MgMoviePluginLoadActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 

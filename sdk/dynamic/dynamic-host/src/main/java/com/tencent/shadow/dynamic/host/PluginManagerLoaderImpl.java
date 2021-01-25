@@ -6,7 +6,7 @@ import com.tencent.shadow.core.common.InstalledApk;
 
 import java.io.File;
 
-final class ManagerImplLoader extends ImplLoader {
+final class PluginManagerLoaderImpl extends ImplLoader {
     private static final String MANAGER_FACTORY_CLASS_NAME = "com.tencent.shadow.dynamic.impl.ManagerFactoryImpl";
     private static final String[] REMOTE_PLUGIN_MANAGER_INTERFACES = new String[]
             {
@@ -16,7 +16,7 @@ final class ManagerImplLoader extends ImplLoader {
     final private Context applicationContext;
     final private InstalledApk installedApk;
 
-    ManagerImplLoader(Context context, File apk) {
+    PluginManagerLoaderImpl(Context context, File apk) {
         applicationContext = context.getApplicationContext();
 
         File pluginManagerLoadersDir = new File(applicationContext.getFilesDir(), "shadowPluginManagerLoaders");

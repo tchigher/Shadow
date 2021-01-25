@@ -2,6 +2,7 @@ package com.tencent.shadow.dynamic.host;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
@@ -10,63 +11,81 @@ import java.io.File;
 
 public final class DynamicPluginManager implements PluginManager {
 
-    final private PluginManagerUpdater mUpdater;
-    private PluginManagerImpl mManagerImpl;
+    final private PluginManagerUpdater mPluginManagerUpdater;
+    private PluginManagerImpl mPluginManagerImpl;
     private long mLastModified;
     private static final Logger mLogger = LoggerFactory.getLogger(DynamicPluginManager.class);
 
-    public DynamicPluginManager(PluginManagerUpdater updater) {
-        if (updater.getLatest() == null) {
-            throw new IllegalArgumentException("构造DynamicPluginManager时传入的PluginManagerUpdater" +
-                    "必须已经已有本地文件，即getLatest()!=null");
+    public DynamicPluginManager(
+            PluginManagerUpdater pluginManagerUpdater
+    ) {
+        if (pluginManagerUpdater.getLocalLatestApk() == null) {
+            throw new IllegalArgumentException("构造 DynamicPluginManager 时传入的 PluginManagerUpdater "
+                    + "必须已经有本地文件, getLocalLatestApk() != null");
         }
-        mUpdater = updater;
+
+        mPluginManagerUpdater = pluginManagerUpdater;
     }
 
     @Override
-    public void enter(Context context, long fromId, Bundle bundle, EnterCallback callback) {
+    public void enter(
+            @NonNull Context context,
+            @NonNull long fromId,
+            Bundle bundle,
+            PluginAppEnterCallback callback
+    ) {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("enter fromId:" + fromId + " callback:" + callback);
         }
-        updateManagerImpl(context);
-        mManagerImpl.enter(context, fromId, bundle, callback);
-        mUpdater.update();
+
+        updatePluginManagerImpl(context);
+
+        mPluginManagerImpl.enter(context, fromId, bundle, callback);
+
+        mPluginManagerUpdater.update();
     }
 
     public void release() {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("release");
         }
-        if (mManagerImpl != null) {
-            mManagerImpl.onDestroy();
-            mManagerImpl = null;
+        if (mPluginManagerImpl != null) {
+            mPluginManagerImpl.onDestroy();
+            mPluginManagerImpl = null;
         }
     }
 
-    private void updateManagerImpl(Context context) {
-        File latestManagerImplApk = mUpdater.getLatest();
-        long lastModified = latestManagerImplApk.lastModified();
+    private void updatePluginManagerImpl(
+            Context context
+    ) {
+        File localLatestPluginManagerApk = mPluginManagerUpdater.getLocalLatestApk();
+        long lastModified = localLatestPluginManagerApk.lastModified();
+
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("mLastModified != lastModified : " + (mLastModified != lastModified));
+            mLogger.info("mLastModified != lastModified: " + (mLastModified != lastModified));
         }
+
         if (mLastModified != lastModified) {
-            ManagerImplLoader implLoader = new ManagerImplLoader(context, latestManagerImplApk);
-            PluginManagerImpl newImpl = implLoader.load();
+            PluginManagerLoaderImpl pluginManagerLoaderImpl = new PluginManagerLoaderImpl(
+                    context,
+                    localLatestPluginManagerApk
+            );
+            PluginManagerImpl newImpl = pluginManagerLoaderImpl.load();
             Bundle state;
-            if (mManagerImpl != null) {
+            if (mPluginManagerImpl != null) {
                 state = new Bundle();
-                mManagerImpl.onSaveInstanceState(state);
-                mManagerImpl.onDestroy();
+                mPluginManagerImpl.onSaveInstanceState(state);
+                mPluginManagerImpl.onDestroy();
             } else {
                 state = null;
             }
             newImpl.onCreate(state);
-            mManagerImpl = newImpl;
+            mPluginManagerImpl = newImpl;
             mLastModified = lastModified;
         }
     }
 
     public PluginManager getManagerImpl() {
-        return mManagerImpl;
+        return mPluginManagerImpl;
     }
 }

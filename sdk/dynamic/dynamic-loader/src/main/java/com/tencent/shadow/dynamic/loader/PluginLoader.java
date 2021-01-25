@@ -1,18 +1,18 @@
-/*
- * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/shifujun/Codes/Android/shadow/sdk/dynamic/dynamic-loader/dynamic-loader-aar/src/main/aidl/com/tencent/shadow/dynamic/loader/PluginLoader.aidl
- */
 package com.tencent.shadow.dynamic.loader;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Map;
 
 public interface PluginLoader {
+
     String DESCRIPTOR = PluginLoader.class.getName();
+
     int TRANSACTION_loadPlugin = (IBinder.FIRST_CALL_TRANSACTION);
     int TRANSACTION_getLoadedPlugin = (IBinder.FIRST_CALL_TRANSACTION + 1);
     int TRANSACTION_callApplicationOnCreate = (IBinder.FIRST_CALL_TRANSACTION + 2);
@@ -23,23 +23,42 @@ public interface PluginLoader {
     int TRANSACTION_unbindService = (IBinder.FIRST_CALL_TRANSACTION + 7);
     int TRANSACTION_startActivityInPluginProcess = (IBinder.FIRST_CALL_TRANSACTION + 8);
 
+    void loadPlugin(
+            @NonNull String partKey
+    ) throws RemoteException;
 
-    void loadPlugin(String partKey) throws RemoteException;
+    @SuppressWarnings("rawtypes")
+    Map getLoadedPlugins(
+    ) throws RemoteException;
 
-    Map getLoadedPlugin() throws RemoteException;
+    void callApplicationOnCreate(
+            @NonNull String partKey
+    ) throws RemoteException;
 
-    void callApplicationOnCreate(String partKey) throws RemoteException;
+    Intent convertActivityIntent(
+            @NonNull Intent pluginActivityIntent
+    ) throws RemoteException;
 
-    Intent convertActivityIntent(Intent pluginActivityIntent) throws RemoteException;
+    ComponentName startPluginService(
+            @NonNull Intent pluginServiceIntent
+    ) throws RemoteException;
 
-    ComponentName startPluginService(Intent pluginServiceIntent) throws RemoteException;
+    boolean stopPluginService(
+            @NonNull Intent pluginServiceIntent
+    ) throws RemoteException;
 
-    boolean stopPluginService(Intent pluginServiceIntent) throws RemoteException;
+    boolean bindPluginService(
+            @NonNull Intent pluginServiceIntent,
+            @Nullable PluginServiceConnection pluginServiceConnection,
+            @NonNull Integer flags
+    ) throws RemoteException;
 
-    boolean bindPluginService(Intent pluginServiceIntent, PluginServiceConnection connection, int flags) throws RemoteException;
+    void unbindPluginService(
+            @Nullable PluginServiceConnection pluginServiceConnection
+    ) throws RemoteException;
 
-    void unbindService(PluginServiceConnection conn) throws RemoteException;
-
-    void startActivityInPluginProcess(Intent intent) throws RemoteException;
+    void startActivityInPluginProcess(
+            @NonNull Intent intent
+    ) throws RemoteException;
 
 }

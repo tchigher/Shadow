@@ -18,7 +18,7 @@ public interface PluginManager {
             Context context,
             long fromId,
             Bundle bundle,
-            EnterCallback callback
+            PluginAppEnterCallback callback
     );
 
 }

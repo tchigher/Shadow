@@ -5,11 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
-import com.tencent.shadow.dynamic.host.EnterCallback;
+import com.tencent.shadow.dynamic.host.PluginAppEnterCallback;
 import com.tencent.shadow.sample.constant.Constant;
 
 import java.util.concurrent.ExecutorService;
@@ -65,15 +66,15 @@ public class SamplePluginManager extends FastPluginManager {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void enter(
-            final Context context,
-            long fromId,
-            Bundle bundle,
-            final EnterCallback callback
+            @NonNull final Context context,
+            @NonNull long fromId,
+            @NonNull Bundle bundle,
+            @Nullable final PluginAppEnterCallback pluginAppEnterCallback
     ) {
-        if (fromId == Constant.FROM_ID_NOOP) {
+        if (fromId == Constant.FROM_ID__NOOP) {
             // do nothing
-        } else if (fromId == Constant.FROM_ID_START_ACTIVITY) {
-            onStartActivity(context, bundle, callback);
+        } else if (fromId == Constant.FROM_ID__START_ACTIVITY) {
+            onStartActivity(context, bundle, pluginAppEnterCallback);
         } else {
             throw new IllegalArgumentException("不认识的 fromId == " + fromId);
         }
@@ -81,9 +82,9 @@ public class SamplePluginManager extends FastPluginManager {
 
     @SuppressLint("InflateParams")
     private void onStartActivity(
-            final Context context,
-            Bundle bundle,
-            final EnterCallback callback
+            @NonNull final Context context,
+            @NonNull Bundle bundle,
+            @Nullable final PluginAppEnterCallback pluginAppEnterCallback
     ) {
         final String pluginZipFileAbsolutePath =
                 bundle.getString(Constant.KEY__PLUGIN_ZIP_FILE__ABSOLUTE_PATH);
@@ -99,15 +100,15 @@ public class SamplePluginManager extends FastPluginManager {
         final Bundle targetPluginActivityIntentExtras =
                 bundle.getBundle(Constant.KEY__TARGET_PLUGIN_ACTIVITY__INTENT_EXTRAS);
 
-        if (callback != null) {
+        if (pluginAppEnterCallback != null) {
             final View view = LayoutInflater.from(mCurrentContext)
                     .inflate(R.layout.activity__load_plugin, null);
-            callback.onShowLoadingView(view);
+            pluginAppEnterCallback.onShowLoadingView(view);
         }
 
         mExecutorService.execute(() -> {
             try {
-                InstalledPlugin installedPlugins = installPlugin(
+                InstalledPlugin installedPlugin = installPlugin(
                         pluginZipFileAbsolutePath,
                         null,
                         true
@@ -123,13 +124,13 @@ public class SamplePluginManager extends FastPluginManager {
                     targetPluginActivityIntent.replaceExtras(targetPluginActivityIntentExtras);
                 }
 
-                startPluginActivity(installedPlugins, targetPluginApp, targetPluginActivityIntent);
+                startPluginActivity(installedPlugin, targetPluginApp, targetPluginActivityIntent);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 
-            if (callback != null) {
-                callback.onCloseLoadingView();
+            if (pluginAppEnterCallback != null) {
+                pluginAppEnterCallback.onCloseLoadingView();
             }
         });
     }
