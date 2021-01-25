@@ -3,20 +3,20 @@ package com.tencent.shadow.dynamic.host;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public final class PpsStatus implements Parcelable {
+public final class PPSStatus implements Parcelable {
     final public String uuid;
     final public boolean runtimeLoaded;
     final public boolean loaderLoaded;
     final public boolean uuidManagerSet;
 
-    PpsStatus(String uuid, boolean runtimeLoaded, boolean loaderLoaded, boolean uuidManagerSet) {
+    PPSStatus(String uuid, boolean runtimeLoaded, boolean loaderLoaded, boolean uuidManagerSet) {
         this.uuid = uuid;
         this.runtimeLoaded = runtimeLoaded;
         this.loaderLoaded = loaderLoaded;
         this.uuidManagerSet = uuidManagerSet;
     }
 
-    PpsStatus(Parcel in) {
+    PPSStatus(Parcel in) {
         uuid = in.readString();
         runtimeLoaded = in.readByte() != 0;
         loaderLoaded = in.readByte() != 0;
@@ -36,15 +36,15 @@ public final class PpsStatus implements Parcelable {
         return 0;
     }
 
-    public static final Creator<PpsStatus> CREATOR = new Creator<PpsStatus>() {
+    public static final Creator<PPSStatus> CREATOR = new Creator<PPSStatus>() {
         @Override
-        public PpsStatus createFromParcel(Parcel in) {
-            return new PpsStatus(in);
+        public PPSStatus createFromParcel(Parcel in) {
+            return new PPSStatus(in);
         }
 
         @Override
-        public PpsStatus[] newArray(int size) {
-            return new PpsStatus[size];
+        public PPSStatus[] newArray(int size) {
+            return new PPSStatus[size];
         }
     };
 }

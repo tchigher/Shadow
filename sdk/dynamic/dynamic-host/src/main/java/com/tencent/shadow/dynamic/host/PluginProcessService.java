@@ -20,7 +20,7 @@ import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MA
 
 public class PluginProcessService extends BasePluginProcessService {
 
-    private final PpsBinder mPpsControllerBinder = new PpsBinder(this);
+    private final PPSBinder mPpsControllerBinder = new PPSBinder(this);
 
     static final ActivityHolder sActivityHolder = new ActivityHolder();
 
@@ -28,10 +28,10 @@ public class PluginProcessService extends BasePluginProcessService {
         return sActivityHolder;
     }
 
-    public static PpsController wrapBinder(
+    public static PPSController wrapBinder(
             IBinder ppsBinder
     ) {
-        return new PpsController(ppsBinder);
+        return new PPSController(ppsBinder);
     }
 
     @Override
@@ -187,8 +187,8 @@ public class PluginProcessService extends BasePluginProcessService {
         }
     }
 
-    PpsStatus getPpsStatus() {
-        return new PpsStatus(mUUID, mRuntimeLoaded, mPluginLoader != null, mUUIDManager != null);
+    PPSStatus getPpsStatus() {
+        return new PPSStatus(mUUID, mRuntimeLoaded, mPluginLoader != null, mUUIDManager != null);
     }
 
     IBinder getPluginLoader() {

@@ -5,8 +5,8 @@ import android.os.Parcel;
 
 import static android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE;
 
-class PpsBinder extends android.os.Binder {
-    static final String DESCRIPTOR = PpsBinder.class.getName();
+class PPSBinder extends android.os.Binder {
+    static final String DESCRIPTOR = PPSBinder.class.getName();
 
     static final int TRANSACTION_CODE_NO_EXCEPTION = 0;
     static final int TRANSACTION_CODE_FAILED_EXCEPTION = 1;
@@ -20,7 +20,7 @@ class PpsBinder extends android.os.Binder {
 
     private final PluginProcessService mPps;
 
-    PpsBinder(PluginProcessService pps) {
+    PPSBinder(PluginProcessService pps) {
         mPps = pps;
     }
 
@@ -73,7 +73,7 @@ class PpsBinder extends android.os.Binder {
             }
             case TRANSACTION_getPpsStatus: {
                 data.enforceInterface(DESCRIPTOR);
-                PpsStatus ppsStatus = mPps.getPpsStatus();
+                PPSStatus ppsStatus = mPps.getPpsStatus();
                 reply.writeNoException();
                 ppsStatus.writeToParcel(reply, PARCELABLE_WRITE_RETURN_VALUE);
                 return true;

@@ -1,8 +1,10 @@
 package com.tencent.shadow.sample.manager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -21,8 +23,11 @@ public class SamplePluginManager extends FastPluginManager {
 
     private final Context mCurrentContext;
 
-    public SamplePluginManager(Context context) {
+    public SamplePluginManager(
+            @NonNull Context context
+    ) {
         super(context);
+
         mCurrentContext = context;
     }
 
@@ -46,15 +51,18 @@ public class SamplePluginManager extends FastPluginManager {
      * @return 宿主中注册的 PluginProcessService 实现的类名
      */
     @Override
-    protected String getPluginProcessServiceName(String partKey) {
+    protected String getPluginProcessServiceName(
+            @NonNull String partKey
+    ) {
         if (KEY__TARGET_PLUGIN_APP__MGMOVIE.equals(partKey)) {
-            return "com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"; // 在这里支持多个插件
+            return "com.tencent.shadow.sample.host.PPS4MgMovie"; // 在这里支持多个插件
         } else {
-            // 如果有默认 PPS，可用 return 代替 throw
+            // 如果有默认的 PPS，可用 return 代替 throw
             throw new IllegalArgumentException("unexpected plugin load request: " + partKey);
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void enter(
             final Context context,
@@ -71,48 +79,57 @@ public class SamplePluginManager extends FastPluginManager {
         }
     }
 
+    @SuppressLint("InflateParams")
     private void onStartActivity(
             final Context context,
             Bundle bundle,
             final EnterCallback callback
     ) {
-        final String pluginsZipFileAbsolutePath = bundle.getString(Constant.KEY__PLUGINS_ZIP_FILE__ABSOLUTE_PATH);
-        final String targetPluginApp = bundle.getString(Constant.KEY__TARGET_PLUGIN_APP);
-        final String targetPluginActivityClassFullName = bundle.getString(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME);
-        if (targetPluginActivityClassFullName == null) {
+        final String pluginZipFileAbsolutePath =
+                bundle.getString(Constant.KEY__PLUGIN_ZIP_FILE__ABSOLUTE_PATH);
+        final String targetPluginApp =
+                bundle.getString(Constant.KEY__TARGET_PLUGIN_APP);
+        final String targetPluginActivityClassName =
+                bundle.getString(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_NAME);
+
+        if (targetPluginActivityClassName == null) {
             throw new NullPointerException("classFullName == null");
         }
 
-        final Bundle targetPluginActivityIntentExtras = bundle.getBundle(Constant.KEY__TARGET_PLUGIN_ACTIVITY__INTENT_EXTRAS);
+        final Bundle targetPluginActivityIntentExtras =
+                bundle.getBundle(Constant.KEY__TARGET_PLUGIN_ACTIVITY__INTENT_EXTRAS);
 
         if (callback != null) {
-            final View view = LayoutInflater.from(mCurrentContext).inflate(R.layout.activity_load_plugin, null);
+            final View view = LayoutInflater.from(mCurrentContext)
+                    .inflate(R.layout.activity__load_plugin, null);
             callback.onShowLoadingView(view);
         }
 
-        mExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InstalledPlugin installedPlugins = installPlugin(pluginsZipFileAbsolutePath, null, true);
+        mExecutorService.execute(() -> {
+            try {
+                InstalledPlugin installedPlugins = installPlugin(
+                        pluginZipFileAbsolutePath,
+                        null,
+                        true
+                );
 
-                    Intent targetPluginActivityIntent = new Intent();
-                    targetPluginActivityIntent.setClassName(
-                            context.getPackageName(),
-                            targetPluginActivityClassFullName
-                    );
-                    if (targetPluginActivityIntentExtras != null) {
-                        targetPluginActivityIntent.replaceExtras(targetPluginActivityIntentExtras);
-                    }
+                Intent targetPluginActivityIntent = new Intent();
+                targetPluginActivityIntent.setClassName(
+                        context.getPackageName(),
+                        targetPluginActivityClassName
+                );
 
-                    startPluginActivity(installedPlugins, targetPluginApp, targetPluginActivityIntent);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                if (targetPluginActivityIntentExtras != null) {
+                    targetPluginActivityIntent.replaceExtras(targetPluginActivityIntentExtras);
                 }
 
-                if (callback != null) {
-                    callback.onCloseLoadingView();
-                }
+                startPluginActivity(installedPlugins, targetPluginApp, targetPluginActivityIntent);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            if (callback != null) {
+                callback.onCloseLoadingView();
             }
         });
     }

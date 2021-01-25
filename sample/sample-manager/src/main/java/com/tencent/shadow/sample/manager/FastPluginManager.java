@@ -3,6 +3,7 @@ package com.tencent.shadow.sample.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
@@ -28,28 +29,31 @@ import java.util.concurrent.TimeoutException;
 
 public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoader {
 
-    private final ExecutorService mFixedPool = Executors.newFixedThreadPool(4);
+    private final ExecutorService mFixedThreadPool = Executors.newFixedThreadPool(4);
 
-    public FastPluginManager(Context context) {
+    public FastPluginManager(
+            @NonNull Context context
+    ) {
         super(context);
     }
 
     @SuppressWarnings("rawtypes")
     public InstalledPlugin installPlugin(
-            String pluginsZipFileAbsolutePath,
+            @NonNull String pluginZipFileAbsolutePath,
             @Nullable String pluginsZipFileHash,
-            boolean odex
+            @NonNull Boolean odex
     ) throws IOException, JSONException, InterruptedException, ExecutionException {
         final PluginConfig pluginConfig = installPluginsFromZipFile(
-                new File(pluginsZipFileAbsolutePath),
+                new File(pluginZipFileAbsolutePath),
                 pluginsZipFileHash
         );
         final String pluginsUUID = pluginConfig.UUID;
 
         List<Future> futures = new LinkedList<>();
 
-        if (pluginConfig.runTime != null && pluginConfig.pluginLoader != null) {
-            Future odexRuntime = mFixedPool.submit(new Callable() {
+        if (pluginConfig.runTime != null
+                && pluginConfig.pluginLoader != null) {
+            Future odexRuntime = mFixedThreadPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     odexPluginLoaderOrRunTime(
@@ -62,7 +66,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             });
             futures.add(odexRuntime);
 
-            Future odexLoader = mFixedPool.submit(new Callable() {
+            Future odexLoader = mFixedThreadPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     odexPluginLoaderOrRunTime(
@@ -79,7 +83,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
         for (Map.Entry<String, PluginConfig.PluginFileInfo> plugin : pluginConfig.plugins.entrySet()) {
             final String pluginAppPartKey = plugin.getKey();
             final File pluginApkFile = plugin.getValue().file;
-            Future extractedSo = mFixedPool.submit(new Callable() {
+            Future extractedSo = mFixedThreadPool.submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     extractSo(pluginsUUID, pluginAppPartKey, pluginApkFile);
@@ -89,7 +93,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             futures.add(extractedSo);
 
             if (odex) {
-                Future odexedPlugin = mFixedPool.submit(new Callable() {
+                Future odexedPlugin = mFixedThreadPool.submit(new Callable() {
                     @Override
                     public Object call() throws Exception {
                         odexPlugin(pluginsUUID, pluginAppPartKey, pluginApkFile);
@@ -111,7 +115,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
 
     public void startPluginActivity(
             InstalledPlugin installedPlugins,
-            String pluginAppPartKey,
+            @NonNull String pluginAppPartKey,
             Intent pluginActivityIntent
     ) throws RemoteException, TimeoutException, FailedException {
         Intent intent = convertActivityIntent(installedPlugins, pluginAppPartKey, pluginActivityIntent);
@@ -122,7 +126,7 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
     @SuppressWarnings("rawtypes")
     public Intent convertActivityIntent(
             InstalledPlugin installedPlugins,
-            String pluginAppPartKey,
+            @NonNull String pluginAppPartKey,
             Intent pluginActivityIntent
     ) throws RemoteException, TimeoutException, FailedException {
         loadPlugin(installedPlugins.UUID, pluginAppPartKey);
@@ -136,8 +140,8 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
 
     @SuppressWarnings("rawtypes")
     private void loadPlugin(
-            String uuid,
-            String pluginAppPartKey
+            @NonNull String uuid,
+            @NonNull String pluginAppPartKey
     ) throws RemoteException, TimeoutException, FailedException {
         loadPluginLoaderAndRuntime(uuid, pluginAppPartKey);
         Map map = mPluginLoader.getLoadedPlugin();
@@ -147,10 +151,10 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
     }
 
     private void loadPluginLoaderAndRuntime(
-            String uuid,
-            String pluginAppPartKey
+            @NonNull String uuid,
+            @NonNull String pluginAppPartKey
     ) throws RemoteException, TimeoutException, FailedException {
-        if (mPpsController == null) {
+        if (mPPSController == null) {
             bindPluginProcessService(getPluginProcessServiceName(pluginAppPartKey));
             waitServiceConnected(10, TimeUnit.SECONDS);
         }
@@ -158,6 +162,8 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
         loadPluginLoader(uuid);
     }
 
-    protected abstract String getPluginProcessServiceName(String partKey);
+    protected abstract String getPluginProcessServiceName(
+            @NonNull String partKey
+    );
 
 }

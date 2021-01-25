@@ -12,6 +12,15 @@ android {
         versionName project.VERSION_NAME
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -28,6 +37,8 @@ dependencies {
     implementation 'com.tencent.shadow.coding:lint'
     compileOnly 'com.tencent.shadow.core:common'
     api project(':dynamic-host')
+
+    implementation 'com.android.support:support-annotations:28.0.0'
 }
 
 def jarPackage(buildType) {

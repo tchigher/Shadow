@@ -99,10 +99,10 @@
 <!--            android:grantUriPermissions="true"-->
 <!--            android:process=":pluginMgMovie"/>-->
 
-<!--        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"-->
+<!--        <service android:name="com.tencent.shadow.sample.host.PPS4MgMovie"-->
 <!--            android:process=":pluginMgMovie"/>-->
 
-        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"/>
+        <service android:name="com.tencent.shadow.sample.host.PPS4MgMovie"/>
 
         <activity
             android:name="com.tencent.shadow.sample.host.PluginLoadActivity"

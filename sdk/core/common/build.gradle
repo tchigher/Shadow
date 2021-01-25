@@ -11,6 +11,15 @@ android {
         versionCode project.VERSION_CODE
         versionName project.VERSION_NAME
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
 }
 
 dependencies{

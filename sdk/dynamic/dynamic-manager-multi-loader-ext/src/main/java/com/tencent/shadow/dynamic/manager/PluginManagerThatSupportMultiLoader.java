@@ -5,24 +5,28 @@ import android.content.Context;
 import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.dynamic.host.FailedException;
+import com.tencent.shadow.dynamic.host.MultiLoaderPPSController;
 import com.tencent.shadow.dynamic.host.MultiLoaderPluginProcessService;
-import com.tencent.shadow.dynamic.host.MultiLoaderPpsController;
+import com.tencent.shadow.dynamic.host.PPSStatus;
 import com.tencent.shadow.dynamic.host.PluginManagerImpl;
-import com.tencent.shadow.dynamic.host.PpsStatus;
 import com.tencent.shadow.dynamic.loader.PluginLoader;
 
-abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPluginManager implements PluginManagerImpl {
+abstract public class PluginManagerThatSupportMultiLoader
+        extends BaseDynamicPluginManager
+        implements PluginManagerImpl {
 
-    private static final Logger mLogger = LoggerFactory.getLogger(PluginManagerThatUseDynamicLoader.class);
+    private static final Logger mLogger =
+            LoggerFactory.getLogger(PluginManagerThatUseDynamicLoader.class);
 
     /*
-     * 插件进程MultiLoaderPluginProcessService的接口
+     * 插件进程 MultiLoaderPluginProcessService 的接口
      */
-    protected MultiLoaderPpsController mPpsController;
+    protected MultiLoaderPPSController mPPSController;
 
     /*
      * 插件加载服务端接口
@@ -30,14 +34,14 @@ abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPlu
     protected PluginLoader mPluginLoader;
 
     public PluginManagerThatSupportMultiLoader(
-            Context context
+            @NonNull Context context
     ) {
         super(context);
     }
 
     /*
      * 多 Loader 的 PPS，需要 hack 多个 RuntimeContainer, 因此需要使用 pluginKey 来作为插件业务的身份标识
-     * Note: 一个插件包有一份 loader、一份 runtime、多个 pluginPart, 该 key 与插件包一一对应
+     * 注意: 一个插件包有一份 loader、一份 runtime、多个 pluginPart, 该 key 与插件包一一对应
      */
     public abstract String getPluginKey();
 
@@ -46,9 +50,12 @@ abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPlu
             ComponentName name,
             IBinder service
     ) {
-        mPpsController = MultiLoaderPluginProcessService.wrapBinder(service);
+        mPPSController = MultiLoaderPluginProcessService.wrapBinder(service);
         try {
-            mPpsController.setUUIDManagerForPlugin(getPluginKey(), new UUIDManagerBinder(PluginManagerThatSupportMultiLoader.this));
+            mPPSController.setUUIDManagerForPlugin(
+                    getPluginKey(),
+                    new UUIDManagerBinder(PluginManagerThatSupportMultiLoader.this)
+            );
         } catch (DeadObjectException e) {
             if (mLogger.isErrorEnabled()) {
                 mLogger.error("onServiceConnected RemoteException: " + e);
@@ -64,13 +71,13 @@ abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPlu
         }
 
         try {
-            IBinder iBinder = mPpsController.getPluginLoaderForPlugin(getPluginKey());
+            IBinder iBinder = mPPSController.getPluginLoaderForPlugin(getPluginKey());
             if (iBinder != null) {
                 mPluginLoader = new BinderPluginLoader(iBinder);
             }
         } catch (RemoteException exception) {
             if (mLogger.isErrorEnabled()) {
-                mLogger.error("onServiceConnected mPpsController getPluginLoader: ", exception);
+                mLogger.error("onServiceConnected mPPSController getPluginLoader: ", exception);
             }
         }
     }
@@ -79,34 +86,36 @@ abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPlu
     protected void onPluginServiceDisconnected(
             ComponentName name
     ) {
-        mPpsController = null;
+        mPPSController = null;
         mPluginLoader = null;
     }
 
     public final void loadRunTime(
-            String uuid
+            @NonNull String uuid
     ) throws RemoteException, FailedException {
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("loadRunTime mPpsController: " + mPpsController);
+            mLogger.info("loadRunTime mPPSController: " + mPPSController);
         }
-        PpsStatus ppsStatus = mPpsController.getPpsStatusForPlugin(getPluginKey());
+
+        PPSStatus ppsStatus = mPPSController.getPPSStatusForPlugin(getPluginKey());
         if (!ppsStatus.runtimeLoaded) {
-            mPpsController.loadRuntimeForPlugin(getPluginKey(), uuid);
+            mPPSController.loadRuntimeForPlugin(getPluginKey(), uuid);
         }
     }
 
     public final void loadPluginLoader(
-            String uuid
+            @NonNull String uuid
     ) throws RemoteException, FailedException {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("loadPluginLoader mPluginLoader: " + mPluginLoader);
         }
+
         if (mPluginLoader == null) {
-            PpsStatus ppsStatus = mPpsController.getPpsStatusForPlugin(getPluginKey());
+            PPSStatus ppsStatus = mPPSController.getPPSStatusForPlugin(getPluginKey());
             if (!ppsStatus.loaderLoaded) {
-                mPpsController.loadPluginLoaderForPlugin(getPluginKey(), uuid);
+                mPPSController.loadPluginLoaderForPlugin(getPluginKey(), uuid);
             }
-            IBinder iBinder = mPpsController.getPluginLoaderForPlugin(getPluginKey());
+            IBinder iBinder = mPPSController.getPluginLoaderForPlugin(getPluginKey());
             mPluginLoader = new BinderPluginLoader(iBinder);
         }
     }

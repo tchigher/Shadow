@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.tencent.shadow.core.common.InstalledApk;
 import com.tencent.shadow.core.common.Logger;
@@ -27,55 +28,57 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
-abstract public class BaseDynamicPluginManager extends BasePluginManager implements UUIDManagerImpl {
+abstract public class BaseDynamicPluginManager
+        extends BasePluginManager
+        implements UUIDManagerImpl {
 
     private static final Logger mLogger = LoggerFactory.getLogger(BaseDynamicPluginManager.class);
 
     public BaseDynamicPluginManager(
-            Context context
+            @NonNull Context context
     ) {
         super(context);
     }
 
     /*
-     * 防止绑定service重入
+     * 防止绑定 service 重入
      */
-    private AtomicBoolean mServiceConnecting = new AtomicBoolean(false);
+    private final AtomicBoolean mServiceConnecting = new AtomicBoolean(false);
 
     /*
-     * 等待service绑定完成的计数器
+     * 等待 service 绑定完成的计数器
      */
-    private AtomicReference<CountDownLatch> mConnectCountDownLatch = new AtomicReference<>();
+    private final AtomicReference<CountDownLatch> mConnectCountDownLatch = new AtomicReference<>();
 
-    /*
-     * 启动PluginProcessService
+    /**
+     * 启动 PluginProcessService
      *
-     * @param serviceName 注册在宿主中的插件进程管理service完整名字
+     * @param ppsName 注册在宿主中的插件进程管理service完整名字
      */
     public final void bindPluginProcessService(
-            final String serviceName
+            @NonNull final String ppsName
     ) {
         if (mServiceConnecting.get()) {
             if (mLogger.isInfoEnabled()) {
-                mLogger.info("pps service connecting");
+                mLogger.info("pps service connecting...");
             }
             return;
         }
+
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("bindPluginProcessService " + serviceName);
+            mLogger.info("bindPluginProcessService: " + ppsName);
         }
 
         mConnectCountDownLatch.set(new CountDownLatch(1));
-
         mServiceConnecting.set(true);
-
         final CountDownLatch startBindingLatch = new CountDownLatch(1);
+
         final boolean[] asyncResult = new boolean[1];
         mUIHandler.post(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent();
-                intent.setComponent(new ComponentName(mHostContext, serviceName));
+                intent.setComponent(new ComponentName(mHostContext, ppsName));
                 boolean binding = mHostContext.bindService(intent, new ServiceConnection() {
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -111,7 +114,7 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
             // 等待 bindService 真正开始
             startBindingLatch.await(10, TimeUnit.SECONDS);
             if (!asyncResult[0]) {
-                throw new IllegalArgumentException("无法绑定 PPS: " + serviceName);
+                throw new IllegalArgumentException("无法绑定 PPS: " + ppsName);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

@@ -6,9 +6,9 @@ import android.os.Parcel;
 
 import static android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE;
 
-public class MultiLoaderPpsBinder extends Binder {
+public class MultiLoaderPPSBinder extends Binder {
 
-    static final String DESCRIPTOR = MultiLoaderPpsBinder.class.getName();
+    static final String DESCRIPTOR = MultiLoaderPPSBinder.class.getName();
 
     static final int TRANSACTION_CODE_NO_EXCEPTION = 0;
     static final int TRANSACTION_CODE_FAILED_EXCEPTION = 1;
@@ -22,7 +22,7 @@ public class MultiLoaderPpsBinder extends Binder {
 
     private final MultiLoaderPluginProcessService mPps;
 
-    MultiLoaderPpsBinder(
+    MultiLoaderPPSBinder(
             MultiLoaderPluginProcessService pps
     ) {
         mPps = pps;
@@ -80,7 +80,7 @@ public class MultiLoaderPpsBinder extends Binder {
             case TRANSACTION_getPpsStatusForPlugin: {
                 data.enforceInterface(DESCRIPTOR);
                 String _arg0 = data.readString();
-                PpsStatus ppsStatus = mPps.getPpsStatusForPlugin(_arg0);
+                PPSStatus ppsStatus = mPps.getPpsStatusForPlugin(_arg0);
                 reply.writeNoException();
                 ppsStatus.writeToParcel(reply, PARCELABLE_WRITE_RETURN_VALUE);
                 return true;

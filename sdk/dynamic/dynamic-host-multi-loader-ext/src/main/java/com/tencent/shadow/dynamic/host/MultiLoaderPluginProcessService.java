@@ -23,7 +23,7 @@ import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MA
 public class MultiLoaderPluginProcessService extends BasePluginProcessService {
 
     static final ActivityHolder sActivityHolder = new ActivityHolder();
-    private final MultiLoaderPpsBinder mPpsControllerBinder = new MultiLoaderPpsBinder(this);
+    private final MultiLoaderPPSBinder mPpsControllerBinder = new MultiLoaderPPSBinder(this);
 
     private final HashMap<String, String> mUUIDMap = new HashMap<>();
     private final HashMap<String, UUIDManager> mUUIDManagerMap = new HashMap<>();
@@ -34,10 +34,10 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
         return sActivityHolder;
     }
 
-    public static MultiLoaderPpsController wrapBinder(
+    public static MultiLoaderPPSController wrapBinder(
             IBinder ppsBinder
     ) {
-        return new MultiLoaderPpsController(ppsBinder);
+        return new MultiLoaderPPSController(ppsBinder);
     }
 
     @Override
@@ -163,10 +163,10 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
         }
     }
 
-    synchronized PpsStatus getPpsStatusForPlugin(
+    synchronized PPSStatus getPpsStatusForPlugin(
             String pluginKey
     ) {
-        return new PpsStatus(
+        return new PPSStatus(
                 mUUIDMap.get(pluginKey),
                 isRuntimeLoaded(pluginKey),
                 mPluginLoaderMap.get(pluginKey) != null,

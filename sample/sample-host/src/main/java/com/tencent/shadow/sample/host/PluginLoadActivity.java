@@ -33,10 +33,18 @@ public class PluginLoadActivity extends Activity {
                 HostApplication.getApp().loadPluginManager(PluginHelper.getInstance().mPluginManagerApkFile);
 
                 Bundle bundle = new Bundle();
-//                bundle.putString(Constant.KEY__PLUGINS_ZIP_FILE__ABSOLUTE_PATH, PluginHelper.getInstance().mSamplePluginsZipFile.getAbsolutePath());
-                bundle.putString(Constant.KEY__PLUGINS_ZIP_FILE__ABSOLUTE_PATH, PluginHelper.getInstance().mMgMoviePluginsZipFile.getAbsolutePath());
-                bundle.putString(Constant.KEY__TARGET_PLUGIN_APP, getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_APP));
-                bundle.putString(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME, getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_FULL_NAME));
+                bundle.putString(
+                        Constant.KEY__PLUGIN_ZIP_FILE__ABSOLUTE_PATH,
+                        PluginHelper.getInstance().mMgMoviePluginsZipFile.getAbsolutePath()
+                );
+                bundle.putString(
+                        Constant.KEY__TARGET_PLUGIN_APP,
+                        getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_APP)
+                );
+                bundle.putString(
+                        Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_NAME,
+                        getIntent().getStringExtra(Constant.KEY__TARGET_PLUGIN_ACTIVITY__CLASS_NAME)
+                );
 
                 HostApplication.getApp().getPluginManager().enter(
                         PluginLoadActivity.this,
