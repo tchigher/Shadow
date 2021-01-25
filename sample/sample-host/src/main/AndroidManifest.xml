@@ -72,8 +72,9 @@
         android:name="com.tencent.shadow.sample.host.HostApplication"
         android:allowBackup="true"
         android:label="Shadow Dyanamic测试宿主App"
-        android:theme="@android:style/Theme.DeviceDefault"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
         android:usesCleartextTraffic="true"
+        android:testOnly="false"
         tools:ignore="GoogleAppIndexingWarning">
 
         <uses-library
@@ -90,9 +91,18 @@
         <provider
             android:name="com.tencent.shadow.core.runtime.container.PluginContainerContentProvider"
             android:authorities="com.tencent.shadow.contentprovider.authority.dynamic"
-            android:grantUriPermissions="true" />
+            android:grantUriPermissions="true"/>
 
-        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS" />
+<!--        <provider-->
+<!--            android:name="com.tencent.shadow.core.runtime.container.PluginContainerContentProvider"-->
+<!--            android:authorities="com.tencent.shadow.contentprovider.authority.dynamic"-->
+<!--            android:grantUriPermissions="true"-->
+<!--            android:process=":pluginMgMovie"/>-->
+
+<!--        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"-->
+<!--            android:process=":pluginMgMovie"/>-->
+
+        <service android:name="com.tencent.shadow.sample.host.PluginMgMovieProcessPPS"/>
 
         <activity
             android:name="com.tencent.shadow.sample.host.PluginLoadActivity"
@@ -106,7 +116,7 @@
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
             android:hardwareAccelerated="true"
             android:launchMode="standard"
-            android:multiprocess="false"
+            android:multiprocess="true"
             android:screenOrientation="portrait"
             android:theme="@style/troop_Transparent" />
 
@@ -115,7 +125,7 @@
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
-            android:multiprocess="false"
+            android:multiprocess="true"
             android:screenOrientation="portrait"
             android:theme="@style/troop_Transparent" />
 
@@ -124,7 +134,7 @@
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
-            android:multiprocess="false"
+            android:multiprocess="true"
             android:screenOrientation="portrait"
             android:theme="@style/troop_Transparent" />
 

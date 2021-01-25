@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#fcfcfc"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="20dp"
-        android:textSize="30sp"
-        android:text="这是一个位于dynamic-pluginmanager-apk中的view" />
+        android:layout_centerInParent="true">
 
-    <ProgressBar
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:drawableBottom="@drawable/mgmovie_launch_logo"
+            android:drawablePadding="16dp"
+            android:text="正在为你加载"
+            android:textColor="@android:color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv1"
+            android:layout_marginTop="30dp"
+            android:text="加载完毕后将自动打开"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
