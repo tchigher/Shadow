@@ -106,7 +106,7 @@ internal class DynamicPluginLoader(
 
         // 确保在 ui 线程调用
         var componentName: ComponentName? = null
-        if (isUiThread()) {
+        if (isUIThread()) {
             componentName = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
@@ -131,7 +131,7 @@ internal class DynamicPluginLoader(
 
         // 确保在 ui 线程调用
         var stopped = false
-        if (isUiThread()) {
+        if (isUIThread()) {
             stopped = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
@@ -153,17 +153,17 @@ internal class DynamicPluginLoader(
     ): Boolean {
 
         fun realAction(): Boolean {
-            if (mConnectionMap[binderPsc.mRemote] == null) {
-                mConnectionMap[binderPsc.mRemote] = ServiceConnectionWrapper(binderPsc)
+            if (mConnectionMap[binderPsc.mRemoteBinder] == null) {
+                mConnectionMap[binderPsc.mRemoteBinder] = ServiceConnectionWrapper(binderPsc)
             }
 
-            val connWrapper = mConnectionMap[binderPsc.mRemote]!!
+            val connWrapper = mConnectionMap[binderPsc.mRemoteBinder]!!
             return mPluginLoader.getPluginServiceManager().bindPluginService(pluginServiceIntent, connWrapper, flags)
         }
 
         // 确保在 ui 线程调用
         var stop = false
-        if (isUiThread()) {
+        if (isUIThread()) {
             stop = realAction()
         } else {
             val waitUiLock = CountDownLatch(1)
@@ -197,18 +197,25 @@ internal class DynamicPluginLoader(
         }
     }
 
-    private class ServiceConnectionWrapper(private val mConnection: BinderPluginServiceConnection) : ServiceConnection {
+    private class ServiceConnectionWrapper(
+            private val mBinderPluginServiceConnection: BinderPluginServiceConnection
+    ) : ServiceConnection {
 
-        override fun onServiceDisconnected(name: ComponentName) {
-            mConnection.onServiceDisconnected(name)
+        override fun onServiceDisconnected(
+                componentName: ComponentName
+        ) {
+            mBinderPluginServiceConnection.onServiceDisconnected(componentName)
         }
 
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            mConnection.onServiceConnected(name, service)
+        override fun onServiceConnected(
+                componentName: ComponentName,
+                service: IBinder
+        ) {
+            mBinderPluginServiceConnection.onServiceConnected(componentName, service)
         }
     }
 
-    private fun isUiThread(): Boolean {
+    private fun isUIThread(): Boolean {
         return Looper.myLooper() == Looper.getMainLooper()
     }
 
@@ -220,7 +227,7 @@ internal class DynamicPluginLoader(
      * @param <T>       接口类型
      * @return 所需接口
      * @throws Exception
-    */
+     */
     @Throws(Exception::class)
     fun <T> ClassLoader.getInterface(
             clazz: Class<T>,

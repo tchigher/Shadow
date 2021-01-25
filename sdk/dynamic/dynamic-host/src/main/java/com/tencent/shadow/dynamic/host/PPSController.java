@@ -85,8 +85,8 @@ public class PPSController {
         }
     }
 
-    public void exit()
-            throws RemoteException {
+    public void exit(
+    ) throws RemoteException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
 
@@ -102,8 +102,8 @@ public class PPSController {
         }
     }
 
-    public PPSStatus getPPSStatus()
-            throws RemoteException {
+    public PPSStatus getPPSStatus(
+    ) throws RemoteException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
         PPSStatus _result;
@@ -123,8 +123,8 @@ public class PPSController {
         return _result;
     }
 
-    public IBinder getPluginLoader()
-            throws RemoteException {
+    public IBinder getPluginLoader(
+    ) throws RemoteException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
         IBinder _result;

@@ -1,11 +1,16 @@
 package com.tencent.shadow.dynamic.host;
 
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import static android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE;
 
-class PPSBinder extends android.os.Binder {
+class PPSBinder
+        extends Binder {
+
     static final String DESCRIPTOR = PPSBinder.class.getName();
 
     static final int TRANSACTION_CODE_NO_EXCEPTION = 0;
@@ -18,17 +23,26 @@ class PPSBinder extends android.os.Binder {
     static final int TRANSACTION_getPpsStatus = (FIRST_CALL_TRANSACTION + 4);
     static final int TRANSACTION_getPluginLoader = (FIRST_CALL_TRANSACTION + 5);
 
-    private final PluginProcessService mPps;
+    private final PluginProcessService mPPS;
 
-    PPSBinder(PluginProcessService pps) {
-        mPps = pps;
+    PPSBinder(
+            PluginProcessService pps
+    ) {
+        mPPS = pps;
     }
 
     @Override
-    public boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
+    public boolean onTransact(
+            int code,
+            @NonNull Parcel data,
+            @Nullable Parcel reply,
+            int flags
+    ) {
         switch (code) {
             case INTERFACE_TRANSACTION: {
-                reply.writeString(DESCRIPTOR);
+                if (reply != null) {
+                    reply.writeString(DESCRIPTOR);
+                }
                 return true;
             }
             case TRANSACTION_loadRuntime: {
@@ -36,52 +50,71 @@ class PPSBinder extends android.os.Binder {
                 String _arg0;
                 _arg0 = data.readString();
                 try {
-                    mPps.loadRuntime(_arg0);
-                    reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
+                    mPPS.loadRuntime(_arg0);
+                    if (reply != null) {
+                        reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
+                    }
                 } catch (FailedException e) {
-                    reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
+                    if (reply != null) {
+                        reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
+                    }
                     e.writeToParcel(reply, 0);
                 }
                 return true;
             }
+
             case TRANSACTION_loadPluginLoader: {
                 data.enforceInterface(DESCRIPTOR);
-                String _arg0;
-                _arg0 = data.readString();
+
+                String uuid = data.readString();
                 try {
-                    mPps.loadPluginLoader(_arg0);
-                    reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
+                    mPPS.loadPluginLoader(uuid);
+                    if (reply != null) {
+                        reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
+                    }
                 } catch (FailedException e) {
-                    reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
+                    if (reply != null) {
+                        reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
+                    }
                     e.writeToParcel(reply, 0);
                 }
+
                 return true;
             }
+
             case TRANSACTION_setUUIDManager: {
                 data.enforceInterface(DESCRIPTOR);
                 IBinder iBinder = data.readStrongBinder();
                 UUIDManager uuidManager = iBinder != null ? new BinderUUIDManager(iBinder) : null;
-                mPps.setUUIDManager(uuidManager);
-                reply.writeNoException();
+                mPPS.setUUIDManager(uuidManager);
+                if (reply != null) {
+                    reply.writeNoException();
+                }
                 return true;
             }
             case TRANSACTION_exit: {
                 data.enforceInterface(DESCRIPTOR);
-                mPps.exit();
-                reply.writeNoException();
+                mPPS.exit();
+                if (reply != null) {
+                    reply.writeNoException();
+                }
                 return true;
             }
             case TRANSACTION_getPpsStatus: {
                 data.enforceInterface(DESCRIPTOR);
-                PPSStatus ppsStatus = mPps.getPpsStatus();
-                reply.writeNoException();
+                PPSStatus ppsStatus = mPPS.getPpsStatus();
+                if (reply != null) {
+                    reply.writeNoException();
+                }
                 ppsStatus.writeToParcel(reply, PARCELABLE_WRITE_RETURN_VALUE);
                 return true;
             }
             case TRANSACTION_getPluginLoader: {
                 data.enforceInterface(DESCRIPTOR);
-                IBinder pluginLoader = mPps.getPluginLoader();
-                reply.writeNoException();
+                IBinder pluginLoader = mPPS.getPluginLoader();
+                if (reply != null) {
+                    reply.writeNoException();
+                }
                 reply.writeStrongBinder(pluginLoader);
                 return true;
             }
@@ -89,4 +122,5 @@ class PPSBinder extends android.os.Binder {
                 return false;
         }
     }
+
 }

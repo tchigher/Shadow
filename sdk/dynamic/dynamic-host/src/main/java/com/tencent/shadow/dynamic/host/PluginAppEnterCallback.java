@@ -9,8 +9,10 @@ public interface PluginAppEnterCallback {
             @NonNull View view
     );
 
-    void onCloseLoadingView();
+    void onCloseLoadingView(
+    );
 
-    void onComplete();
+    void onComplete(
+    );
 
 }

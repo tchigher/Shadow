@@ -6,17 +6,22 @@ import com.tencent.shadow.core.common.InstalledApk;
 
 import java.io.File;
 
-final class PluginManagerLoaderImpl extends ImplLoader {
+final class PluginManagerLoaderImpl
+        extends ImplLoader {
+
     private static final String MANAGER_FACTORY_CLASS_NAME = "com.tencent.shadow.dynamic.impl.ManagerFactoryImpl";
-    private static final String[] REMOTE_PLUGIN_MANAGER_INTERFACES = new String[]
-            {
-                    "com.tencent.shadow.core.common",
-                    "com.tencent.shadow.dynamic.host"
-            };
+    private static final String[] REMOTE_PLUGIN_MANAGER_INTERFACES = new String[]{
+            "com.tencent.shadow.core.common",
+            "com.tencent.shadow.dynamic.host"
+    };
     final private Context applicationContext;
     final private InstalledApk installedApk;
 
-    PluginManagerLoaderImpl(Context context, File apk) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    PluginManagerLoaderImpl(
+            Context context,
+            File apk
+    ) {
         applicationContext = context.getApplicationContext();
 
         File pluginManagerLoadersDir = new File(applicationContext.getFilesDir(), "shadowPluginManagerLoaders");
@@ -30,7 +35,8 @@ final class PluginManagerLoaderImpl extends ImplLoader {
         );
     }
 
-    PluginManagerImpl load() {
+    PluginManager load(
+    ) {
         ApkClassLoader apkClassLoader = new ApkClassLoader(
                 installedApk,
                 getClass().getClassLoader(),
@@ -57,7 +63,9 @@ final class PluginManagerLoaderImpl extends ImplLoader {
 
 
     @Override
-    String[] getCustomWhiteList() {
+    String[] getCustomWhiteList(
+    ) {
         return REMOTE_PLUGIN_MANAGER_INTERFACES;
     }
+
 }

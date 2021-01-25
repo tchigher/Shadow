@@ -14,18 +14,18 @@ import dalvik.system.DexClassLoader;
  * 这样隔离的目的是让宿主 APK 中的类可以通过约定的接口使用插件 APK 中的实现,
  * 而插件中的类不会使用到和宿主同名的类.
  * <p>
- * 如果目标类符合构造时传入的包名, 则从 parent ClassLoader 中查找,
- * 否则先从自己的 dexPath 中查找,
- * 如果找不到,则再从 parent 的 parent ClassLoader中查找.
+ * 如果目标类符合构造时传入的包名, 则从 parent ClassLoader 中查找, 否则先从自己的 dexPath 中查找,
+ * 如果找不到, 再从 parent 的 parent ClassLoader 中查找.
  */
-class ApkClassLoader extends DexClassLoader {
+class ApkClassLoader
+        extends DexClassLoader {
 
-    private final ClassLoader mGrandParent;
+    private final ClassLoader mGrandParentClassLoader;
     private final String[] mInterfacePackageNames;
 
     ApkClassLoader(
             InstalledApk installedApk,
-            ClassLoader parent,
+            ClassLoader parentClassLoader,
             String[] interfacePackageNames,
             int grandTimes
     ) {
@@ -33,14 +33,14 @@ class ApkClassLoader extends DexClassLoader {
                 installedApk.mApkFilePath,
                 installedApk.odexPath,
                 installedApk.libraryPath,
-                parent
+                parentClassLoader
         );
 
-        ClassLoader grand = parent;
+        ClassLoader tempClassLoader = parentClassLoader;
         for (int i = 0; i < grandTimes; i++) {
-            grand = grand.getParent();
+            tempClassLoader = tempClassLoader.getParent();
         }
-        mGrandParent = grand;
+        mGrandParentClassLoader = tempClassLoader;
 
         mInterfacePackageNames = interfacePackageNames;
     }
@@ -58,33 +58,33 @@ class ApkClassLoader extends DexClassLoader {
             packageName = "";
         }
 
-        boolean isInterface = false;
+        boolean isClassInHostInterfacePackage = false;
         for (String interfacePackageName : mInterfacePackageNames) {
             if (packageName.equals(interfacePackageName)) {
-                isInterface = true;
+                isClassInHostInterfacePackage = true;
                 break;
             }
         }
 
-        if (isInterface) {
+        if (isClassInHostInterfacePackage) {
             return super.loadClass(className, resolve);
         } else {
             Class<?> clazz = findLoadedClass(className);
 
             if (clazz == null) {
-                ClassNotFoundException suppressed = null;
+                ClassNotFoundException classNotFoundException = null;
                 try {
                     clazz = findClass(className);
                 } catch (ClassNotFoundException e) {
-                    suppressed = e;
+                    classNotFoundException = e;
                 }
 
                 if (clazz == null) {
                     try {
-                        clazz = mGrandParent.loadClass(className);
+                        clazz = mGrandParentClassLoader.loadClass(className);
                     } catch (ClassNotFoundException e) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            e.addSuppressed(suppressed);
+                            e.addSuppressed(classNotFoundException);
                         }
                         throw e;
                     }
@@ -96,7 +96,7 @@ class ApkClassLoader extends DexClassLoader {
     }
 
     /**
-     * 从apk中读取接口的实现
+     * 从 apk 中读取接口的实现
      *
      * @param clazz     接口类
      * @param className 实现类的类名

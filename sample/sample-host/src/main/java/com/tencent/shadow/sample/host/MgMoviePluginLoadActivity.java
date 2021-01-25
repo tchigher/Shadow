@@ -3,6 +3,7 @@ package com.tencent.shadow.sample.host;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,11 +47,11 @@ public class MgMoviePluginLoadActivity extends Activity {
 
             HostApplication.getApp().getPluginManager().enter(
                     MgMoviePluginLoadActivity.this,
-                    Constant.FROM_ID__START_ACTIVITY,
+                    (long) Constant.FROM_ID__START_ACTIVITY,
                     bundle,
                     new PluginAppEnterCallback() {
                         @Override
-                        public void onShowLoadingView(final View view) {
+                        public void onShowLoadingView(@NonNull final View view) {
                             mHandler.post(() -> mViewGroup.addView(view));
                         }
 

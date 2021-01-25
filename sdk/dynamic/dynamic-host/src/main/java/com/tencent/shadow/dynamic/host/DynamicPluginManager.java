@@ -3,17 +3,21 @@ package com.tencent.shadow.dynamic.host;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
 
 import java.io.File;
 
-public final class DynamicPluginManager implements PluginManager {
+public final class DynamicPluginManager
+        implements PluginManager {
 
     final private PluginManagerUpdater mPluginManagerUpdater;
-    private PluginManagerImpl mPluginManagerImpl;
+    private PluginManager mPluginManager;
+
     private long mLastModified;
+
     private static final Logger mLogger = LoggerFactory.getLogger(DynamicPluginManager.class);
 
     public DynamicPluginManager(
@@ -30,9 +34,9 @@ public final class DynamicPluginManager implements PluginManager {
     @Override
     public void enter(
             @NonNull Context context,
-            @NonNull long fromId,
-            Bundle bundle,
-            PluginAppEnterCallback callback
+            @NonNull Long fromId,
+            @NonNull Bundle bundle,
+            @Nullable PluginAppEnterCallback callback
     ) {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("enter fromId:" + fromId + " callback:" + callback);
@@ -40,18 +44,20 @@ public final class DynamicPluginManager implements PluginManager {
 
         updatePluginManagerImpl(context);
 
-        mPluginManagerImpl.enter(context, fromId, bundle, callback);
+        mPluginManager.enter(context, fromId, bundle, callback);
 
         mPluginManagerUpdater.update();
     }
 
-    public void release() {
+    public void release(
+    ) {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("release");
         }
-        if (mPluginManagerImpl != null) {
-            mPluginManagerImpl.onDestroy();
-            mPluginManagerImpl = null;
+
+        if (mPluginManager != null) {
+            mPluginManager.onDestroy();
+            mPluginManager = null;
         }
     }
 
@@ -70,22 +76,19 @@ public final class DynamicPluginManager implements PluginManager {
                     context,
                     localLatestPluginManagerApk
             );
-            PluginManagerImpl newImpl = pluginManagerLoaderImpl.load();
+            PluginManager newImpl = pluginManagerLoaderImpl.load();
             Bundle state;
-            if (mPluginManagerImpl != null) {
+            if (mPluginManager != null) {
                 state = new Bundle();
-                mPluginManagerImpl.onSaveInstanceState(state);
-                mPluginManagerImpl.onDestroy();
+                mPluginManager.onSaveInstanceState(state);
+                mPluginManager.onDestroy();
             } else {
                 state = null;
             }
             newImpl.onCreate(state);
-            mPluginManagerImpl = newImpl;
+            mPluginManager = newImpl;
             mLastModified = lastModified;
         }
     }
 
-    public PluginManager getManagerImpl() {
-        return mPluginManagerImpl;
-    }
 }

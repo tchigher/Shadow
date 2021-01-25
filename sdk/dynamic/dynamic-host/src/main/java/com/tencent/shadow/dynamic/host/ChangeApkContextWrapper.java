@@ -13,21 +13,30 @@ import static android.content.pm.PackageManager.GET_META_DATA;
 /**
  * 修改Context的apk路径的Wrapper。可将原Context的Resource和ClassLoader重新修改为新的Apk。
  */
-class ChangeApkContextWrapper extends ContextWrapper {
+class ChangeApkContextWrapper
+        extends ContextWrapper {
 
-    private Resources mResources;
+    private final Resources mResources;
 
     private LayoutInflater mLayoutInflater;
 
     final private ClassLoader mClassloader;
 
-    ChangeApkContextWrapper(Context base, String apkPath, ClassLoader mClassloader) {
+    ChangeApkContextWrapper(
+            Context base,
+            String apkPath,
+            ClassLoader classLoader
+    ) {
         super(base);
-        this.mClassloader = mClassloader;
+
+        mClassloader = classLoader;
         mResources = createResources(apkPath, base);
     }
 
-    private Resources createResources(String apkPath, Context base) {
+    private Resources createResources(
+            String apkPath,
+            Context base
+    ) {
         PackageManager packageManager = base.getPackageManager();
         PackageInfo packageArchiveInfo = packageManager.getPackageArchiveInfo(apkPath, GET_META_DATA);
         packageArchiveInfo.applicationInfo.publicSourceDir = apkPath;
@@ -37,40 +46,48 @@ class ChangeApkContextWrapper extends ContextWrapper {
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
-    public AssetManager getAssets() {
+    public AssetManager getAssets(
+    ) {
         return mResources.getAssets();
     }
 
     @Override
-    public Resources getResources() {
+    public Resources getResources(
+    ) {
         return mResources;
     }
 
     @Override
-    public Resources.Theme getTheme() {
+    public Resources.Theme getTheme(
+    ) {
         return mResources.newTheme();
     }
 
     @Override
-    public Object getSystemService(String name) {
+    public Object getSystemService(
+            String name
+    ) {
         if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
             if (mLayoutInflater == null) {
                 LayoutInflater layoutInflater = (LayoutInflater) super.getSystemService(name);
                 mLayoutInflater = layoutInflater.cloneInContext(this);
             }
+
             return mLayoutInflater;
         }
+
         return super.getSystemService(name);
     }
 
     @Override
-    public ClassLoader getClassLoader() {
+    public ClassLoader getClassLoader(
+    ) {
         return mClassloader;
     }
+
 }
 
 

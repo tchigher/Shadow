@@ -18,7 +18,8 @@ import java.util.concurrent.Executors;
 
 import static com.tencent.shadow.sample.constant.Constant.KEY__TARGET_PLUGIN_APP__MGMOVIE;
 
-public class SamplePluginManager extends FastPluginManager {
+public class SamplePluginManager
+        extends FastPluginManager {
 
     private final ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
 
@@ -67,7 +68,7 @@ public class SamplePluginManager extends FastPluginManager {
     @Override
     public void enter(
             @NonNull final Context context,
-            @NonNull long fromId,
+            @NonNull Long fromId,
             @NonNull Bundle bundle,
             @Nullable final PluginAppEnterCallback pluginAppEnterCallback
     ) {

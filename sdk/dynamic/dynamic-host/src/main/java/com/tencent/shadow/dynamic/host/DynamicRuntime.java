@@ -74,8 +74,8 @@ public class DynamicRuntime {
         return true;
     }
 
-
-    private static void recoveryClassLoader() throws Exception {
+    private static void recoveryClassLoader(
+    ) throws Exception {
         ClassLoader contextClassLoader = DynamicRuntime.class.getClassLoader();
         ClassLoader child = contextClassLoader;
         ClassLoader tmpClassLoader = contextClassLoader.getParent();
@@ -89,8 +89,8 @@ public class DynamicRuntime {
         }
     }
 
-
-    private static RuntimeClassLoader getRuntimeClassLoader() {
+    private static RuntimeClassLoader getRuntimeClassLoader(
+    ) {
         ClassLoader contextClassLoader = DynamicRuntime.class.getClassLoader();
         ClassLoader tmpClassLoader = contextClassLoader.getParent();
         while (tmpClassLoader != null) {
@@ -142,7 +142,8 @@ public class DynamicRuntime {
      *
      * @return ClassLoader 类的 parent 域, 或不能通过反射访问该域时返回 null
      */
-    private static Field getParentField() {
+    private static Field getParentField(
+    ) {
         ClassLoader classLoader = DynamicRuntime.class.getClassLoader();
         ClassLoader parent = classLoader.getParent();
         Field field = null;
@@ -232,11 +233,11 @@ public class DynamicRuntime {
 
 
     static class RuntimeClassLoader extends BaseDexClassLoader {
+
         /*
          * 加载的apk路径
          */
-        private String apkPath;
-
+        private final String apkPath;
 
         RuntimeClassLoader(
                 String dexPath,
@@ -250,8 +251,10 @@ public class DynamicRuntime {
                     librarySearchPath,
                     parent
             );
-            this.apkPath = dexPath;
+
+            apkPath = dexPath;
         }
+
     }
 
 }

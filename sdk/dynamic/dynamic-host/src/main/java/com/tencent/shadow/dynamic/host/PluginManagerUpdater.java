@@ -18,12 +18,14 @@ public interface PluginManagerUpdater {
      *
      * @return null 表示本地没有可用的
      */
-    File getLocalLatestApk();
+    File getLocalLatestApk(
+    );
 
     /**
      * @return true 表示之前の更新过程意外中断了
      */
-    default boolean wasUpdatingInterrupted() {
+    default boolean wasUpdatingInterrupted(
+    ) {
         // do nothing
         return false;
     }
@@ -34,7 +36,8 @@ public interface PluginManagerUpdater {
      * @return 当前最新的 PluginManager, 可能是之前已经返回过の文件, 但它已最新
      */
     @Nullable
-    default Future<File> update() {
+    default Future<File> update(
+    ) {
         // do nothing
         return null;
     }

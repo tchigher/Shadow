@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tencent.shadow.dynamic.host.ManagerFactory;
-import com.tencent.shadow.dynamic.host.PluginManagerImpl;
+import com.tencent.shadow.dynamic.host.PluginManager;
 import com.tencent.shadow.sample.manager.SamplePluginManager;
 
 /**
@@ -12,7 +12,7 @@ import com.tencent.shadow.sample.manager.SamplePluginManager;
  */
 public final class ManagerFactoryImpl implements ManagerFactory {
     @Override
-    public PluginManagerImpl buildManager(
+    public PluginManager buildManager(
             @NonNull Context context
     ) {
         return new SamplePluginManager(context);

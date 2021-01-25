@@ -184,7 +184,7 @@ public class MultiLoaderPluginProcessService extends BasePluginProcessService {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("exit");
         }
-        MultiLoaderPluginProcessService.sActivityHolder.finishAll();
+        MultiLoaderPluginProcessService.sActivityHolder.finishAllActivities();
         System.exit(0);
         try {
             wait();

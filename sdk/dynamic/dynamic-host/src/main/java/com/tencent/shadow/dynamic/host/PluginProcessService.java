@@ -18,7 +18,8 @@ import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MA
 import static com.tencent.shadow.dynamic.host.FailedException.ERROR_CODE_UUID_MANAGER_NULL_EXCEPTION;
 
 
-public class PluginProcessService extends BasePluginProcessService {
+public class PluginProcessService
+        extends BasePluginProcessService {
 
     private final PPSBinder mPpsControllerBinder = new PPSBinder(this);
 
@@ -39,7 +40,7 @@ public class PluginProcessService extends BasePluginProcessService {
             Intent intent
     ) {
         if (mLogger.isInfoEnabled()) {
-            mLogger.info("onBind:" + this);
+            mLogger.info("onBind: " + this);
         }
         return mPpsControllerBinder;
     }
@@ -65,7 +66,8 @@ public class PluginProcessService extends BasePluginProcessService {
         }
     }
 
-    private void checkUUIDManagerNotNull() throws FailedException {
+    private void checkUUIDManagerNotNull(
+    ) throws FailedException {
         if (mUUIDManager == null) {
             throw new FailedException(ERROR_CODE_UUID_MANAGER_NULL_EXCEPTION, "mUUIDManager == null");
         }
@@ -89,7 +91,8 @@ public class PluginProcessService extends BasePluginProcessService {
             } catch (RemoteException e) {
                 throw new FailedException(ERROR_CODE_UUID_MANAGER_DEAD_EXCEPTION, e.getMessage());
             } catch (NotFoundException e) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, "uuid == " + uuid + " 的 Runtime 没有找到. Cause: " + e.getMessage());
+                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION,
+                        "uuid == " + uuid + " 的 Runtime 没有找到. Cause: " + e.getMessage());
             }
 
             InstalledApk installedRuntimeApk = new InstalledApk(
@@ -126,7 +129,8 @@ public class PluginProcessService extends BasePluginProcessService {
             try {
                 installedApk = mUUIDManager.getPluginLoader(uuid);
                 if (mLogger.isInfoEnabled()) {
-                    mLogger.info("取出 uuid== " + uuid + "的 Loader apk: " + installedApk.mApkFilePath);
+                    mLogger.info("取出 uuid == " + uuid + " 的 Loader apk: "
+                            + installedApk.mApkFilePath);
                 }
             } catch (RemoteException e) {
                 if (mLogger.isErrorEnabled()) {
@@ -134,14 +138,18 @@ public class PluginProcessService extends BasePluginProcessService {
                 }
                 throw new FailedException(ERROR_CODE_UUID_MANAGER_DEAD_EXCEPTION, e.getMessage());
             } catch (NotFoundException e) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, "uuid == " + uuid + " 的 PluginLoader 没有找到. Cause: " + e.getMessage());
+                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION,
+                        "uuid == " + uuid + " 的 PluginLoader 没有找到. Cause: " + e.getMessage());
             }
             File file = new File(installedApk.mApkFilePath);
             if (!file.exists()) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, file.getAbsolutePath() + " 文件不存在");
+                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION,
+                        file.getAbsolutePath() + " 文件不存在");
             }
 
-            PluginLoaderImpl pluginLoader = new LoaderImplLoader().load(installedApk, uuid, getApplicationContext());
+            PluginLoaderImpl pluginLoader = new LoaderImplLoader().load(
+                    installedApk, uuid, getApplicationContext()
+            );
             pluginLoader.setUUIDManager(mUUIDManager);
             mPluginLoader = pluginLoader;
         } catch (RuntimeException e) {
@@ -155,7 +163,9 @@ public class PluginProcessService extends BasePluginProcessService {
             if (mLogger.isErrorEnabled()) {
                 mLogger.error("loadPluginLoader 发生 Exception: ", e);
             }
-            String msg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+            String msg = e.getCause() != null
+                    ? e.getCause().getMessage()
+                    : e.getMessage();
             throw new FailedException(ERROR_CODE_RUNTIME_EXCEPTION, "加载动态实现失败. Cause: " + msg);
         }
     }
@@ -166,32 +176,44 @@ public class PluginProcessService extends BasePluginProcessService {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("setUUIDManager uuidManager == " + uuidManager);
         }
+
         mUUIDManager = uuidManager;
         if (mPluginLoader != null) {
             if (mLogger.isInfoEnabled()) {
                 mLogger.info("更新 mPluginLoader 的 uuidManager");
             }
+
             mPluginLoader.setUUIDManager(uuidManager);
         }
     }
 
-    void exit() {
+    void exit(
+    ) {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("exit ");
         }
-        PluginProcessService.sActivityHolder.finishAll();
+
+        PluginProcessService.sActivityHolder.finishAllActivities();
         System.exit(0);
+
         try {
             wait();
         } catch (InterruptedException ignored) {
         }
     }
 
-    PPSStatus getPpsStatus() {
-        return new PPSStatus(mUUID, mRuntimeLoaded, mPluginLoader != null, mUUIDManager != null);
+    PPSStatus getPpsStatus(
+    ) {
+        return new PPSStatus(
+                mUUID,
+                mRuntimeLoaded,
+                mPluginLoader != null,
+                mUUIDManager != null
+        );
     }
 
-    IBinder getPluginLoader() {
+    IBinder getPluginLoader(
+    ) {
         return mPluginLoader;
     }
 

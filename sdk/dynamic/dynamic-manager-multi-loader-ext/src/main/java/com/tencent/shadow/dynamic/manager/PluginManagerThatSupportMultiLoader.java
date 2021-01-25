@@ -13,12 +13,12 @@ import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.host.MultiLoaderPPSController;
 import com.tencent.shadow.dynamic.host.MultiLoaderPluginProcessService;
 import com.tencent.shadow.dynamic.host.PPSStatus;
-import com.tencent.shadow.dynamic.host.PluginManagerImpl;
+import com.tencent.shadow.dynamic.host.PluginManager;
 import com.tencent.shadow.dynamic.loader.PluginLoader;
 
 abstract public class PluginManagerThatSupportMultiLoader
         extends BaseDynamicPluginManager
-        implements PluginManagerImpl {
+        implements PluginManager {
 
     private static final Logger mLogger =
             LoggerFactory.getLogger(PluginManagerThatUseDynamicLoader.class);

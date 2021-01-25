@@ -12,13 +12,13 @@ import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.host.PPSController;
 import com.tencent.shadow.dynamic.host.PPSStatus;
-import com.tencent.shadow.dynamic.host.PluginManagerImpl;
+import com.tencent.shadow.dynamic.host.PluginManager;
 import com.tencent.shadow.dynamic.host.PluginProcessService;
 import com.tencent.shadow.dynamic.loader.PluginLoader;
 
 public abstract class PluginManagerThatUseDynamicLoader
         extends BaseDynamicPluginManager
-        implements PluginManagerImpl {
+        implements PluginManager {
 
     private static final Logger mLogger =
             LoggerFactory.getLogger(PluginManagerThatUseDynamicLoader.class);
@@ -41,10 +41,11 @@ public abstract class PluginManagerThatUseDynamicLoader
 
     @Override
     protected void onPluginServiceConnected(
-            ComponentName name,
-            IBinder service
+            ComponentName componentName,
+            IBinder serviceBinder
     ) {
-        mPPSController = PluginProcessService.wrapBinder(service);
+        mPPSController = PluginProcessService.wrapBinder(serviceBinder);
+
         try {
             mPPSController.setUUIDManager(new UUIDManagerBinder(PluginManagerThatUseDynamicLoader.this));
         } catch (DeadObjectException e) {
@@ -75,7 +76,7 @@ public abstract class PluginManagerThatUseDynamicLoader
 
     @Override
     protected void onPluginServiceDisconnected(
-            ComponentName name
+            ComponentName componentName
     ) {
         mPPSController = null;
         mPluginLoader = null;

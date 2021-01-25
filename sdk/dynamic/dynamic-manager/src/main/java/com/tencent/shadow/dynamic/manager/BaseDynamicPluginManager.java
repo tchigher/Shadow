@@ -74,41 +74,38 @@ abstract public class BaseDynamicPluginManager
         final CountDownLatch startBindingLatch = new CountDownLatch(1);
 
         final boolean[] asyncResult = new boolean[1];
-        mUIHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName(mHostContext, ppsName));
-                boolean binding = mHostContext.bindService(intent, new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        if (mLogger.isInfoEnabled()) {
-                            mLogger.info("onServiceConnected connectCountDownLatch:" + mConnectCountDownLatch);
-                        }
-                        mServiceConnecting.set(false);
-
-                        // service connect 后处理逻辑
-                        onPluginServiceConnected(name, service);
-
-                        mConnectCountDownLatch.get().countDown();
-
-                        if (mLogger.isInfoEnabled()) {
-                            mLogger.info("onServiceConnected countDown:" + mConnectCountDownLatch);
-                        }
+        mUIHandler.post(() -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(mHostContext, ppsName));
+            boolean binding = mHostContext.bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if (mLogger.isInfoEnabled()) {
+                        mLogger.info("onServiceConnected connectCountDownLatch:" + mConnectCountDownLatch);
                     }
+                    mServiceConnecting.set(false);
 
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        if (mLogger.isInfoEnabled()) {
-                            mLogger.info("onServiceDisconnected");
-                        }
-                        mServiceConnecting.set(false);
-                        onPluginServiceDisconnected(name);
+                    // service connect 后处理逻辑
+                    onPluginServiceConnected(name, service);
+
+                    mConnectCountDownLatch.get().countDown();
+
+                    if (mLogger.isInfoEnabled()) {
+                        mLogger.info("onServiceConnected countDown:" + mConnectCountDownLatch);
                     }
-                }, BIND_AUTO_CREATE);
-                asyncResult[0] = binding;
-                startBindingLatch.countDown();
-            }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    if (mLogger.isInfoEnabled()) {
+                        mLogger.info("onServiceDisconnected");
+                    }
+                    mServiceConnecting.set(false);
+                    onPluginServiceDisconnected(name);
+                }
+            }, BIND_AUTO_CREATE);
+            asyncResult[0] = binding;
+            startBindingLatch.countDown();
         });
         try {
             // 等待 bindService 真正开始

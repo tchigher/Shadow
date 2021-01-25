@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.tencent.shadow.core.common.InstalledApk;
 
-final class LoaderImplLoader extends ImplLoader {
+final class LoaderImplLoader
+        extends ImplLoader {
+
     /**
      * 加载{@link #sLoaderFactoryImplClassName}时
      * 需要从宿主PathClassLoader（含双亲委派）中加载的类
@@ -20,7 +22,11 @@ final class LoaderImplLoader extends ImplLoader {
     private final static String sLoaderFactoryImplClassName
             = "com.tencent.shadow.dynamic.loader.impl.LoaderFactoryImpl";
 
-    PluginLoaderImpl load(InstalledApk installedApk, String uuid, Context appContext) throws Exception {
+    PluginLoaderImpl load(
+            InstalledApk installedApk,
+            String uuid,
+            Context appContext
+    ) throws Exception {
         ApkClassLoader pluginLoaderClassLoader = new ApkClassLoader(
                 installedApk,
                 LoaderImplLoader.class.getClassLoader(),
@@ -36,7 +42,9 @@ final class LoaderImplLoader extends ImplLoader {
     }
 
     @Override
-    String[] getCustomWhiteList() {
+    String[] getCustomWhiteList(
+    ) {
         return sInterfaces;
     }
+
 }

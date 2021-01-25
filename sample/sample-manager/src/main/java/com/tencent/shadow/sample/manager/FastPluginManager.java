@@ -27,7 +27,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoader {
+public abstract class FastPluginManager
+        extends PluginManagerThatUseDynamicLoader {
 
     private final ExecutorService mFixedThreadPool = Executors.newFixedThreadPool(4);
 
