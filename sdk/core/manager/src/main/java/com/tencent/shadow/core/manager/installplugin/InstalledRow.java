@@ -62,13 +62,22 @@ public class InstalledRow {
             String soDir,
             String odexDir
     ) {
-        this(hash, partKey, filePath, type, soDir, odexDir);
+        this(
+                hash,
+                partKey,
+                filePath,
+                type,
+                soDir,
+                odexDir
+        );
+
         this.businessName = businessName;
         this.dependsOn = dependsOn;
         this.hostWhiteList = hostWhiteList;
     }
 
-    public ContentValues toContentValues() {
+    public ContentValues toContentValues(
+    ) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(InstalledPluginDBHelper.COLUMN_HASH, hash);
         contentValues.put(InstalledPluginDBHelper.COLUMN_INSTALL_TIME, installedTime);

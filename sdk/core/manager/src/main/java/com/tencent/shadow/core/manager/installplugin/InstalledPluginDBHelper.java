@@ -9,7 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstalledPluginDBHelper extends SQLiteOpenHelper {
+public class InstalledPluginDBHelper
+        extends SQLiteOpenHelper {
 
     /**
      * 数据库名称
@@ -103,7 +104,11 @@ public class InstalledPluginDBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(
+            SQLiteDatabase db,
+            int oldVersion,
+            int newVersion
+    ) {
         if (oldVersion < 2) {
             db.beginTransaction();
             try {
@@ -131,7 +136,7 @@ public class InstalledPluginDBHelper extends SQLiteOpenHelper {
                 db.endTransaction();
             }
         }
-        if(oldVersion < 3){
+        if (oldVersion < 3) {
             db.beginTransaction();
             try {
                 //添加列COLUMN_HOST_WHITELIST
@@ -155,4 +160,5 @@ public class InstalledPluginDBHelper extends SQLiteOpenHelper {
             }
         }
     }
+
 }

@@ -22,6 +22,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 object LoadPluginBloc {
+
     @Throws(LoadPluginException::class)
     fun loadPlugin(
             executorService: ExecutorService,
@@ -147,6 +148,5 @@ object LoadPluginBloc {
             return buildRunningPlugin
         }
     }
-
 
 }

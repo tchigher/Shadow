@@ -22,7 +22,9 @@ import com.tencent.shadow.core.runtime.container.HostActivityDelegator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShadowContext extends SubDirContextThemeWrapper {
+public class ShadowContext
+        extends SubDirContextThemeWrapper {
+
     PluginComponentLauncher mPluginComponentLauncher;
     ClassLoader mPluginClassLoader;
     ShadowApplication mShadowApplication;
@@ -34,53 +36,73 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     private String mBusinessName;
     final private Map<BroadcastReceiver, BroadcastReceiverWapper> mBroadcastReceivers = new HashMap<>();
 
-    public ShadowContext() {
+    public ShadowContext(
+    ) {
     }
 
-    public ShadowContext(Context base, int themeResId) {
+    public ShadowContext(
+            Context base,
+            int themeResId
+    ) {
         super(base, themeResId);
     }
 
-    public final void setPluginResources(Resources resources) {
+    public final void setPluginResources(
+            Resources resources
+    ) {
         mPluginResources = resources;
     }
 
-    public final void setPluginClassLoader(ClassLoader classLoader) {
+    public final void setPluginClassLoader(
+            ClassLoader classLoader
+    ) {
         mPluginClassLoader = classLoader;
     }
 
-    public void setPluginComponentLauncher(PluginComponentLauncher pluginComponentLauncher) {
+    public void setPluginComponentLauncher(
+            PluginComponentLauncher pluginComponentLauncher
+    ) {
         mPluginComponentLauncher = pluginComponentLauncher;
     }
 
-    public void setShadowApplication(ShadowApplication shadowApplication) {
+    public void setShadowApplication(
+            ShadowApplication shadowApplication
+    ) {
         mShadowApplication = shadowApplication;
     }
 
-    public void setApplicationInfo(ApplicationInfo applicationInfo) {
+    public void setApplicationInfo(
+            ApplicationInfo applicationInfo
+    ) {
         ApplicationInfo copy = new ApplicationInfo(applicationInfo);
         copy.metaData = null;//正常通过Context获得的ApplicationInfo就没有metaData
         mApplicationInfo = copy;
     }
 
-    public void setBusinessName(String businessName) {
+    public void setBusinessName(
+            String businessName
+    ) {
         if (TextUtils.isEmpty(businessName)) {
             businessName = null;
         }
         this.mBusinessName = businessName;
     }
 
-    public void setPluginPartKey(String partKey) {
+    public void setPluginPartKey(
+            String partKey
+    ) {
         this.mPartKey = partKey;
     }
 
     @Override
-    public Context getApplicationContext() {
+    public Context getApplicationContext(
+    ) {
         return mShadowApplication;
     }
 
     @Override
-    public Resources getResources() {
+    public Resources getResources(
+    ) {
         if (mMixResources == null) {
             Context baseContext = getBaseContext();
             Resources hostResources;
@@ -95,12 +117,15 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public AssetManager getAssets() {
+    public AssetManager getAssets(
+    ) {
         return mPluginResources.getAssets();
     }
 
     @Override
-    public Object getSystemService(String name) {
+    public Object getSystemService(
+            String name
+    ) {
         if (LAYOUT_INFLATER_SERVICE.equals(name)) {
             if (mLayoutInflater == null) {
                 LayoutInflater inflater = (LayoutInflater) super.getSystemService(name);
@@ -112,11 +137,13 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public ClassLoader getClassLoader() {
+    public ClassLoader getClassLoader(
+    ) {
         return mPluginClassLoader;
     }
 
     public interface PluginComponentLauncher {
+
         /**
          * 启动Activity
          *
@@ -125,38 +152,68 @@ public class ShadowContext extends SubDirContextThemeWrapper {
          * @return <code>true</code>表示该Intent是为了启动插件内Activity的,已经被正确消费了.
          * <code>false</code>表示该Intent不是插件内的Activity.
          */
-        boolean startActivity(ShadowContext shadowContext, Intent intent, Bundle options);
+        boolean startActivity(
+                ShadowContext shadowContext,
+                Intent intent,
+                Bundle options
+        );
 
         /**
          * 启动Activity
          *
-         * @param delegator 发起启动的activity的delegator
-         * @param intent    插件内传来的Intent.
-         * @param callingActivity   调用者
+         * @param delegator       发起启动的activity的delegator
+         * @param intent          插件内传来的Intent.
+         * @param callingActivity 调用者
          * @return <code>true</code>表示该Intent是为了启动插件内Activity的,已经被正确消费了.
          * <code>false</code>表示该Intent不是插件内的Activity.
          */
-        boolean startActivityForResult(GeneratedHostActivityDelegator delegator, Intent intent, int requestCode, Bundle option, ComponentName callingActivity);
+        boolean startActivityForResult(
+                GeneratedHostActivityDelegator delegator,
+                Intent intent, int requestCode,
+                Bundle option,
+                ComponentName callingActivity
+        );
 
-        Pair<Boolean, ComponentName> startService(ShadowContext context, Intent service);
+        Pair<Boolean, ComponentName> startService(
+                ShadowContext context,
+                Intent service
+        );
 
-        Pair<Boolean, Boolean> stopService(ShadowContext context, Intent name);
+        Pair<Boolean, Boolean> stopService(
+                ShadowContext context,
+                Intent name
+        );
 
-        Pair<Boolean, Boolean> bindService(ShadowContext context, Intent service, ServiceConnection conn, int flags);
+        Pair<Boolean, Boolean> bindService(
+                ShadowContext context,
+                Intent service,
+                ServiceConnection conn,
+                int flags
+        );
 
-        Pair<Boolean, ?> unbindService(ShadowContext context, ServiceConnection conn);
+        Pair<Boolean, ?> unbindService(
+                ShadowContext context,
+                ServiceConnection conn
+        );
 
-        Intent convertPluginActivityIntent(Intent pluginIntent);
+        Intent convertPluginActivityIntent(
+                Intent pluginIntent
+        );
 
     }
 
     @Override
-    public void startActivity(Intent intent) {
+    public void startActivity(
+            Intent intent
+    ) {
         startActivity(intent, null);
     }
 
     @Override
-    public void startActivity(Intent intent, Bundle options) {
+    public void startActivity(
+            Intent intent,
+            Bundle options
+    ) {
         final Intent pluginIntent = new Intent(intent);
         pluginIntent.setExtrasClassLoader(mPluginClassLoader);
         final boolean success = mPluginComponentLauncher.startActivity(this, pluginIntent, options);
@@ -166,18 +223,27 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @android.annotation.TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void superStartActivity(Intent intent, Bundle options) {
+    public void superStartActivity(
+            Intent intent,
+            Bundle options
+    ) {
         super.startActivity(intent, options);
     }
 
     @Override
-    public void unbindService(ServiceConnection conn) {
+    public void unbindService(
+            ServiceConnection conn
+    ) {
         if (!mPluginComponentLauncher.unbindService(this, conn).first)
             super.unbindService(conn);
     }
 
     @Override
-    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+    public boolean bindService(
+            Intent service,
+            ServiceConnection conn,
+            int flags
+    ) {
         if (service.getComponent() == null) {
             return super.bindService(service, conn, flags);
         }
@@ -188,7 +254,9 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public boolean stopService(Intent name) {
+    public boolean stopService(
+            Intent name
+    ) {
         if (name.getComponent() == null) {
             return super.stopService(name);
         }
@@ -199,7 +267,9 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public ComponentName startService(Intent service) {
+    public ComponentName startService(
+            Intent service
+    ) {
         if (service.getComponent() == null) {
             return super.startService(service);
         }
@@ -210,16 +280,19 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public ApplicationInfo getApplicationInfo() {
+    public ApplicationInfo getApplicationInfo(
+    ) {
         return mApplicationInfo;
     }
 
-    public PluginComponentLauncher getPendingIntentConverter() {
+    public PluginComponentLauncher getPendingIntentConverter(
+    ) {
         return mPluginComponentLauncher;
     }
 
     @Override
-    String getSubDirName() {
+    String getSubDirName(
+    ) {
         if (mBusinessName == null) {
             return null;
         } else {
@@ -228,33 +301,53 @@ public class ShadowContext extends SubDirContextThemeWrapper {
     }
 
     @Override
-    public String getPackageName() {
+    public String getPackageName(
+    ) {
         return mApplicationInfo.packageName;
     }
 
-
     @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+    public Intent registerReceiver(
+            BroadcastReceiver receiver,
+            IntentFilter filter
+    ) {
         return super.registerReceiver(wrapBroadcastReceiver(receiver), filter);
     }
 
     @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, int flags) {
+    public Intent registerReceiver(
+            BroadcastReceiver receiver,
+            IntentFilter filter,
+            int flags
+    ) {
         return super.registerReceiver(wrapBroadcastReceiver(receiver), filter, flags);
     }
 
     @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler) {
+    public Intent registerReceiver(
+            BroadcastReceiver receiver,
+            IntentFilter filter,
+            String broadcastPermission,
+            Handler scheduler
+    ) {
         return super.registerReceiver(wrapBroadcastReceiver(receiver), filter, broadcastPermission, scheduler);
     }
 
     @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler, int flags) {
+    public Intent registerReceiver(
+            BroadcastReceiver receiver,
+            IntentFilter filter,
+            String broadcastPermission,
+            Handler scheduler,
+            int flags
+    ) {
         return super.registerReceiver(wrapBroadcastReceiver(receiver), filter, broadcastPermission, scheduler, flags);
     }
 
     @Override
-    public void unregisterReceiver(BroadcastReceiver receiver) {
+    public void unregisterReceiver(
+            BroadcastReceiver receiver
+    ) {
         synchronized (mBroadcastReceivers) {
             BroadcastReceiverWapper broadcastReceiverWapper = mBroadcastReceivers.get(receiver);
             if (broadcastReceiverWapper != null) {
@@ -265,7 +358,9 @@ public class ShadowContext extends SubDirContextThemeWrapper {
         }
     }
 
-    private BroadcastReceiverWapper wrapBroadcastReceiver(BroadcastReceiver receiver) {
+    private BroadcastReceiverWapper wrapBroadcastReceiver(
+            BroadcastReceiver receiver
+    ) {
         if (receiver == null) {
             return null;
         }
@@ -278,4 +373,5 @@ public class ShadowContext extends SubDirContextThemeWrapper {
             return broadcastReceiverWapper;
         }
     }
+
 }

@@ -9,33 +9,44 @@ import javassist.bytecode.MethodInfo
 import javassist.bytecode.Opcode
 
 abstract class SpecificTransform {
+
     private val _list = mutableListOf<TransformStep>()
 
     val list: List<TransformStep> = _list
 
     lateinit var mClassPool: ClassPool
 
-    fun newStep(transform: TransformStep) {
+    fun newStep(
+            transform: TransformStep
+    ) {
         _list.add(transform)
     }
 
-    abstract fun setup(allInputClass: Set<CtClass>)
+    abstract fun setup(
+            allInputClass: Set<CtClass>
+    )
 
-    fun CtMethod.copyDescriptorFrom(other: CtMethod) {
+    fun CtMethod.copyDescriptorFrom(
+            other: CtMethod
+    ) {
         methodInfo.descriptor = other.methodInfo.descriptor
     }
 
     /**
      * 过滤引用了某些类型的类
      */
-    fun filterRefClasses(allAppClass: Set<CtClass>, targetClassList: List<String>) =
-            allAppClass.filter { ctClass ->
-                targetClassList.any { targetClass ->
-                    ctClass.refClasses.contains(targetClass)
-                }
-            }.toSet()
+    fun filterRefClasses(
+            allAppClass: Set<CtClass>,
+            targetClassList: List<String>
+    ) = allAppClass.filter { ctClass ->
+        targetClassList.any { targetClass ->
+            ctClass.refClasses.contains(targetClass)
+        }
+    }.toSet()
 
-    fun CtClass.isClassOf(className: String): Boolean {
+    fun CtClass.isClassOf(
+            className: String
+    ): Boolean {
         var tmp: CtClass? = this
         do {
             if (tmp?.name == className) {
@@ -53,7 +64,10 @@ abstract class SpecificTransform {
     /**
      * 查找目标class是否存在目标method的调用
      */
-    fun matchMethodCallInClass(ctMethod: CtMethod, clazz: CtClass): Boolean {
+    fun matchMethodCallInClass(
+            ctMethod: CtMethod,
+            clazz: CtClass
+    ): Boolean {
         for (methodInfo in clazz.classFile2.methods) {
             methodInfo as MethodInfo
             val codeAttr: CodeAttribute? = methodInfo.codeAttribute
@@ -79,7 +93,13 @@ abstract class SpecificTransform {
         return false
     }
 
-    private fun matchClass(methodName: String, methodDescriptor: String, classname: String, name: String, pool: ClassPool): Boolean {
+    private fun matchClass(
+            methodName: String,
+            methodDescriptor: String,
+            classname: String,
+            name: String,
+            pool: ClassPool
+    ): Boolean {
         if (classname == name)
             return true
 
@@ -101,4 +121,5 @@ abstract class SpecificTransform {
 
         return false
     }
+
 }

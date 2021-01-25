@@ -28,7 +28,6 @@ public class AppCacheFolderManager {
         return new File(pluginManagerBaseDir, pluginManagerName);
     }
 
-
     public static File getOdexDir(
             File root,
             String key
@@ -42,7 +41,6 @@ public class AppCacheFolderManager {
     ) {
         return new File(odexDir, pluginAppPartKey + "_odexed");
     }
-
 
     private static File getOdexRootDir(
             File root

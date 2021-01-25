@@ -26,7 +26,11 @@ import java.util.concurrent.Future
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
-abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, DI, ContentProviderDelegateProvider {
+abstract class ShadowPluginLoader(
+        hostAppContext: Context
+) : DelegateProvider,
+        DI,
+        ContentProviderDelegateProvider {
 
     protected val mExecutorService = Executors.newCachedThreadPool()
 
@@ -46,13 +50,12 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
      */
     private val mPluginPartsMap = hashMapOf<String, PluginParts>()
 
-
     lateinit var mComponentManager: ComponentManager
 
     /**
      * @GuardedBy("mLock")
      */
-    abstract fun getComponentManager():ComponentManager
+    abstract fun getComponentManager(): ComponentManager
 
     /**
      * @GuardedBy("mLock")
@@ -77,31 +80,38 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
         UriConverter.setUriParseDelegate(mPluginContentProviderManager)
     }
 
-    fun getPluginServiceManager(): PluginServiceManager {
+    fun getPluginServiceManager(
+    ): PluginServiceManager {
         mPluginServiceManagerLock.withLock {
             return mPluginServiceManager
         }
 
     }
 
-    fun getPluginParts(partKey: String): PluginParts? {
+    fun getPluginParts(
+            partKey: String
+    ): PluginParts? {
         mLock.withLock {
             return mPluginPartsMap[partKey]
         }
     }
 
-    fun getAllPluginPart() :HashMap<String,PluginParts> {
+    fun getAllPluginPart(
+    ): HashMap<String, PluginParts> {
         mLock.withLock {
             return mPluginPartsMap
         }
     }
 
-    fun onCreate(){
+    fun onCreate(
+    ) {
         mComponentManager = getComponentManager()
         mComponentManager.setPluginContentProviderManager(mPluginContentProviderManager)
     }
 
-    fun callApplicationOnCreate(partKey: String) {
+    fun callApplicationOnCreate(
+            partKey: String
+    ) {
         fun realAction() {
             val pluginParts = getPluginParts(partKey)
             pluginParts?.let {
@@ -112,6 +122,7 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
                 application.onCreate()
             }
         }
+
         if (isUiThread()) {
             realAction()
         } else {
@@ -150,25 +161,32 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
                 mPluginPartsMap,
                 mHostAppContext,
                 installedApk,
-                loadParameters)
+                loadParameters
+        )
     }
 
-    private fun allPluginPackageInfo(): Array<PackageInfo> {
+    private fun allPluginPackageInfo(
+    ): Array<PackageInfo> {
         mLock.withLock {
             return mPluginPackageInfoSet.toTypedArray()
         }
     }
 
-    override fun getHostActivityDelegate(aClass: Class<out HostActivityDelegator>): HostActivityDelegate {
+    override fun getHostActivityDelegate(
+            aClass: Class<out HostActivityDelegator>
+    ): HostActivityDelegate {
         return ShadowActivityDelegate(this)
     }
 
-
-    override fun getHostContentProviderDelegate(): HostContentProviderDelegate {
+    override fun getHostContentProviderDelegate(
+    ): HostContentProviderDelegate {
         return ShadowContentProviderDelegate(mPluginContentProviderManager)
     }
 
-    override fun inject(delegate: ShadowDelegate, partKey: String) {
+    override fun inject(
+            delegate: ShadowDelegate,
+            partKey: String
+    ) {
         mLock.withLock {
             val pluginParts = mPluginPartsMap[partKey]
             if (pluginParts == null) {
@@ -183,7 +201,8 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
         }
     }
 
-    fun InstalledApk.getLoadParameters(): LoadParameters {
+    fun InstalledApk.getLoadParameters(
+    ): LoadParameters {
         val parcel = Parcel.obtain()
         parcel.unmarshall(parcelExtras, 0, parcelExtras.size)
         parcel.setDataPosition(0)
@@ -192,7 +211,9 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
         return loadParameters
     }
 
-    private fun isUiThread(): Boolean {
+    private fun isUiThread(
+    ): Boolean {
         return Looper.myLooper() == Looper.getMainLooper()
     }
+
 }

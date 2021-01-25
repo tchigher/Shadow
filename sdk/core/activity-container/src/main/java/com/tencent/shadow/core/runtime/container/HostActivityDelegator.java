@@ -6,6 +6,10 @@ package com.tencent.shadow.core.runtime.container;
  * <p>
  * cubershi
  */
-public interface HostActivityDelegator extends GeneratedHostActivityDelegator {
-    HostActivity getHostActivity();
+public interface HostActivityDelegator
+        extends GeneratedHostActivityDelegator {
+
+    HostActivity getHostActivity(
+    );
+
 }

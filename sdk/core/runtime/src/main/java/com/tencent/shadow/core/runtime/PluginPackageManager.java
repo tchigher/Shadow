@@ -11,15 +11,36 @@ import android.content.pm.ResolveInfo;
 import java.util.List;
 
 public interface PluginPackageManager {
-    ApplicationInfo getApplicationInfo(String packageName, int flags);
 
-    ActivityInfo getActivityInfo(ComponentName component, int flags);
+    ApplicationInfo getApplicationInfo(
+            String packageName,
+            int flags
+    );
 
-    PackageInfo getPackageInfo(String packageName, int flags);
+    ActivityInfo getActivityInfo(
+            ComponentName component,
+            int flags
+    );
 
-    ProviderInfo resolveContentProvider(String name, int flags);
+    PackageInfo getPackageInfo(
+            String packageName,
+            int flags
+    );
 
-    List<ProviderInfo> queryContentProviders(String processName, int uid, int flags);
+    ProviderInfo resolveContentProvider(
+            String name,
+            int flags
+    );
 
-    ResolveInfo resolveActivity(Intent intent, int flags);
+    List<ProviderInfo> queryContentProviders(
+            String processName,
+            int uid,
+            int flags
+    );
+
+    ResolveInfo resolveActivity(
+            Intent intent,
+            int flags
+    );
+
 }

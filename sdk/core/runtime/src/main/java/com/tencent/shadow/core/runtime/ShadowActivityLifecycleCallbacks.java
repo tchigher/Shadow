@@ -8,31 +8,53 @@ import com.tencent.shadow.core.runtime.container.PluginContainerActivity;
 
 public interface ShadowActivityLifecycleCallbacks {
 
-    void onActivityCreated(ShadowActivity activity, Bundle savedInstanceState);
+    void onActivityCreated(
+            ShadowActivity activity,
+            Bundle savedInstanceState
+    );
 
-    void onActivityStarted(ShadowActivity activity);
+    void onActivityStarted(
+            ShadowActivity activity
+    );
 
-    void onActivityResumed(ShadowActivity activity);
+    void onActivityResumed(
+            ShadowActivity activity
+    );
 
-    void onActivityPaused(ShadowActivity activity);
+    void onActivityPaused(
+            ShadowActivity activity
+    );
 
-    void onActivityStopped(ShadowActivity activity);
+    void onActivityStopped(
+            ShadowActivity activity
+    );
 
-    void onActivitySaveInstanceState(ShadowActivity activity, Bundle outState);
+    void onActivitySaveInstanceState(
+            ShadowActivity activity,
+            Bundle outState
+    );
 
-    void onActivityDestroyed(ShadowActivity activity);
+    void onActivityDestroyed(
+            ShadowActivity activity
+    );
 
-    class Wrapper implements Application.ActivityLifecycleCallbacks {
+    class Wrapper
+            implements Application.ActivityLifecycleCallbacks {
 
         final ShadowActivityLifecycleCallbacks shadowActivityLifecycleCallbacks;
         final Object runtimeObject;
 
-        public Wrapper(ShadowActivityLifecycleCallbacks shadowActivityLifecycleCallbacks, Object runtimeObject) {
+        public Wrapper(
+                ShadowActivityLifecycleCallbacks shadowActivityLifecycleCallbacks,
+                Object runtimeObject
+        ) {
             this.shadowActivityLifecycleCallbacks = shadowActivityLifecycleCallbacks;
             this.runtimeObject = runtimeObject;
         }
 
-        private ShadowActivity getPluginActivity(Activity activity) {
+        private ShadowActivity getPluginActivity(
+                Activity activity
+        ) {
             if (activity instanceof PluginContainerActivity) {
                 return (ShadowActivity) PluginActivity.get((PluginContainerActivity) activity);
             } else {
@@ -41,57 +63,73 @@ public interface ShadowActivityLifecycleCallbacks {
         }
 
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        public void onActivityCreated(
+                Activity activity,
+                Bundle savedInstanceState
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityCreated(pluginActivity, savedInstanceState);
             }
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityStarted(
+                Activity activity
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityStarted(pluginActivity);
             }
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(
+                Activity activity
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityResumed(pluginActivity);
             }
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(
+                Activity activity
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityPaused(pluginActivity);
             }
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityStopped(
+                Activity activity
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityStopped(pluginActivity);
             }
         }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        public void onActivitySaveInstanceState(
+                Activity activity,
+                Bundle outState
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivitySaveInstanceState(pluginActivity, outState);
             }
         }
 
         @Override
-        public void onActivityDestroyed(Activity activity) {
+        public void onActivityDestroyed(
+                Activity activity
+        ) {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
-            if (checkOwnerActivity(pluginActivity) ) {
+            if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityDestroyed(pluginActivity);
             }
         }
@@ -102,8 +140,12 @@ public interface ShadowActivityLifecycleCallbacks {
          * @param activity 插件Activity
          * @return 是否属于当前Application所在的插件 true属于
          */
-        private boolean checkOwnerActivity(PluginActivity activity) {
+        private boolean checkOwnerActivity(
+                PluginActivity activity
+        ) {
             return activity != null && activity.mPluginApplication == runtimeObject;
         }
+
     }
+
 }

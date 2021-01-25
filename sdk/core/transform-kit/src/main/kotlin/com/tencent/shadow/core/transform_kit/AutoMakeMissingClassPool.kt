@@ -3,7 +3,11 @@ package com.tencent.shadow.core.transform_kit
 import javassist.ClassPool
 import javassist.CtClass
 
-class AutoMakeMissingClassPool(useDefaultPath: Boolean) : ClassPool(useDefaultPath) {
+class AutoMakeMissingClassPool(
+        useDefaultPath: Boolean
+) : ClassPool(
+        useDefaultPath
+) {
 
     companion object {
         fun isFromFixTypes2Called(newThrowable: Throwable): Boolean {
@@ -16,7 +20,10 @@ class AutoMakeMissingClassPool(useDefaultPath: Boolean) : ClassPool(useDefaultPa
         }
     }
 
-    override fun get0(classname: String?, useCache: Boolean): CtClass? {
+    override fun get0(
+            classname: String?,
+            useCache: Boolean
+    ): CtClass? {
         var get0 = super.get0(classname, useCache)
 
         // 来自javassist.bytecode.stackmap.TypeData.TypeVar.fixTypes2的调用时，
@@ -36,4 +43,5 @@ class AutoMakeMissingClassPool(useDefaultPath: Boolean) : ClassPool(useDefaultPa
 
         return get0
     }
+
 }

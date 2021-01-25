@@ -18,18 +18,26 @@ import com.tencent.shadow.core.runtime.ShadowService
  * Created by jaylanchen on 2018/11/29.
  */
 
-class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, private val mHostContext: Context) {
+class PluginServiceManager(
+        private val mPluginLoader: ShadowPluginLoader,
+        private val mHostContext: Context
+) {
 
     // 保存service的binder
     private val mServiceBinderMap = HashMap<ComponentName, IBinder?>()
+
     // service对应ServiceConnection集合
     private val mServiceConnectionMap = HashMap<ComponentName, HashSet<ServiceConnection>>()
+
     // ServiceConnection与对应的Intent的集合
     private val mConnectionIntentMap = HashMap<ServiceConnection, Intent>()
+
     // 所有已启动的service集合
     private val mAliveServicesMap = HashMap<ComponentName, ShadowService>()
+
     // 通过startService启动起来的service集合
     private val mServiceStartByStartServiceSet = HashSet<ComponentName>()
+
     // 存在mAliveServicesMap中，且stopService已经调用的service集合
     private val mServiceStopCalledMap = HashSet<ComponentName>()
 
@@ -38,17 +46,17 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
 
     companion object {
         private var startId: Int = 0
+
         fun getNewStartId(): Int {
             startId++
-
             return startId
         }
     }
 
-
-    fun startPluginService(intent: Intent): ComponentName? {
+    fun startPluginService(
+            intent: Intent
+    ): ComponentName? {
         val componentName = intent.component!!
-
 
         // 检查所请求的service是否已经存在
         if (!mAliveServicesMap.containsKey(componentName)) {
@@ -60,11 +68,12 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
         }
         mAliveServicesMap[componentName]?.onStartCommand(intent, 0, getNewStartId())
 
-
         return componentName
     }
 
-    fun stopPluginService(intent: Intent): Boolean {
+    fun stopPluginService(
+            intent: Intent
+    ): Boolean {
         val componentName = intent.component!!
 
         if (mAliveServicesMap.containsKey(componentName)) {
@@ -77,7 +86,11 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
         return false
     }
 
-    fun bindPluginService(intent: Intent, conn: ServiceConnection, flags: Int): Boolean {
+    fun bindPluginService(
+            intent: Intent,
+            conn: ServiceConnection,
+            flags: Int
+    ): Boolean {
         // TODO #25 目前实现未处理 flags, 后续实现补上
 
         val componentName = intent.component!!
@@ -99,8 +112,6 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
 
         // 3. 如果binder不为空，则要回调onServiceConnected
         mServiceBinderMap[componentName]?.let {
-
-
             // 检查该connections是否存在了
             if (mServiceConnectionMap.containsKey(componentName)) {
 
@@ -129,11 +140,11 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
         }
 
         return true
-
     }
 
-    fun unbindPluginService(connection: ServiceConnection) {
-
+    fun unbindPluginService(
+            connection: ServiceConnection
+    ) {
         for ((componentName, connSet) in mServiceConnectionMap) {
             if (connSet.contains(connection)) {
                 connSet.remove(connection)
@@ -156,35 +167,39 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
 
     }
 
-
-
-    fun onConfigurationChanged(newConfig: Configuration?) {
+    fun onConfigurationChanged(
+            newConfig: Configuration?
+    ) {
         allDelegates.forEach {
             it.onConfigurationChanged(newConfig)
         }
     }
 
-    fun onLowMemory() {
+    fun onLowMemory(
+    ) {
         allDelegates.forEach {
             it.onLowMemory()
         }
     }
 
-    fun onTrimMemory(level: Int) {
+    fun onTrimMemory(
+            level: Int
+    ) {
         allDelegates.forEach {
             it.onTrimMemory(level)
         }
     }
 
-
-    fun onTaskRemoved(rootIntent: Intent) {
+    fun onTaskRemoved(
+            rootIntent: Intent
+    ) {
         allDelegates.forEach {
             it.onTaskRemoved(rootIntent)
         }
     }
 
-
-    fun onDestroy() {
+    fun onDestroy(
+    ) {
         mServiceBinderMap.clear()
         mServiceConnectionMap.clear()
         mConnectionIntentMap.clear()
@@ -193,15 +208,17 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
         mServiceStopCalledMap.clear()
     }
 
-
-    private fun createServiceAndCallOnCreate(intent: Intent): ShadowService {
+    private fun createServiceAndCallOnCreate(
+            intent: Intent
+    ): ShadowService {
         val service = newServiceInstance(intent)
         service.onCreate()
         return service
     }
 
-
-    private fun newServiceInstance(intent: Intent): ShadowService {
+    private fun newServiceInstance(
+            intent: Intent
+    ): ShadowService {
         val componentName = intent.component!!
         val businessName = mPluginLoader.mComponentManager.getComponentBusinessName(componentName)
         val partKey = mPluginLoader.mComponentManager.getComponentPartKey(componentName)
@@ -225,9 +242,9 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
         return service
     }
 
-
-    private fun destroyServiceIfNeed(service: ComponentName): Boolean {
-
+    private fun destroyServiceIfNeed(
+            service: ComponentName
+    ): Boolean {
         val destroy = {
             // 移除该service，及相关数据
             val serviceDelegate = mAliveServicesMap.remove(service)
@@ -258,14 +275,15 @@ class PluginServiceManager(private val mPluginLoader: ShadowPluginLoader, privat
 
         return false
     }
-
 }
 
-private class TmpShadowDelegate : ShadowDelegate() {
+private class TmpShadowDelegate
+    : ShadowDelegate() {
 
     fun getPluginApplication(): ShadowApplication = mPluginApplication
     fun getAppComponentFactory() = mAppComponentFactory
     fun getPluginClassLoader(): PluginClassLoader = mPluginClassLoader
     fun getPluginResources(): Resources = mPluginResources
     fun getComponentManager(): ComponentManager = mComponentManager
+
 }

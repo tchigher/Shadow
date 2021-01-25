@@ -7,23 +7,35 @@ import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 
 object ReplaceClassName {
+
     private val mNewNames = mutableSetOf<String>()
+
     /**
      * MutableMap<defClass, MutableMap<method, MutableSet<useClass>>>
      */
-    private val errorResult: MutableMap<String, MutableMap<String, MutableSet<String>>> = mutableMapOf()
+    private val errorResult: MutableMap<
+            String,
+            MutableMap<String, MutableSet<String>>
+            > = mutableMapOf()
 
     fun resetErrorCount() {
         mNewNames.clear()
         errorResult.clear()
     }
 
-    fun replaceClassName(ctClass: CtClass, oldName: String, newName: String) {
+    fun replaceClassName(
+            ctClass: CtClass,
+            oldName: String,
+            newName: String
+    ) {
         ctClass.replaceClassName(oldName, newName)
         mNewNames.add(newName)
     }
 
-    fun checkAll(classPool: ClassPool, inputClassNames: List<String>): Map<String, Map<String, Set<String>>> {
+    fun checkAll(
+            classPool: ClassPool,
+            inputClassNames: List<String>
+    ): Map<String, Map<String, Set<String>>> {
         inputClassNames.forEach { inputClassName ->
             val inputClass = classPool[inputClassName]
             if (inputClass.refClasses.any { mNewNames.contains(it) }) {
@@ -32,13 +44,16 @@ object ReplaceClassName {
                 }
             }
         }
+
         return errorResult
     }
 
     /**
      * 检查ctClass对refClassName引用的方法确实都存在
      */
-    private fun CtClass.checkMethodExist(refClass: CtClass) {
+    private fun CtClass.checkMethodExist(
+            refClass: CtClass
+    ) {
         val invokeClass = name
         val refClassName = refClass.name
         instrument(object : ExprEditor() {
@@ -64,4 +79,5 @@ object ReplaceClassName {
             }
         })
     }
+
 }

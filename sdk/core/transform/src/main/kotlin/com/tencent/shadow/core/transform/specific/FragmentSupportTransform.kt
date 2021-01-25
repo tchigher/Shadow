@@ -6,7 +6,9 @@ import com.tencent.shadow.core.transform_kit.TransformStep
 import javassist.*
 import javassist.bytecode.Descriptor
 
-class FragmentSupportTransform : SpecificTransform() {
+class FragmentSupportTransform
+    : SpecificTransform() {
+
     companion object {
         const val ObjectClassname = "java.lang.Object"
         const val ShadowActivityClassname = "com.tencent.shadow.core.runtime.ShadowActivity"
@@ -21,7 +23,9 @@ class FragmentSupportTransform : SpecificTransform() {
 
     private fun CtClass.isFragment(): Boolean = isClassOf(AndroidFragmentClassname)
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val javaObject = mClassPool[ObjectClassname]
         val androidActivity = mClassPool[AndroidActivityClassname]
         val androidFragment = mClassPool[AndroidFragmentClassname]
@@ -66,7 +70,7 @@ class FragmentSupportTransform : SpecificTransform() {
                 Descriptor.ofMethod(CtClass.voidType,
                         arrayOf(androidFragment, androidIntent, androidBundle)))
 
-        /**
+        /*
          * 调用插件Fragment的Activity相关方法时将ContainerActivity转换成ShadowActivity
          */
         newStep(object : TransformStep {
@@ -89,7 +93,8 @@ class FragmentSupportTransform : SpecificTransform() {
             }
         })
 
-        fun onAttachSupport() {
+        fun onAttachSupport(
+        ) {
             //收集哪些Fragment覆盖了onAttach方法
             val overrideOnAttachContextFragments = mutableSetOf<CtClass>()
             val overrideOnAttachActivityFragments = mutableSetOf<CtClass>()
@@ -263,6 +268,7 @@ class FragmentSupportTransform : SpecificTransform() {
                 }
             })
         }
+
         onAttachSupport()
 
         fun onInflateSupport() {
@@ -439,6 +445,7 @@ class FragmentSupportTransform : SpecificTransform() {
                 }
             })
         }
+
         onInflateSupport()
     }
 

@@ -13,7 +13,8 @@ class AndroidClassPoolBuilder(
 ) : ClassPoolBuilder {
     private val logger = project.logger
 
-    override fun build(): ClassPool {
+    override fun build(
+    ): ClassPool {
         //这里使用useDefaultPath:false是因为这里取到的contextClassLoader不包含classpath指定进来的runtime
         //所以在外部先获取一个包含了runtime的contextClassLoader传进来
         val classPool = AutoMakeMissingClassPool(false)
@@ -35,4 +36,5 @@ class AndroidClassPoolBuilder(
 
         return classPool
     }
+
 }

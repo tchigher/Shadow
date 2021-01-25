@@ -6,7 +6,8 @@ import android.os.Parcelable;
 /**
  * 安装完成的apk
  */
-public class InstalledApk implements Parcelable {
+public class InstalledApk
+        implements Parcelable {
 
     public final String mApkFilePath;
 
@@ -73,15 +74,21 @@ public class InstalledApk implements Parcelable {
     }
 
     public static final Creator<InstalledApk> CREATOR = new Creator<InstalledApk>() {
+
         @Override
-        public InstalledApk createFromParcel(Parcel in) {
+        public InstalledApk createFromParcel(
+                Parcel in
+        ) {
             return new InstalledApk(in);
         }
 
         @Override
-        public InstalledApk[] newArray(int size) {
+        public InstalledApk[] newArray(
+                int size
+        ) {
             return new InstalledApk[size];
         }
+
     };
 
 }

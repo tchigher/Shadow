@@ -17,7 +17,10 @@ open class PluginApkConfig {
     var dependsOn: Array<String> = emptyArray()
     var hostWhiteList: Array<String> = emptyArray()
 
-    constructor(name: String) {
+    constructor(
+            name: String
+    ) {
         this.name = name
     }
+
 }

@@ -6,6 +6,7 @@ class PluginInfo(
         val packageName: String,
         val applicationClassName: String?
 ) {
+
     private val _mActivities: MutableSet<PluginActivityInfo> = HashSet()
     private val _mServices: MutableSet<PluginServiceInfo> = HashSet()
     private val _mProviders: MutableSet<PluginProviderInfo> = HashSet()
@@ -29,4 +30,5 @@ class PluginInfo(
     fun putPluginProviderInfo(pluginProviderInfo: PluginProviderInfo) {
         _mProviders.add(pluginProviderInfo)
     }
+
 }

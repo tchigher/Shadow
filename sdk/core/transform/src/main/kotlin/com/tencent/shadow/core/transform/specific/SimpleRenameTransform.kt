@@ -5,8 +5,12 @@ import com.tencent.shadow.core.transform_kit.SpecificTransform
 import com.tencent.shadow.core.transform_kit.TransformStep
 import javassist.CtClass
 
-open class SimpleRenameTransform(private val fromToMap: Map<String, String>) : SpecificTransform() {
-    final override fun setup(allInputClass: Set<CtClass>) {
+open class SimpleRenameTransform(
+        private val fromToMap: Map<String, String>
+) : SpecificTransform() {
+
+    final override fun setup(
+            allInputClass: Set<CtClass>) {
         newStep(object : TransformStep {
             override fun filter(allInputClass: Set<CtClass>) = allInputClass
 
@@ -17,4 +21,5 @@ open class SimpleRenameTransform(private val fromToMap: Map<String, String>) : S
             }
         })
     }
+
 }

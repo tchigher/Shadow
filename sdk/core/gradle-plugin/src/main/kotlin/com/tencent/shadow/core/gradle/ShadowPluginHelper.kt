@@ -10,8 +10,11 @@ import java.security.MessageDigest
 import kotlin.experimental.and
 
 open class ShadowPluginHelper {
+
     companion object {
-        fun getFileMD5(file: File): String? {
+        fun getFileMD5(
+                file: File
+        ): String? {
             if (!file.isFile) {
                 return null
             }
@@ -34,10 +37,13 @@ open class ShadowPluginHelper {
             } finally {
                 inStream?.close()
             }
+
             return bytes2HexStr(digest.digest())
         }
 
-        private fun bytes2HexStr(bytes: ByteArray?): String {
+        private fun bytes2HexStr(
+                bytes: ByteArray?
+        ): String {
             val HEX_ARRAY = "0123456789ABCDEF".toCharArray()
             if (bytes == null || bytes.isEmpty()) {
                 return ""
@@ -58,7 +64,11 @@ open class ShadowPluginHelper {
             return String(buf)
         }
 
-        fun getRuntimeApkFile(project: Project, buildType: PluginBuildType, checkExist: Boolean): File {
+        fun getRuntimeApkFile(
+                project: Project,
+                buildType: PluginBuildType,
+                checkExist: Boolean
+        ): File {
             val packagePlugin = project.extensions.findByName("packagePlugin")
             val extension = packagePlugin as PackagePluginExtension
 
@@ -74,7 +84,11 @@ open class ShadowPluginHelper {
             return runtimeFile
         }
 
-        fun getLoaderApkFile(project: Project, buildType: PluginBuildType, checkExist: Boolean): File {
+        fun getLoaderApkFile(
+                project: Project,
+                buildType: PluginBuildType,
+                checkExist: Boolean
+        ): File {
             val packagePlugin = project.extensions.findByName("packagePlugin")
             val extension = packagePlugin as PackagePluginExtension
 
@@ -91,7 +105,11 @@ open class ShadowPluginHelper {
 
         }
 
-        fun getPluginFile(project: Project, pluginConfig: PluginApkConfig, checkExist: Boolean): File {
+        fun getPluginFile(
+                project: Project,
+                pluginConfig: PluginApkConfig,
+                checkExist: Boolean
+        ): File {
             val pluginFile = File(project.rootDir, pluginConfig.apkPath)
             if (checkExist && !pluginFile.exists()) {
                 throw IllegalArgumentException(pluginFile.absolutePath + " , plugin file not exist...")
@@ -100,4 +118,5 @@ open class ShadowPluginHelper {
             return pluginFile
         }
     }
+
 }

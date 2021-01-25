@@ -1,6 +1,5 @@
 package com.tencent.shadow.core.manager.installplugin;
 
-
 import android.text.TextUtils;
 
 import com.tencent.shadow.core.common.Logger;
@@ -13,14 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-
 public class CopySoBloc {
 
     private static final Logger mLogger = LoggerFactory.getLogger(CopySoBloc.class);
 
     private static ConcurrentHashMap<String, Object> sLocks = new ConcurrentHashMap<>();
 
-    public static void copySo(File apkFile, File soDir, File copiedTagFile, String filter) throws InstallPluginException {
+    public static void copySo(
+            File apkFile,
+            File soDir,
+            File copiedTagFile,
+            String filter
+    ) throws InstallPluginException {
         String key = apkFile.getAbsolutePath();
         Object lock = sLocks.get(key);
         if (lock == null) {
@@ -29,7 +32,6 @@ public class CopySoBloc {
         }
 
         synchronized (lock) {
-
             if (TextUtils.isEmpty(filter) || copiedTagFile.exists()) {
                 return;
             }
@@ -74,7 +76,6 @@ public class CopySoBloc {
             }
         }
     }
-
 
 }
 

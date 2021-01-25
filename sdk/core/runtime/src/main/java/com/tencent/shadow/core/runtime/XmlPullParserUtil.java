@@ -9,7 +9,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class XmlPullParserUtil {
 
-    public static String getLayoutStartTagName(Resources res, int layoutResID) {
+    public static String getLayoutStartTagName(
+            Resources res,
+            int layoutResID
+    ) {
         XmlResourceParser parser;
         String name;
         try {
@@ -36,4 +39,5 @@ public class XmlPullParserUtil {
         }
         return name;
     }
+
 }

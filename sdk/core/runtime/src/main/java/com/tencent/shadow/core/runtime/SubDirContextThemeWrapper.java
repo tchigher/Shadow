@@ -14,36 +14,51 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-/**
+/*
  * 将Context上所有get*Dir方法都放到原实现的子目录中
  */
-abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
+abstract class SubDirContextThemeWrapper
+        extends ContextThemeWrapper {
+
     private final Object mSync = new Object();
 
     /**
      * GuardedBy("mSync")
      */
-    private File mDataDir, mFilesDir, mNoBackupFilesDir, mObbDir, mCacheDir, mCodeCacheDir,
+    private File mDataDir,
+            mFilesDir,
+            mNoBackupFilesDir,
+            mObbDir,
+            mCacheDir,
+            mCodeCacheDir,
             mExternalCacheDir;
 
+    abstract String getSubDirName(
+    );
 
-    abstract String getSubDirName();
-
-    public SubDirContextThemeWrapper() {
+    public SubDirContextThemeWrapper(
+    ) {
         super();
     }
 
-    public SubDirContextThemeWrapper(Context base, int themeResId) {
+    public SubDirContextThemeWrapper(
+            Context base,
+            int themeResId
+    ) {
         super(base, themeResId);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public SubDirContextThemeWrapper(Context base, Resources.Theme theme) {
+    public SubDirContextThemeWrapper(
+            Context base,
+            Resources.Theme theme
+    ) {
         super(base, theme);
     }
 
     @Override
-    public File getDataDir() {
+    public File getDataDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getDataDir();
         }
@@ -56,7 +71,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getFilesDir() {
+    public File getFilesDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getFilesDir();
         }
@@ -69,8 +85,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public FileInputStream openFileInput(String name)
-            throws FileNotFoundException {
+    public FileInputStream openFileInput(
+            String name
+    ) throws FileNotFoundException {
         if (getSubDirName() == null) {
             return super.openFileInput(name);
         }
@@ -79,7 +96,10 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public FileOutputStream openFileOutput(String name, int mode) throws FileNotFoundException {
+    public FileOutputStream openFileOutput(
+            String name,
+            int mode
+    ) throws FileNotFoundException {
         if (mode != MODE_PRIVATE || getSubDirName() == null) {
             return super.openFileOutput(name, mode);
         }
@@ -89,13 +109,16 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public boolean deleteFile(String name) {
+    public boolean deleteFile(
+            String name
+    ) {
         File f = makeFilename(getFilesDir(), name);
         return f.delete();
     }
 
     @Override
-    public File getNoBackupFilesDir() {
+    public File getNoBackupFilesDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getNoBackupFilesDir();
         }
@@ -108,7 +131,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getExternalFilesDir(String type) {
+    public File getExternalFilesDir(
+            String type
+    ) {
         if (getSubDirName() == null) {
             return super.getExternalFilesDir(type);
         }
@@ -116,7 +141,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File[] getExternalFilesDirs(String type) {
+    public File[] getExternalFilesDirs(
+            String type
+    ) {
         if (getSubDirName() == null) {
             return super.getExternalFilesDirs(type);
         }
@@ -129,7 +156,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getObbDir() {
+    public File getObbDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getObbDir();
         }
@@ -142,7 +170,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File[] getObbDirs() {
+    public File[] getObbDirs(
+    ) {
         if (getSubDirName() == null) {
             return super.getObbDirs();
         }
@@ -155,7 +184,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getCacheDir() {
+    public File getCacheDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getCacheDir();
         }
@@ -168,7 +198,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getCodeCacheDir() {
+    public File getCodeCacheDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getCodeCacheDir();
         }
@@ -181,7 +212,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getExternalCacheDir() {
+    public File getExternalCacheDir(
+    ) {
         if (getSubDirName() == null) {
             return super.getExternalCacheDir();
         }
@@ -194,7 +226,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File[] getExternalCacheDirs() {
+    public File[] getExternalCacheDirs(
+    ) {
         if (getSubDirName() == null) {
             return super.getExternalCacheDirs();
         }
@@ -207,7 +240,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File[] getExternalMediaDirs() {
+    public File[] getExternalMediaDirs(
+    ) {
         if (getSubDirName() == null) {
             return super.getExternalMediaDirs();
         }
@@ -220,7 +254,10 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getDir(String name, int mode) {
+    public File getDir(
+            String name,
+            int mode
+    ) {
         if (mode != MODE_PRIVATE || getSubDirName() == null) {
             return super.getDir(name, mode);
         }
@@ -228,7 +265,10 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public SharedPreferences getSharedPreferences(String name, int mode) {
+    public SharedPreferences getSharedPreferences(
+            String name,
+            int mode
+    ) {
         if (mode != MODE_PRIVATE || getSubDirName() == null) {
             return super.getSharedPreferences(name, mode);
         } else {
@@ -237,7 +277,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public boolean deleteSharedPreferences(String name) {
+    public boolean deleteSharedPreferences(
+            String name
+    ) {
         if (getSubDirName() == null) {
             return super.deleteSharedPreferences(name);
         } else {
@@ -246,7 +288,11 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory) {
+    public SQLiteDatabase openOrCreateDatabase(
+            String name,
+            int mode,
+            SQLiteDatabase.CursorFactory factory
+    ) {
         if (mode != MODE_PRIVATE || getSubDirName() == null) {
             return super.openOrCreateDatabase(name, mode, factory);
         } else {
@@ -255,7 +301,12 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler) {
+    public SQLiteDatabase openOrCreateDatabase(
+            String name,
+            int mode,
+            SQLiteDatabase.CursorFactory factory,
+            DatabaseErrorHandler errorHandler
+    ) {
         if (mode != MODE_PRIVATE || getSubDirName() == null) {
             return super.openOrCreateDatabase(name, mode, factory, errorHandler);
         } else {
@@ -264,7 +315,10 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public boolean moveDatabaseFrom(Context sourceContext, String name) {
+    public boolean moveDatabaseFrom(
+            Context sourceContext,
+            String name
+    ) {
         if (getSubDirName() == null) {
             return super.moveDatabaseFrom(sourceContext, name);
         } else {
@@ -273,7 +327,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public boolean deleteDatabase(String name) {
+    public boolean deleteDatabase(
+            String name
+    ) {
         if (getSubDirName() == null) {
             return super.deleteDatabase(name);
         } else {
@@ -282,7 +338,9 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public File getDatabasePath(String name) {
+    public File getDatabasePath(
+            String name
+    ) {
         if (getSubDirName() == null) {
             return super.getDatabasePath(name);
         } else {
@@ -291,7 +349,8 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
     }
 
     @Override
-    public String[] databaseList() {
+    public String[] databaseList(
+    ) {
         if (getSubDirName() == null) {
             return super.databaseList();
         } else {
@@ -317,21 +376,29 @@ abstract class SubDirContextThemeWrapper extends ContextThemeWrapper {
         }
     }
 
-    private String makeSubName(String name) {
+    private String makeSubName(
+            String name
+    ) {
         return getSubDirName() + "_" + name;
     }
 
-    private static File ensurePrivateDirExists(File dir) {
+    private static File ensurePrivateDirExists(
+            File dir
+    ) {
         //noinspection ResultOfMethodCallIgnored
         dir.mkdirs();
         return dir;
     }
 
-    private static File makeFilename(File base, String name) {
+    private static File makeFilename(
+            File base,
+            String name
+    ) {
         if (name.indexOf(File.separatorChar) < 0) {
             return new File(base, name);
         }
         throw new IllegalArgumentException(
                 "File " + name + " contains a path separator");
     }
+
 }

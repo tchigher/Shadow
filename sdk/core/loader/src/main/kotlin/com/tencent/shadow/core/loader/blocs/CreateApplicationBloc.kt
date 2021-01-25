@@ -14,6 +14,7 @@ import com.tencent.shadow.core.runtime.ShadowApplication
  * 初始化插件Application类
  */
 object CreateApplicationBloc {
+
     @Throws(CreateApplicationException::class)
     fun createShadowApplication(
             pluginClassLoader: PluginClassLoader,
@@ -45,6 +46,6 @@ object CreateApplicationBloc {
         } catch (e: Exception) {
             throw CreateApplicationException(e)
         }
-
     }
+
 }

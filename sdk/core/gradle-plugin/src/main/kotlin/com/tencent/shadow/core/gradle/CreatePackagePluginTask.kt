@@ -9,7 +9,10 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
-internal fun createPackagePluginTask(project: Project, buildType: PluginBuildType): Task {
+internal fun createPackagePluginTask(
+        project: Project,
+        buildType: PluginBuildType
+): Task {
     return project.tasks.create("package${buildType.name.capitalize()}Plugin", Zip::class.java) {
         println("PackagePluginTask task run")
 
@@ -20,7 +23,6 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
             runtimeFile = ShadowPluginHelper.getRuntimeApkFile(project, buildType, false)
         }
 
-
         //loader apk file
         val loaderApkName: String = buildType.loaderApkConfig.first
         var loaderFile: File? = null
@@ -28,18 +30,15 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
             loaderFile = ShadowPluginHelper.getLoaderApkFile(project, buildType, false)
         }
 
-
         //config file
         val targetConfigFile = File(project.buildDir.absolutePath + "/intermediates/generatePluginConfig/${buildType.name}/config.json")
         targetConfigFile.parentFile.mkdirs()
-
 
         //all plugin apks
         val pluginFiles: MutableList<File> = mutableListOf()
         for (i in buildType.pluginApks) {
             pluginFiles.add(ShadowPluginHelper.getPluginFile(project, i, false))
         }
-
 
         it.group = "plugin"
         it.description = "打包插件"
@@ -66,7 +65,10 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
     }.dependsOn(createGenerateConfigTask(project, buildType))
 }
 
-private fun createGenerateConfigTask(project: Project, buildType: PluginBuildType): Task {
+private fun createGenerateConfigTask(
+        project: Project,
+        buildType: PluginBuildType
+): Task {
     println("GenerateConfigTask task run")
     val packagePlugin = project.extensions.findByName("packagePlugin")
     val extension = packagePlugin as PackagePluginExtension
@@ -79,7 +81,6 @@ private fun createGenerateConfigTask(project: Project, buildType: PluginBuildTyp
         println("runtime task = $runtimeTask")
     }
 
-
     //loader apk build task
     val loaderApkName = buildType.loaderApkConfig.first
     var loaderTask = ""
@@ -88,9 +89,7 @@ private fun createGenerateConfigTask(project: Project, buildType: PluginBuildTyp
         println("loader task = $loaderTask")
     }
 
-
     val targetConfigFile = File(project.buildDir.absolutePath + "/intermediates/generatePluginConfig/${buildType.name}/config.json")
-
 
     val pluginApkTasks: MutableList<String> = mutableListOf()
     for (i in buildType.pluginApks) {
@@ -125,5 +124,6 @@ private fun createGenerateConfigTask(project: Project, buildType: PluginBuildTyp
     if (runtimeTask.isNotEmpty()) {
         task.dependsOn(runtimeTask)
     }
+
     return task
 }

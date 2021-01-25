@@ -12,35 +12,41 @@ import java.util.HashMap;
 
 /**
  * 具备创建自定义View功能的Factory2
- *
+ * <p>
  * // TODO #36 实现LayoutInflater 的 filter功能
  */
-public class ShadowFactory2 implements LayoutInflater.Factory2 {
+public class ShadowFactory2
+        implements LayoutInflater.Factory2 {
 
     private String mPartKey;
 
     private final Object[] mConstructorArgs = new Object[2];
 
     private final Class<?>[] mConstructorSignature = new Class[]{
-            Context.class, AttributeSet.class};
+            Context.class, AttributeSet.class
+    };
 
-    private final static HashMap<String, Constructor<? extends View>> sConstructorMap =
-            new HashMap<String, Constructor<? extends View>>();
-
+    private final static HashMap<String, Constructor<? extends View>> sConstructorMap = new HashMap<>();
 
     private LayoutInflater mLayoutInflater;
 
-
     private static final HashMap<String, String> sCreateSystemMap = new HashMap<>();
 
-
-    public ShadowFactory2(String partKey, LayoutInflater layoutInflater) {
+    public ShadowFactory2(
+            String partKey,
+            LayoutInflater layoutInflater
+    ) {
         mPartKey = partKey;
         mLayoutInflater = layoutInflater;
     }
 
     @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+    public View onCreateView(
+            View parent,
+            String name,
+            Context context,
+            AttributeSet attrs
+    ) {
         View view;
         if (name.contains(".")) {//自定义view
             if (sCreateSystemMap.get(name) == null) {
@@ -62,12 +68,19 @@ public class ShadowFactory2 implements LayoutInflater.Factory2 {
     }
 
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
+    public View onCreateView(
+            String name,
+            Context context,
+            AttributeSet attrs
+    ) {
         return null;
     }
 
-
-    private View createCustomView(String name, Context context, AttributeSet attrs) {
+    private View createCustomView(
+            String name,
+            Context context,
+            AttributeSet attrs
+    ) {
         String cacheKey = mPartKey + name;
         Constructor<? extends View> constructor = sConstructorMap.get(cacheKey);
         if (constructor != null && !verifyClassLoader(context, constructor)) {
@@ -107,10 +120,12 @@ public class ShadowFactory2 implements LayoutInflater.Factory2 {
         }
     }
 
-
     private static final ClassLoader BOOT_CLASS_LOADER = LayoutInflater.class.getClassLoader();
 
-    private final boolean verifyClassLoader(Context context, Constructor<? extends View> constructor) {
+    private boolean verifyClassLoader(
+            Context context,
+            Constructor<? extends View> constructor
+    ) {
         final ClassLoader constructorLoader = constructor.getDeclaringClass().getClassLoader();
         if (constructorLoader == BOOT_CLASS_LOADER) {
             // fast path for boot class loader (most common case?) - always ok
@@ -127,8 +142,5 @@ public class ShadowFactory2 implements LayoutInflater.Factory2 {
         } while (cl != null);
         return false;
     }
-
-
-
 
 }

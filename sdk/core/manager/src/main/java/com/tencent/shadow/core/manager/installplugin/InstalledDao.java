@@ -17,7 +17,9 @@ public class InstalledDao {
 
     private final InstalledPluginDBHelper mDBHelper;
 
-    public InstalledDao(InstalledPluginDBHelper dbHelper) {
+    public InstalledDao(
+            InstalledPluginDBHelper dbHelper
+    ) {
         mDBHelper = dbHelper;
     }
 

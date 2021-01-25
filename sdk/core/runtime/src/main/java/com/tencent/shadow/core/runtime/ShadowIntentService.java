@@ -10,35 +10,44 @@ import android.os.Message;
 import static android.app.Service.START_NOT_STICKY;
 import static android.app.Service.START_REDELIVER_INTENT;
 
-public abstract class ShadowIntentService extends ShadowService {
+public abstract class ShadowIntentService
+        extends ShadowService {
+
     private volatile Looper mServiceLooper;
     private volatile ServiceHandler mServiceHandler;
     private String mName;
     private boolean mRedelivery;
 
     private final class ServiceHandler extends Handler {
+
         public ServiceHandler(Looper looper) {
             super(looper);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            onHandleIntent((Intent)msg.obj);
+            onHandleIntent((Intent) msg.obj);
             stopSelf(msg.arg1);
         }
+
     }
 
-    public ShadowIntentService(String name) {
+    public ShadowIntentService(
+            String name
+    ) {
         super();
         mName = name;
     }
 
-    public void setIntentRedelivery(boolean enabled) {
+    public void setIntentRedelivery(
+            boolean enabled
+    ) {
         mRedelivery = enabled;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate(
+    ) {
         // TODO: It would be nice to have an option to hold a partial wakelock
         // during processing, and to have a static startService(Context, Intent)
         // method that would launch the service & hand off a wakelock.
@@ -52,7 +61,10 @@ public abstract class ShadowIntentService extends ShadowService {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
+    public void onStart(
+            Intent intent,
+            int startId
+    ) {
         Message msg = mServiceHandler.obtainMessage();
         msg.arg1 = startId;
         msg.obj = intent;
@@ -60,20 +72,30 @@ public abstract class ShadowIntentService extends ShadowService {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(
+            Intent intent,
+            int flags,
+            int startId
+    ) {
         onStart(intent, startId);
         return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(
+    ) {
         mServiceLooper.quit();
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(
+            Intent intent
+    ) {
         return null;
     }
 
-    protected abstract void onHandleIntent(Intent intent);
+    protected abstract void onHandleIntent(
+            Intent intent
+    );
+
 }

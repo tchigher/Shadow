@@ -25,14 +25,18 @@ open class PackagePluginExtension {
 
     var buildTypes: NamedDomainObjectContainer<PluginBuildType>
 
-    constructor(project: Project) {
+    constructor(
+            project: Project
+    ) {
         buildTypes = project.container(PluginBuildType::class.java)
         buildTypes.all {
             it.pluginApks = project.container(PluginApkConfig::class.java)
         }
     }
 
-    fun pluginTypes(closure: Closure<PluginBuildType>) {
+    fun pluginTypes(
+            closure: Closure<PluginBuildType>
+    ) {
         buildTypes.configure(closure)
     }
 
@@ -53,7 +57,6 @@ open class PackagePluginExtension {
             json["pluginLoader"] = pluginLoaderObj
         }
 
-
         if (runtimeApkName.isNotEmpty()) {
             // Json文件中 plugin-runtime 部分信息
             val runtimeObj = JSONObject()
@@ -62,7 +65,6 @@ open class PackagePluginExtension {
             runtimeObj["hash"] = ShadowPluginHelper.getFileMD5(runtimeFile)
             json["runtime"] = runtimeObj
         }
-
 
         //Json文件中 plugin部分信息
         val jsonArr = JSONArray()
@@ -90,14 +92,12 @@ open class PackagePluginExtension {
         }
         json["plugins"] = jsonArr
 
-
         //Config.json版本号
         if (version > 0) {
             json["version"] = version
         } else {
             json["version"] = 1
         }
-
 
         //uuid UUID_NickName
         val uuid = "${project.rootDir}" + "/build/uuid.txt"
@@ -132,4 +132,5 @@ open class PackagePluginExtension {
         }
         return json
     }
+
 }

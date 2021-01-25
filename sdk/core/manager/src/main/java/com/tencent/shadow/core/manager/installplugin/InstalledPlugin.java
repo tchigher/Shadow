@@ -12,7 +12,8 @@ import java.util.Map;
  * 这是一个 Serializable 类, 目的是可以将这个类的对象放在 Intent 中跨进程传递
  * 注意: equals() 方法必须重载, 并包含全部域变量
  */
-public class InstalledPlugin implements Serializable {
+public class InstalledPlugin
+        implements Serializable {
 
     /*
      * 标识一次插件发布的 id
@@ -39,8 +40,8 @@ public class InstalledPlugin implements Serializable {
      */
     public Map<String, PluginPart> plugins = new HashMap<>();
 
-
-    InstalledPlugin() {
+    InstalledPlugin(
+    ) {
     }
 
     public boolean hasPart(
@@ -61,7 +62,9 @@ public class InstalledPlugin implements Serializable {
         return plugins.get(partKey);
     }
 
-    static public class Part implements Serializable {
+    static public class Part
+            implements Serializable {
+
         final public int pluginType;
         final public File pluginFile;
         public File odexDir;
@@ -78,9 +81,11 @@ public class InstalledPlugin implements Serializable {
             this.libraryDir = libraryDir;
             this.pluginFile = file;
         }
+
     }
 
     static public class PluginPart extends Part {
+
         final public String businessName;
         final public String[] dependsOn;
         final public String[] hostWhiteList;
@@ -94,11 +99,18 @@ public class InstalledPlugin implements Serializable {
                 String[] dependsOn,
                 String[] hostWhiteList
         ) {
-            super(pluginType, file, odexDir, libraryDir);
+            super(
+                    pluginType,
+                    file,
+                    odexDir,
+                    libraryDir
+            );
+
             this.businessName = businessName;
             this.dependsOn = dependsOn;
             this.hostWhiteList = hostWhiteList;
         }
+
     }
 
 }

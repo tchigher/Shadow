@@ -4,7 +4,6 @@ import android.os.Build
 import dalvik.system.BaseDexClassLoader
 import java.io.File
 
-
 /**
  * 用于加载插件的ClassLoader,插件内部的classLoader树结构如下
  *                       BootClassLoader
@@ -17,14 +16,19 @@ import java.io.File
  *                                 |
  *  PluginClassLoaderB        PluginClassLoaderC
  *
-*/
+ */
 class PluginClassLoader(
         dexPath: String,
         optimizedDirectory: File?,
         librarySearchPath: String?,
         parent: ClassLoader,
         private val specialClassLoader: ClassLoader?, hostWhiteList: Array<String>?
-) : BaseDexClassLoader(dexPath, optimizedDirectory, librarySearchPath, parent) {
+) : BaseDexClassLoader(
+        dexPath,
+        optimizedDirectory,
+        librarySearchPath,
+        parent
+) {
 
     /**
      * 宿主的白名单包名
@@ -36,17 +40,20 @@ class PluginClassLoader(
 
     init {
         val defaultWhiteList = arrayOf(
-                               "org.apache.commons.logging"//org.apache.commons.logging是非常特殊的的包,由系统放到App的PathClassLoader中.
+                "org.apache.commons.logging"//org.apache.commons.logging是非常特殊的的包,由系统放到App的PathClassLoader中.
         )
         if (hostWhiteList != null) {
             allHostWhiteList = defaultWhiteList.plus(hostWhiteList)
-        }else {
+        } else {
             allHostWhiteList = defaultWhiteList
         }
     }
 
     @Throws(ClassNotFoundException::class)
-    override fun loadClass(className: String, resolve: Boolean): Class<*> {
+    override fun loadClass(
+            className: String,
+            resolve: Boolean
+    ): Class<*> {
         if (specialClassLoader == null) {//specialClassLoader 为null 表示该classLoader依赖了其他的插件classLoader，需要遵循双亲委派
             return super.loadClass(className, resolve)
         } else if (className.subStringBeforeDot() == "com.tencent.shadow.core.runtime") {
@@ -83,9 +90,12 @@ class PluginClassLoader(
 
 }
 
-private fun String.subStringBeforeDot() = substringBeforeLast('.', "")
+private fun String.subStringBeforeDot(
+) = substringBeforeLast('.', "")
 
-internal fun String.inPackage(packageNames: Array<String>): Boolean {
+internal fun String.inPackage(
+        packageNames: Array<String>
+): Boolean {
     val packageName = subStringBeforeDot()
 
     return packageNames.any {

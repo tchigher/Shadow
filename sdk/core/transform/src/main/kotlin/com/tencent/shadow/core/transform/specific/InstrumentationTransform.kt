@@ -5,15 +5,18 @@ import com.tencent.shadow.core.transform_kit.SpecificTransform
 import com.tencent.shadow.core.transform_kit.TransformStep
 import javassist.CodeConverter
 import javassist.CtClass
-import javassist.CtMethod
 
-class InstrumentationTransform : SpecificTransform() {
+class InstrumentationTransform
+    : SpecificTransform() {
+
     companion object {
         const val AndroidInstrumentationClassname = "android.app.Instrumentation"
         const val ShadowInstrumentationClassname = "com.tencent.shadow.core.runtime.ShadowInstrumentation"
     }
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val shadowInstrumentation = mClassPool[ShadowInstrumentationClassname]
 
         val newShadowApplicationMethods = shadowInstrumentation.getDeclaredMethods("newShadowApplication")
@@ -31,6 +34,7 @@ class InstrumentationTransform : SpecificTransform() {
                 )
             }
         })
+
         newStep(object : TransformStep {
             override fun filter(allInputClass: Set<CtClass>) = allInputClass
 
@@ -49,4 +53,5 @@ class InstrumentationTransform : SpecificTransform() {
             }
         })
     }
+
 }

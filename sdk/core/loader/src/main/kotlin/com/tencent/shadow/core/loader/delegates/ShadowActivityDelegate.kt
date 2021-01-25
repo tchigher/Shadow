@@ -31,7 +31,11 @@ import com.tencent.shadow.core.runtime.container.HostActivityDelegator
  * 壳子Activity与插件Activity转调关系的实现类
  * 它是抽象的是因为它缺少必要的业务信息.业务必须继承这个类提供业务信息.
  */
-class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDelegate(), HostActivityDelegate {
+class ShadowActivityDelegate(
+        private val mDI: DI
+) : GeneratedShadowActivityDelegate(),
+        HostActivityDelegate {
+
     companion object {
         const val PLUGIN_OUT_STATE_KEY = "PLUGIN_OUT_STATE_KEY"
         val mLogger = LoggerFactory.getLogger(ShadowActivityDelegate::class.java)
@@ -46,6 +50,7 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
     private var mPluginActivityCreated = false
     private var mDependenciesInjected = false
     private var mRecreateCalled = false
+
     /**
      * 判断是否调用过OnWindowAttributesChanged，如果调用过就说明需要在onCreate之前调用
      */
@@ -53,17 +58,22 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
     private var mBeforeOnCreateOnWindowAttributesChangedCalledParams: WindowManager.LayoutParams? = null
     private lateinit var mMixResources: MixResources
 
-    override fun setDelegator(hostActivityDelegator: HostActivityDelegator) {
+    override fun setDelegator(
+            hostActivityDelegator: HostActivityDelegator
+    ) {
         mHostActivityDelegator = hostActivityDelegator
     }
 
-    override fun getPluginActivity(): Any = mPluginActivity
+    override fun getPluginActivity(
+    ): Any = mPluginActivity
 
     private lateinit var mCurrentConfiguration: Configuration
     private var mPluginHandleConfigurationChange: Int = 0
     private var mCallingActivity: ComponentName? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+            savedInstanceState: Bundle?
+    ) {
         val pluginInitBundle = savedInstanceState ?: mHostActivityDelegator.intent.extras!!
 
         mCallingActivity = pluginInitBundle.getParcelable(CM_CALLING_ACTIVITY_KEY)
@@ -128,7 +138,10 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         }
     }
 
-    private fun initPluginActivity(pluginActivity: PluginActivity, pluginActivityInfo: PluginActivityInfo) {
+    private fun initPluginActivity(
+            pluginActivity: PluginActivity,
+            pluginActivityInfo: PluginActivityInfo
+    ) {
         pluginActivity.setHostActivityDelegator(mHostActivityDelegator)
         pluginActivity.setPluginResources(mPluginResources)
         pluginActivity.setPluginClassLoader(mPluginClassLoader)
@@ -149,19 +162,26 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         pluginActivity.setTheme(pluginActivityInfo.themeResource)
     }
 
-    override fun getLoaderVersion() = BuildConfig.VERSION_NAME
+    override fun getLoaderVersion(
+    ) = BuildConfig.VERSION_NAME
 
-    override fun onNewIntent(intent: Intent) {
+    override fun onNewIntent(
+            intent: Intent
+    ) {
         val pluginExtras: Bundle? = intent.getBundleExtra(CM_EXTRAS_BUNDLE_KEY)
         intent.replaceExtras(pluginExtras)
         mPluginActivity.onNewIntent(intent)
     }
 
-    override fun onNavigateUpFromChild(arg0: Activity?): Boolean {
+    override fun onNavigateUpFromChild(
+            arg0: Activity?
+    ): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(
+            outState: Bundle
+    ) {
         val pluginOutState = Bundle(mPluginClassLoader)
         mPluginActivity.onSaveInstanceState(pluginOutState)
         outState.putBundle(PLUGIN_OUT_STATE_KEY, pluginOutState)
@@ -174,11 +194,16 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         }
     }
 
-    override fun onChildTitleChanged(arg0: Activity?, arg1: CharSequence?) {
+    override fun onChildTitleChanged(
+            arg0: Activity?,
+            arg1: CharSequence?
+    ) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
+    override fun onConfigurationChanged(
+            newConfig: Configuration
+    ) {
         val diff = newConfig.diff(mCurrentConfiguration)
         if (mLogger.isDebugEnabled) {
             mLogger.debug("{} onConfigurationChanged diff=={}", mPluginActivity.javaClass.canonicalName, diff)
@@ -192,17 +217,23 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(
+            savedInstanceState: Bundle?
+    ) {
         val pluginSavedInstanceState: Bundle? = savedInstanceState?.getBundle(PLUGIN_OUT_STATE_KEY)
         mPluginActivity.onRestoreInstanceState(pluginSavedInstanceState)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
+    override fun onPostCreate(
+            savedInstanceState: Bundle?
+    ) {
         val pluginSavedInstanceState: Bundle? = savedInstanceState?.getBundle(PLUGIN_OUT_STATE_KEY)
         mPluginActivity.onPostCreate(pluginSavedInstanceState)
     }
 
-    override fun onWindowAttributesChanged(params: WindowManager.LayoutParams) {
+    override fun onWindowAttributesChanged(
+            params: WindowManager.LayoutParams
+    ) {
         if (mPluginActivityCreated) {
             mPluginActivity.onWindowAttributesChanged(params)
         } else {
@@ -211,23 +242,30 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         mCallOnWindowAttributesChanged = true
     }
 
-    override fun onApplyThemeResource(theme: Resources.Theme, resid: Int, first: Boolean) {
+    override fun onApplyThemeResource(
+            theme: Resources.Theme,
+            resid: Int,
+            first: Boolean
+    ) {
         mHostActivityDelegator.superOnApplyThemeResource(theme, resid, first)
         if (mPluginActivityCreated) {
             mPluginActivity.onApplyThemeResource(theme, resid, first)
         }
     }
 
-    override fun getClassLoader(): ClassLoader {
+    override fun getClassLoader(
+    ): ClassLoader {
         return mPluginClassLoader
     }
 
-    override fun getLayoutInflater(): LayoutInflater {
+    override fun getLayoutInflater(
+    ): LayoutInflater {
         val inflater = mHostActivityDelegator.applicationContext.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         return ShadowLayoutInflater.build(inflater, mPluginActivity, mPartKey)
     }
 
-    override fun getResources(): Resources {
+    override fun getResources(
+    ): Resources {
         if (mDependenciesInjected) {
             return mMixResources;
         } else {
@@ -237,7 +275,8 @@ class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDeleg
         }
     }
 
-    override fun recreate() {
+    override fun recreate(
+    ) {
         mRecreateCalled = true
         mHostActivityDelegator.superRecreate()
     }

@@ -8,23 +8,33 @@ import com.tencent.shadow.core.runtime.ShadowApplication
 
 abstract class ShadowDelegate() {
 
-    fun inject(shadowApplication: ShadowApplication) {
+    fun inject(
+            shadowApplication: ShadowApplication
+    ) {
         _pluginApplication = shadowApplication
     }
 
-    fun inject(appComponentFactory: ShadowAppComponentFactory) {
+    fun inject(
+            appComponentFactory: ShadowAppComponentFactory
+    ) {
         _appComponentFactory = appComponentFactory
     }
 
-    fun inject(pluginClassLoader: PluginClassLoader) {
+    fun inject(
+            pluginClassLoader: PluginClassLoader
+    ) {
         _pluginClassLoader = pluginClassLoader
     }
 
-    fun inject(resources: Resources) {
+    fun inject(
+            resources: Resources
+    ) {
         _pluginResources = resources
     }
 
-    fun inject(componentManager: ComponentManager) {
+    fun inject(
+            componentManager: ComponentManager
+    ) {
         _componentManager = componentManager
     }
 
@@ -44,4 +54,5 @@ abstract class ShadowDelegate() {
         get() = _pluginResources
     protected val mComponentManager: ComponentManager
         get() = _componentManager
+
 }

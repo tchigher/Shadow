@@ -9,6 +9,7 @@ import javassist.CtClass
 import javassist.bytecode.Descriptor
 
 class ContentProviderTransform : SpecificTransform() {
+
     companion object {
         const val ShadowUriClassname = "com.tencent.shadow.core.runtime.UriConverter"
         const val AndroidUriClassname = "android.net.Uri"
@@ -16,7 +17,9 @@ class ContentProviderTransform : SpecificTransform() {
         const val resolverName = "android.content.ContentResolver"
     }
 
-    private fun prepareUriParseCodeConverter(classPool: ClassPool): CodeConverter {
+    private fun prepareUriParseCodeConverter(
+            classPool: ClassPool
+    ): CodeConverter {
         val uriMethod = mClassPool[AndroidUriClassname].methods!!
         val shadowUriMethod = mClassPool[ShadowUriClassname].methods!!
 
@@ -31,10 +34,13 @@ class ContentProviderTransform : SpecificTransform() {
                 }
             }
         }
+
         return codeConverter
     }
 
-    private fun prepareUriBuilderCodeConverter(classPool: ClassPool): CodeConverter {
+    private fun prepareUriBuilderCodeConverter(
+            classPool: ClassPool
+    ): CodeConverter {
         val uriClass = mClassPool[AndroidUriClassname]
         val uriBuilderClass = mClassPool[uriBuilderName]
         val buildMethod = uriBuilderClass.getMethod("build", Descriptor.ofMethod(uriClass, null))
@@ -44,7 +50,9 @@ class ContentProviderTransform : SpecificTransform() {
         return codeConverterExt
     }
 
-    private fun prepareContentResolverCodeConverter(classPool: ClassPool): CodeConverter {
+    private fun prepareContentResolverCodeConverter(
+            classPool: ClassPool
+    ): CodeConverter {
         val codeConverter = CodeConverterExtension()
         val resolverClass = classPool[resolverName]
         val targetClass = classPool[ShadowUriClassname]
@@ -80,8 +88,9 @@ class ContentProviderTransform : SpecificTransform() {
         return codeConverter
     }
 
-    override fun setup(allInputClass: Set<CtClass>) {
-
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val uriParseCodeConverter = prepareUriParseCodeConverter(mClassPool)
         val uriBuilderCodeConverter = prepareUriBuilderCodeConverter(mClassPool)
         val contentResolverCodeConverter = prepareContentResolverCodeConverter(mClassPool)
@@ -128,4 +137,5 @@ class ContentProviderTransform : SpecificTransform() {
             }
         })
     }
+
 }

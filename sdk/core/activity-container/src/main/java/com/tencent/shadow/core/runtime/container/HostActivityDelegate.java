@@ -5,10 +5,17 @@ package com.tencent.shadow.core.runtime.container;
  * <p>
  * 被委托者通过实现这个接口中声明的方法达到替代委托者实现的目的，从而将HostActivity的行为动态化。
  */
-public interface HostActivityDelegate extends GeneratedHostActivityDelegate {
-    void setDelegator(HostActivityDelegator delegator);
+public interface HostActivityDelegate
+        extends GeneratedHostActivityDelegate {
 
-    Object getPluginActivity();
+    void setDelegator(
+            HostActivityDelegator delegator
+    );
 
-    String getLoaderVersion();
+    Object getPluginActivity(
+    );
+
+    String getLoaderVersion(
+    );
+
 }

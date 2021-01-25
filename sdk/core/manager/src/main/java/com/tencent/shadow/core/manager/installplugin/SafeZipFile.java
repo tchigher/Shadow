@@ -11,30 +11,38 @@ import java.util.zip.ZipFile;
  */
 public class SafeZipFile extends ZipFile {
 
-    public SafeZipFile(File file) throws IOException {
+    public SafeZipFile(
+            File file
+    ) throws IOException {
         super(file);
     }
 
     @Override
-    public Enumeration<? extends ZipEntry> entries() {
+    public Enumeration<? extends ZipEntry> entries(
+    ) {
         return new SafeZipEntryIterator(super.entries());
     }
 
-    private static class SafeZipEntryIterator implements Enumeration<ZipEntry> {
+    private static class SafeZipEntryIterator
+            implements Enumeration<ZipEntry> {
 
         final private Enumeration<? extends ZipEntry> delegate;
 
-        private SafeZipEntryIterator(Enumeration<? extends ZipEntry> delegate) {
+        private SafeZipEntryIterator(
+                Enumeration<? extends ZipEntry> delegate
+        ) {
             this.delegate = delegate;
         }
 
         @Override
-        public boolean hasMoreElements() {
+        public boolean hasMoreElements(
+        ) {
             return delegate.hasMoreElements();
         }
 
         @Override
-        public ZipEntry nextElement() {
+        public ZipEntry nextElement(
+        ) {
             ZipEntry entry = delegate.nextElement();
             if (null != entry) {
                 String name = entry.getName();
@@ -44,5 +52,7 @@ public class SafeZipFile extends ZipFile {
             }
             return entry;
         }
+
     }
+
 }

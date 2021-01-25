@@ -21,6 +21,7 @@ import com.tencent.shadow.core.runtime.container.GeneratedHostActivityDelegator
  * 主要功能是管理组件和宿主中注册的壳子之间的配对关系
  */
 abstract class ComponentManager : PluginComponentLauncher {
+
     companion object {
         const val CM_LOADER_BUNDLE_KEY = "CM_LOADER_BUNDLE"
         const val CM_EXTRAS_BUNDLE_KEY = "CM_EXTRAS_BUNDLE"
@@ -36,13 +37,23 @@ abstract class ComponentManager : PluginComponentLauncher {
      * @param pluginActivity 插件Activity
      * @return 容器Activity
      */
-    abstract fun onBindContainerActivity(pluginActivity: ComponentName): ComponentName
+    abstract fun onBindContainerActivity(
+            pluginActivity: ComponentName
+    ): ComponentName
 
-    abstract fun onBindContainerContentProvider(pluginContentProvider: ComponentName): ContainerProviderInfo
+    abstract fun onBindContainerContentProvider(
+            pluginContentProvider: ComponentName
+    ): ContainerProviderInfo
 
-    abstract fun getBroadcastInfoList(partKey: String): List<BroadcastInfo>?
+    abstract fun getBroadcastInfoList(
+            partKey: String
+    ): List<BroadcastInfo>?
 
-    override fun startActivity(shadowContext: ShadowContext, pluginIntent: Intent, option: Bundle?): Boolean {
+    override fun startActivity(
+            shadowContext: ShadowContext,
+            pluginIntent: Intent,
+            option: Bundle?
+    ): Boolean {
         return if (pluginIntent.isPluginComponent()) {
             shadowContext.superStartActivity(pluginIntent.toActivityContainerIntent(), option)
             true
@@ -51,11 +62,16 @@ abstract class ComponentManager : PluginComponentLauncher {
         }
     }
 
-
-    override fun startActivityForResult(delegator: GeneratedHostActivityDelegator, pluginIntent: Intent, requestCode: Int, option: Bundle?, callingActivity: ComponentName): Boolean {
+    override fun startActivityForResult(
+            delegator: GeneratedHostActivityDelegator,
+            pluginIntent: Intent,
+            requestCode: Int,
+            option: Bundle?,
+            callingActivity: ComponentName
+    ): Boolean {
         return if (pluginIntent.isPluginComponent()) {
             val containerIntent = pluginIntent.toActivityContainerIntent()
-            containerIntent.putExtra(CM_CALLING_ACTIVITY_KEY,callingActivity)
+            containerIntent.putExtra(CM_CALLING_ACTIVITY_KEY, callingActivity)
             delegator.startActivityForResult(containerIntent, requestCode, option)
             true
         } else {
@@ -63,7 +79,10 @@ abstract class ComponentManager : PluginComponentLauncher {
         }
     }
 
-    override fun startService(context: ShadowContext, service: Intent): Pair<Boolean, ComponentName?> {
+    override fun startService(
+            context: ShadowContext,
+            service: Intent
+    ): Pair<Boolean, ComponentName?> {
         if (service.isPluginComponent()) {
             // 插件service intent不需要转换成container service intent，直接使用intent
             val component = mPluginServiceManager!!.startPluginService(service)
@@ -73,21 +92,27 @@ abstract class ComponentManager : PluginComponentLauncher {
         }
 
         return Pair(false, service.component)
-
     }
 
-    override fun stopService(context: ShadowContext, intent: Intent): Pair<Boolean, Boolean> {
+    override fun stopService(
+            context: ShadowContext,
+            intent: Intent
+    ): Pair<Boolean, Boolean> {
         if (intent.isPluginComponent()) {
             // 插件service intent不需要转换成container service intent，直接使用intent
             val stopped = mPluginServiceManager!!.stopPluginService(intent)
             return Pair(true, stopped)
         }
 
-
         return Pair(false, true)
     }
 
-    override fun bindService(context: ShadowContext, intent: Intent, conn: ServiceConnection, flags: Int): Pair<Boolean, Boolean> {
+    override fun bindService(
+            context: ShadowContext,
+            intent: Intent,
+            conn: ServiceConnection,
+            flags: Int
+    ): Pair<Boolean, Boolean> {
         return if (intent.isPluginComponent()) {
             // 插件service intent不需要转换成container service intent，直接使用intent
             mPluginServiceManager!!.bindPluginService(intent, conn, flags)
@@ -95,16 +120,19 @@ abstract class ComponentManager : PluginComponentLauncher {
         } else {
             Pair(false, false)
         }
-
-
     }
 
-    override fun unbindService(context: ShadowContext, conn: ServiceConnection): Pair<Boolean, Unit> {
+    override fun unbindService(
+            context: ShadowContext,
+            conn: ServiceConnection
+    ): Pair<Boolean, Unit> {
         mPluginServiceManager!!.unbindPluginService(conn)
         return Pair(true, Unit)
     }
 
-    override fun convertPluginActivityIntent(pluginIntent: Intent): Intent {
+    override fun convertPluginActivityIntent(
+            pluginIntent: Intent
+    ): Intent {
         return if (pluginIntent.isPluginComponent()) {
             pluginIntent.toActivityContainerIntent()
         } else {
@@ -136,11 +164,15 @@ abstract class ComponentManager : PluginComponentLauncher {
      */
     private val pluginComponentInfoMap: MutableMap<ComponentName, PluginComponentInfo> = hashMapOf()
 
-
     private var application2broadcastInfo: MutableMap<String, MutableMap<String, List<String>>> = HashMap()
 
-    fun addPluginApkInfo(pluginInfo: PluginInfo) {
-        fun common(pluginComponentInfo: PluginComponentInfo,componentName:ComponentName) {
+    fun addPluginApkInfo(
+            pluginInfo: PluginInfo
+    ) {
+        fun common(
+                pluginComponentInfo: PluginComponentInfo,
+                componentName: ComponentName
+        ) {
             packageNameMap[pluginComponentInfo.className!!] = pluginInfo.packageName
             val previousValue = pluginInfoMap.put(componentName, pluginInfo)
             if (previousValue != null) {
@@ -151,40 +183,47 @@ abstract class ComponentManager : PluginComponentLauncher {
 
         pluginInfo.mActivities.forEach {
             val componentName = ComponentName(pluginInfo.packageName, it.className!!)
-            common(it,componentName)
+            common(it, componentName)
             componentMap[componentName] = onBindContainerActivity(componentName)
         }
 
         pluginInfo.mServices.forEach {
             val componentName = ComponentName(pluginInfo.packageName, it.className!!)
-            common(it,componentName)
+            common(it, componentName)
         }
 
         pluginInfo.mProviders.forEach {
             val componentName = ComponentName(pluginInfo.packageName, it.className!!)
-            mPluginContentProviderManager!!.addContentProviderInfo(pluginInfo.partKey,it,onBindContainerContentProvider(componentName))
+            mPluginContentProviderManager!!.addContentProviderInfo(pluginInfo.partKey, it, onBindContainerContentProvider(componentName))
         }
     }
 
-    fun getComponentBusinessName(componentName: ComponentName): String? {
+    fun getComponentBusinessName(
+            componentName: ComponentName
+    ): String? {
         return pluginInfoMap[componentName]?.businessName
     }
 
-    fun getComponentPartKey(componentName: ComponentName) : String? {
+    fun getComponentPartKey(
+            componentName: ComponentName
+    ): String? {
         return pluginInfoMap[componentName]?.partKey
     }
 
-    private var mPluginServiceManager : PluginServiceManager? = null
-    fun setPluginServiceManager(pluginServiceManager : PluginServiceManager) {
+    private var mPluginServiceManager: PluginServiceManager? = null
+    fun setPluginServiceManager(
+            pluginServiceManager: PluginServiceManager
+    ) {
         mPluginServiceManager = pluginServiceManager
     }
 
-    private var mPluginContentProviderManager : PluginContentProviderManager? = null
-    fun setPluginContentProviderManager(pluginContentProviderManager : PluginContentProviderManager) {
+    private var mPluginContentProviderManager: PluginContentProviderManager? = null
+    fun setPluginContentProviderManager(pluginContentProviderManager: PluginContentProviderManager) {
         mPluginContentProviderManager = pluginContentProviderManager
     }
 
-    private fun Intent.isPluginComponent(): Boolean {
+    private fun Intent.isPluginComponent(
+    ): Boolean {
         val component = component ?: return false
         val className = component.className
         return packageNameMap.containsKey(className)
@@ -193,19 +232,21 @@ abstract class ComponentManager : PluginComponentLauncher {
     /**
      * 调用前必须先调用isPluginComponent判断Intent确实一个插件内的组件
      */
-    private fun Intent.toActivityContainerIntent(): Intent {
+    private fun Intent.toActivityContainerIntent(
+    ): Intent {
         val bundleForPluginLoader = Bundle()
         val pluginComponentInfo = pluginComponentInfoMap[component]!!
         bundleForPluginLoader.putParcelable(CM_ACTIVITY_INFO_KEY, pluginComponentInfo)
         return toContainerIntent(bundleForPluginLoader)
     }
 
-
     /**
      * 构造pluginIntent对应的ContainerIntent
      * 调用前必须先调用isPluginComponent判断Intent确实一个插件内的组件
      */
-    private fun Intent.toContainerIntent(bundleForPluginLoader: Bundle): Intent {
+    private fun Intent.toContainerIntent(
+            bundleForPluginLoader: Bundle
+    ): Intent {
         val component = this.component!!
         val className = component.className
         val packageName = packageNameMap[className]!!
@@ -232,10 +273,14 @@ abstract class ComponentManager : PluginComponentLauncher {
         return containerIntent
     }
 
+    class BroadcastInfo(
+            val className: String,
+            val actions: Array<String>
+    )
 
-    class BroadcastInfo(val className: String, val actions: Array<String>)
-
-    fun getBroadcastsByPartKey(partKey: String): MutableMap<String, List<String>> {
+    fun getBroadcastsByPartKey(
+            partKey: String
+    ): MutableMap<String, List<String>> {
         if (application2broadcastInfo[partKey] == null) {
             application2broadcastInfo[partKey] = HashMap()
             val broadcastInfoList = getBroadcastInfoList(partKey)
@@ -246,6 +291,7 @@ abstract class ComponentManager : PluginComponentLauncher {
                 }
             }
         }
+
         return application2broadcastInfo[partKey]!!
     }
 

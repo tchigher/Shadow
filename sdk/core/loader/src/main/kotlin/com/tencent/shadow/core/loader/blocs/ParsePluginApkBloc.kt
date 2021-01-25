@@ -14,6 +14,7 @@ import com.tencent.shadow.core.loader.infos.PluginServiceInfo
  * 解析插件apk逻辑
  */
 object ParsePluginApkBloc {
+
     /**
      * 解析插件apk
      *
@@ -22,7 +23,11 @@ object ParsePluginApkBloc {
      * @throws ParsePluginApkException 解析失败时抛出
      */
     @Throws(ParsePluginApkException::class)
-    fun parse(packageArchiveInfo: PackageInfo, loadParameters: LoadParameters, hostAppContext: Context): PluginInfo {
+    fun parse(
+            packageArchiveInfo: PackageInfo,
+            loadParameters: LoadParameters,
+            hostAppContext: Context
+    ): PluginInfo {
         if (packageArchiveInfo.applicationInfo.packageName != hostAppContext.packageName) {
             /*
             要求插件和宿主包名一致有两方面原因：
@@ -50,10 +55,7 @@ object ParsePluginApkBloc {
         val partKey = loadParameters.partKey
 
         val pluginInfo = PluginInfo(
-                loadParameters.businessName
-                , partKey
-                , packageArchiveInfo.applicationInfo.packageName
-                , packageArchiveInfo.applicationInfo.className
+                loadParameters.businessName, partKey, packageArchiveInfo.applicationInfo.packageName, packageArchiveInfo.applicationInfo.className
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             pluginInfo.appComponentFactory = packageArchiveInfo.applicationInfo.appComponentFactory
@@ -67,4 +69,5 @@ object ParsePluginApkBloc {
         }
         return pluginInfo
     }
+
 }

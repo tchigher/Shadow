@@ -10,7 +10,10 @@ class ShadowTransform(
         project: Project,
         classPoolBuilder: ClassPoolBuilder,
         private val useHostContext: () -> Array<String>
-) : AbstractTransform(project, classPoolBuilder) {
+) : AbstractTransform(
+        project,
+        classPoolBuilder
+) {
 
     lateinit var _mTransformManager: TransformManager
 
@@ -23,4 +26,5 @@ class ShadowTransform(
     }
 
     override fun getName(): String = "ShadowTransform"
+
 }

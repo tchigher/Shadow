@@ -13,28 +13,34 @@ import kotlin.system.measureTimeMillis
 abstract class AbstractTransform(
         project: Project,
         classPoolBuilder: ClassPoolBuilder
-) : JavassistTransform(project, classPoolBuilder) {
+) : JavassistTransform(
+        project,
+        classPoolBuilder
+) {
 
     protected abstract val mTransformManager: AbstractTransformManager
     private val mOverrideCheck = OverrideCheck()
     private lateinit var mDebugClassJar: File
     private lateinit var mDebugClassJarZOS: ZipOutputStream
 
-
-    private fun cleanDebugClassFileDir() {
+    private fun cleanDebugClassFileDir(
+    ) {
         val transformTempDir = File(project.buildDir, "transform-temp")
         transformTempDir.mkdirs()
         mDebugClassJar = File.createTempFile("transform-temp", ".jar", transformTempDir)
         mDebugClassJarZOS = ZipOutputStream(FileOutputStream(mDebugClassJar))
     }
 
-    override fun beforeTransform(invocation: TransformInvocation) {
+    override fun beforeTransform(
+            invocation: TransformInvocation
+    ) {
         super.beforeTransform(invocation)
         ReplaceClassName.resetErrorCount()
         cleanDebugClassFileDir()
     }
 
-    override fun onTransform() {
+    override fun onTransform(
+    ) {
         //Fixme: 这里的OverrideCheck.prepare会对mCtClassInputMap产生影响
         //原本预期是不会产生任何影响的。造成了ApplicationInfoTest失败，测试Activity没有被修改superclass。
 //        mOverrideCheck.prepare(mCtClassInputMap.keys.toSet())
@@ -43,7 +49,9 @@ abstract class AbstractTransform(
         mTransformManager.fireAll()
     }
 
-    override fun afterTransform(invocation: TransformInvocation) {
+    override fun afterTransform(
+            invocation: TransformInvocation
+    ) {
         super.afterTransform(invocation)
 
         mDebugClassJarZOS.flush()
@@ -57,12 +65,17 @@ abstract class AbstractTransform(
         onCheckTransformedClasses(debugClassPool, inputClassNames)
     }
 
-    override fun onOutputClass(className: String, outputStream: OutputStream) {
+    override fun onOutputClass(
+            className: String,
+            outputStream: OutputStream
+    ) {
         classPool[className].debugWriteJar(mDebugClassJarZOS)
         super.onOutputClass(className, outputStream)
     }
 
-    private fun CtClass.debugWriteJar(outputStream: ZipOutputStream) {
+    private fun CtClass.debugWriteJar(
+            outputStream: ZipOutputStream
+    ) {
         //忽略Kotlin 1.4引入的module-info
         //https://kotlinlang.org/docs/reference/whatsnew14.html#module-info-descriptors-for-stdlib-artifacts
         if (name == "module-info") {
@@ -82,7 +95,10 @@ abstract class AbstractTransform(
         }
     }
 
-    open fun onCheckTransformedClasses(debugClassPool: ClassPool, classNames: List<String>) {
+    open fun onCheckTransformedClasses(
+            debugClassPool: ClassPool,
+            classNames: List<String>
+    ) {
         var delayException: Exception? = null
         val start1 = System.currentTimeMillis()
         try {
@@ -119,7 +135,10 @@ abstract class AbstractTransform(
     /**
      * 检查转换后的类，其中被替换了的类有实现被调用的方法
      */
-    private fun checkReplacedClassHaveRightMethods(debugClassPool: ClassPool, classNames: List<String>) {
+    private fun checkReplacedClassHaveRightMethods(
+            debugClassPool: ClassPool,
+            classNames: List<String>
+    ) {
         val result = ReplaceClassName.checkAll(debugClassPool, classNames)
         if (result.isNotEmpty()) {
             val tempFile = File.createTempFile("shadow_replace_class_have_right_methods", ".txt", project.buildDir)
@@ -146,7 +165,10 @@ abstract class AbstractTransform(
         }
     }
 
-    private fun checkOverrideMethods(debugClassPool: ClassPool, classNames: List<String>) {
+    private fun checkOverrideMethods(
+            debugClassPool: ClassPool,
+            classNames: List<String>
+    ) {
         val result = mOverrideCheck.check(debugClassPool, classNames)
         if (result.isNotEmpty()) {
             val tempFile = File.createTempFile("shadow_override_check", ".txt", project.buildDir)

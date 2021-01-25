@@ -7,10 +7,14 @@ import com.tencent.shadow.core.transform_kit.SpecificTransform
 import javassist.ClassPool
 import javassist.CtClass
 
-class TransformManager(ctClassInputMap: Map<CtClass, InputClass>,
-                       classPool: ClassPool,
-                       useHostContext: () -> Array<String>
-) : AbstractTransformManager(ctClassInputMap, classPool) {
+class TransformManager(
+        ctClassInputMap: Map<CtClass, InputClass>,
+        classPool: ClassPool,
+        useHostContext: () -> Array<String>
+) : AbstractTransformManager(
+        ctClassInputMap,
+        classPool
+) {
 
     override val mTransformList: List<SpecificTransform> = listOf(
             ApplicationTransform(),
@@ -27,4 +31,5 @@ class TransformManager(ctClassInputMap: Map<CtClass, InputClass>,
             AppComponentFactoryTransform(),
             KeepHostContextTransform(useHostContext())
     )
+
 }

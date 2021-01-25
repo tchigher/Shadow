@@ -8,7 +8,8 @@ import javassist.bytecode.*
 import javassist.convert.TransformCall
 import javassist.convert.Transformer
 
-class CodeConverterExtension : CodeConverter() {
+class CodeConverterExtension
+    : CodeConverter() {
 
     /**
      * 将一个方法调用改为静态方法调用，并将原被调用对象作为静态方法的第一个参数
@@ -16,8 +17,10 @@ class CodeConverterExtension : CodeConverter() {
      * @param substMethod 新方法。必须为静态方法，且该方法签名与原方法一样，仅在第一个参数处多一个参数，类型为原方法的被调用类型。
      */
     @Throws(CannotCompileException::class)
-    fun redirectMethodCallToStaticMethodCall(origMethod: CtMethod, substMethod: CtMethod) {
-
+    fun redirectMethodCallToStaticMethodCall(
+            origMethod: CtMethod,
+            substMethod: CtMethod
+    ) {
         class Transform(
                 next: Transformer?,
                 origMethod: CtMethod,
@@ -48,6 +51,6 @@ class CodeConverterExtension : CodeConverter() {
         } catch (e: NotFoundException) {
             throw CannotCompileException(e)
         }
-
     }
+
 }

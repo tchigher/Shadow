@@ -9,7 +9,9 @@ import javassist.CtNewMethod
 import javassist.Modifier
 import java.util.*
 
-class PackageItemInfoTransform : SpecificTransform() {
+class PackageItemInfoTransform
+    : SpecificTransform() {
+
     companion object {
         const val AndroidProviderInfo = "android.content.pm.ProviderInfo"
         const val AndroidActivityInfo = "android.content.pm.ActivityInfo"
@@ -101,7 +103,9 @@ class PackageItemInfoTransform : SpecificTransform() {
         return method_targets
     }
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         setup(
                 arrayOf(
                         AndroidProviderInfo,
@@ -113,4 +117,5 @@ class PackageItemInfoTransform : SpecificTransform() {
                 AndroidPackageItemInfo to ShadowAndroidPackageItemInfo
         )
     }
+
 }

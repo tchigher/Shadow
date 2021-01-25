@@ -11,13 +11,17 @@ import com.tencent.shadow.core.runtime.container.PluginContainerActivity;
 @SuppressLint("NewApi")
 public class ShadowFragmentSupport {
 
-    public static ShadowActivity fragmentGetActivity(Fragment fragment) {
+    public static ShadowActivity fragmentGetActivity(
+            Fragment fragment
+    ) {
         PluginContainerActivity pluginContainerActivity
                 = (PluginContainerActivity) fragment.getActivity();
         return (ShadowActivity) PluginActivity.get(pluginContainerActivity);
     }
 
-    public static Context fragmentGetContext(Fragment fragment) {
+    public static Context fragmentGetContext(
+            Fragment fragment
+    ) {
         Context context = fragment.getContext();
         if (context instanceof PluginContainerActivity) {
             return PluginActivity.get((PluginContainerActivity) context);
@@ -26,7 +30,9 @@ public class ShadowFragmentSupport {
         }
     }
 
-    public static Object fragmentGetHost(Fragment fragment) {
+    public static Object fragmentGetHost(
+            Fragment fragment
+    ) {
         Object host = fragment.getHost();
         if (host instanceof PluginContainerActivity) {
             return PluginActivity.get((PluginContainerActivity) host);
@@ -35,12 +41,19 @@ public class ShadowFragmentSupport {
         }
     }
 
-    public static void fragmentStartActivity(Fragment fragment, Intent intent) {
+    public static void fragmentStartActivity(
+            Fragment fragment,
+            Intent intent
+    ) {
         fragmentStartActivity(fragment, intent, null);
     }
 
     @SuppressLint("NewApi")
-    public static void fragmentStartActivity(Fragment fragment, Intent intent, Bundle options) {
+    public static void fragmentStartActivity(
+            Fragment fragment,
+            Intent intent,
+            Bundle options
+    ) {
         ShadowContext shadowContext = fragmentGetActivity(fragment);
         Intent containerActivityIntent
                 = shadowContext.mPluginComponentLauncher.convertPluginActivityIntent(intent);
@@ -51,12 +64,17 @@ public class ShadowFragmentSupport {
         }
     }
 
-    public static Context toPluginContext(Context pluginContainerActivity) {
+    public static Context toPluginContext(
+            Context pluginContainerActivity
+    ) {
         return PluginActivity.get((PluginContainerActivity) pluginContainerActivity);
     }
 
-    public static Context toOriginalContext(Context pluginActivity) {
+    public static Context toOriginalContext(
+            Context pluginActivity
+    ) {
         PluginActivity activity = (PluginActivity) pluginActivity;
         return activity.hostActivityDelegator.getHostActivity().getImplementActivity();
     }
+
 }

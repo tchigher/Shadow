@@ -12,11 +12,16 @@ open class PluginBuildType {
     var runtimeApkConfig: Tuple2<String, String> = Tuple2("", "")
     lateinit var pluginApks: NamedDomainObjectContainer<PluginApkConfig>
 
-    constructor(name: String) {
+    constructor(
+            name: String
+    ) {
         this.name = name
     }
 
-    fun pluginApks(closure: Closure<PluginApkConfig>) {
+    fun pluginApks(
+            closure: Closure<PluginApkConfig>
+    ) {
         pluginApks.configure(closure)
     }
+
 }

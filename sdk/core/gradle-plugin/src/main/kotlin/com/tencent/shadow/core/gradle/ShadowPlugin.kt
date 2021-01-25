@@ -16,7 +16,9 @@ import kotlin.reflect.jvm.isAccessible
 
 class ShadowPlugin : Plugin<Project> {
 
-    override fun apply(project: Project) {
+    override fun apply(
+            project: Project
+    ) {
         System.err.println("ShadowPlugin project.name==" + project.name)
 
         val baseExtension = getBaseExtension(project)
@@ -71,7 +73,9 @@ class ShadowPlugin : Plugin<Project> {
         var useHostContext: Array<String> = emptyArray()
     }
 
-    fun getBaseExtension(project: Project): BaseExtension {
+    fun getBaseExtension(
+            project: Project
+    ): BaseExtension {
         val plugin = project.plugins.getPlugin(AppPlugin::class.java)
         if (com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION == "3.0.0") {
             val method = BasePlugin::class.declaredFunctions.first { it.name == "getExtension" }

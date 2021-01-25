@@ -9,4 +9,5 @@ public class InstalledType {
     public final static int TYPE_PLUGIN_RUNTIME = 4;
 
     public final static int TYPE_UUID = 5;
+
 }

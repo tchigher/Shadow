@@ -6,14 +6,18 @@ import com.tencent.shadow.core.transform_kit.TransformStep
 import javassist.CtClass
 import javassist.bytecode.Descriptor
 
-class DialogSupportTransform : SpecificTransform() {
+class DialogSupportTransform
+    : SpecificTransform() {
+
     companion object {
         const val ShadowActivityClassname = "com.tencent.shadow.core.runtime.ShadowActivity"
         const val AndroidDialogClassname = "android.app.Dialog"
         const val DialogSupportTransformClassname = "com.tencent.shadow.core.runtime.ShadowDialogSupport"
     }
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val androidDialog = mClassPool[AndroidDialogClassname]
         val shadowDialogSupport = mClassPool[DialogSupportTransformClassname]
         val shadowActivity = mClassPool[ShadowActivityClassname]
@@ -30,26 +34,34 @@ class DialogSupportTransform : SpecificTransform() {
                 Descriptor.ofMethod(CtClass.voidType,
                         arrayOf(androidDialog, shadowActivity)))
         val dialogGetOwnerActivityMethod = shadowDialogSupport.getMethod("dialogGetOwnerActivity",
-                Descriptor.ofMethod(shadowActivity,
-                        arrayOf(androidDialog)))
+                Descriptor.ofMethod(
+                        shadowActivity,
+                        arrayOf(androidDialog)
+                )
+        )
 
-        newStep(object : TransformStep {
-            override fun filter(allInputClass: Set<CtClass>) = allInputClass
+        newStep(
+                object : TransformStep {
+                    override fun filter(
+                            allInputClass: Set<CtClass>
+                    ) = allInputClass
 
-            override fun transform(ctClass: CtClass) {
-                ctClass.defrost()
-                val codeConverter = CodeConverterExtension()
-                codeConverter.redirectMethodCallToStaticMethodCall(setOwnerActivityMethod, dialogSetOwnerActivityMethod)
-                codeConverter.redirectMethodCallToStaticMethodCall(getOwnerActivityMethod, dialogGetOwnerActivityMethod)
-                try {
-                    ctClass.instrument(codeConverter)
-                } catch (e: Exception) {
-                    System.err.println("处理" + ctClass.name + "时出错:" + e)
-                    throw e
+                    override fun transform(
+                            ctClass: CtClass
+                    ) {
+                        ctClass.defrost()
+                        val codeConverter = CodeConverterExtension()
+                        codeConverter.redirectMethodCallToStaticMethodCall(setOwnerActivityMethod, dialogSetOwnerActivityMethod)
+                        codeConverter.redirectMethodCallToStaticMethodCall(getOwnerActivityMethod, dialogGetOwnerActivityMethod)
+                        try {
+                            ctClass.instrument(codeConverter)
+                        } catch (e: Exception) {
+                            System.err.println("处理" + ctClass.name + "时出错:" + e)
+                            throw e
+                        }
+                    }
                 }
-            }
-        })
-
+        )
     }
 
 }

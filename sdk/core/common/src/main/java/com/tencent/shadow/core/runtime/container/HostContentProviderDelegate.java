@@ -17,29 +17,70 @@ import android.os.ParcelFileDescriptor;
  */
 public interface HostContentProviderDelegate {
 
-    boolean onCreate();
+    boolean onCreate(
+    );
 
-    void onConfigurationChanged(Configuration newConfig);
+    void onConfigurationChanged(
+            Configuration newConfig
+    );
 
-    void onLowMemory();
+    void onLowMemory(
+    );
 
-    void onTrimMemory(int level);
+    void onTrimMemory(
+            int level
+    );
 
-    Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder);
+    Cursor query(
+            Uri uri,
+            String[] projection,
+            String selection,
+            String[] selectionArgs,
+            String sortOrder
+    );
 
-    String getType(Uri uri);
+    String getType(
+            Uri uri
+    );
 
-    Uri insert(Uri uri, ContentValues values);
+    Uri insert(
+            Uri uri,
+            ContentValues values
+    );
 
-    int delete(Uri uri, String selection, String[] selectionArgs);
+    int delete(
+            Uri uri,
+            String selection,
+            String[] selectionArgs
+    );
 
-    int update(Uri uri, ContentValues values, String selection, String[] selectionArgs);
+    int update(
+            Uri uri,
+            ContentValues values,
+            String selection,
+            String[] selectionArgs
+    );
 
-    int bulkInsert( Uri uri,  ContentValues[] values);
+    int bulkInsert(
+            Uri uri,
+            ContentValues[] values
+    );
 
-    Bundle call(String method, String arg, Bundle extras);
+    Bundle call(
+            String method,
+            String arg,
+            Bundle extras
+    );
 
-    ParcelFileDescriptor openFile(Uri uri, String mode);
+    ParcelFileDescriptor openFile(
+            Uri uri,
+            String mode
+    );
 
-    ParcelFileDescriptor openFile(Uri uri, String mode, CancellationSignal signal);
+    ParcelFileDescriptor openFile(
+            Uri uri,
+            String mode,
+            CancellationSignal signal
+    );
+
 }

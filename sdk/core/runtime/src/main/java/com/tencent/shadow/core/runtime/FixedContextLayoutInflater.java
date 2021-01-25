@@ -12,26 +12,36 @@ import android.view.View;
  * 这里通过覆盖cloneInContext方法,避免Context被替换.
  * 见onGetLayoutInflater() of Activity$HostCallbacks in Activity.java
  */
-public abstract class FixedContextLayoutInflater extends LayoutInflater {
+public abstract class FixedContextLayoutInflater
+        extends LayoutInflater {
+
     private static final String[] sClassPrefixList = {
             "android.widget.",
             "android.webkit.",
             "android.app."
     };
 
-    public FixedContextLayoutInflater(Context context) {
+    public FixedContextLayoutInflater(
+            Context context
+    ) {
         super(context);
     }
 
-    public FixedContextLayoutInflater(LayoutInflater original, Context newContext) {
+    public FixedContextLayoutInflater(
+            LayoutInflater original,
+            Context newContext
+    ) {
         super(original, newContext);
     }
 
     @Override
-    protected View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
+    protected View onCreateView(
+            String name,
+            AttributeSet attrs
+    ) throws ClassNotFoundException {
         for (String prefix : sClassPrefixList) {
             try {
-                Pair<String,String> result = changeViewNameAndPrefix(prefix, name);
+                Pair<String, String> result = changeViewNameAndPrefix(prefix, name);
                 View view = createView(result.first, result.second, attrs);
                 if (view != null) {
                     return view;
@@ -46,12 +56,19 @@ public abstract class FixedContextLayoutInflater extends LayoutInflater {
     }
 
     @Override
-    public LayoutInflater cloneInContext(Context newContext) {
+    public LayoutInflater cloneInContext(
+            Context newContext
+    ) {
         return createNewContextLayoutInflater(newContext);
     }
 
-    abstract LayoutInflater createNewContextLayoutInflater(Context context);
+    abstract LayoutInflater createNewContextLayoutInflater(
+            Context context
+    );
 
-    abstract Pair<String,String> changeViewNameAndPrefix(String prefix, String name);
+    abstract Pair<String, String> changeViewNameAndPrefix(
+            String prefix,
+            String name
+    );
 
 }

@@ -13,10 +13,13 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShadowActivity extends PluginActivity {
+public class ShadowActivity
+        extends PluginActivity {
 
     @Override
-    public void setContentView(int layoutResID) {
+    public void setContentView(
+            int layoutResID
+    ) {
         if ("merge".equals(XmlPullParserUtil.getLayoutStartTagName(getResources(), layoutResID))) {
             //如果传进来的xml文件的根tag是merge时，需要特殊处理
             View decorView = hostActivityDelegator.getWindow().getDecorView();
@@ -29,17 +32,22 @@ public class ShadowActivity extends PluginActivity {
     }
 
     @Override
-    public final ShadowApplication getApplication() {
+    public final ShadowApplication getApplication(
+    ) {
         return mPluginApplication;
     }
 
     @Override
-    public final ShadowActivity getParent() {
+    public final ShadowActivity getParent(
+    ) {
         return null;
     }
 
     @Override
-    public void overridePendingTransition(int enterAnim, int exitAnim) {
+    public void overridePendingTransition(
+            int enterAnim,
+            int exitAnim
+    ) {
         //如果使用的资源不是系统资源，我们无法支持这个特性。
         if ((enterAnim & 0xFF000000) != 0x01000000) {
             enterAnim = 0;
@@ -50,14 +58,20 @@ public class ShadowActivity extends PluginActivity {
         hostActivityDelegator.overridePendingTransition(enterAnim, exitAnim);
     }
 
-
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
+    public void startActivityForResult(
+            Intent intent,
+            int requestCode
+    ) {
         startActivityForResult(intent, requestCode, null);
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
+    public void startActivityForResult(
+            Intent intent,
+            int requestCode,
+            Bundle options
+    ) {
         final Intent pluginIntent = new Intent(intent);
         pluginIntent.setExtrasClassLoader(mPluginClassLoader);
         ComponentName callingActivity = new ComponentName(getPackageName(), getClass().getName());
@@ -67,34 +81,39 @@ public class ShadowActivity extends PluginActivity {
         }
     }
 
-
     @Override
-    public SharedPreferences getPreferences(int mode) {
+    public SharedPreferences getPreferences(
+            int mode
+    ) {
         return super.getSharedPreferences(getLocalClassName(), mode);
     }
 
     @Override
-    public String getLocalClassName() {
+    public String getLocalClassName(
+    ) {
         return this.getClass().getName();
     }
 
-
     @Override
-    public boolean shouldUpRecreateTask(Intent targetIntent) {
+    public boolean shouldUpRecreateTask(
+            Intent targetIntent
+    ) {
         Intent intent = mPluginComponentLauncher.convertPluginActivityIntent(targetIntent);
         return hostActivityDelegator.shouldUpRecreateTask(intent);
     }
 
     @Override
-    public boolean navigateUpTo(Intent upIntent) {
+    public boolean navigateUpTo(
+            Intent upIntent
+    ) {
         Intent intent = mPluginComponentLauncher.convertPluginActivityIntent(upIntent);
         return hostActivityDelegator.navigateUpTo(intent);
     }
 
-
-
     @Override
-    public final <T extends View> T requireViewById(int id) {
+    public final <T extends View> T requireViewById(
+            int id
+    ) {
         T view = findViewById(id);
         if (view == null) {
             throw new IllegalArgumentException("ID does not reference a View inside this Activity");
@@ -102,12 +121,14 @@ public class ShadowActivity extends PluginActivity {
         return view;
     }
 
-    final private Map<ShadowActivityLifecycleCallbacks,
-            Application.ActivityLifecycleCallbacks>
-            mActivityLifecycleCallbacksMap = new HashMap<>();
+    final private Map<
+            ShadowActivityLifecycleCallbacks,
+            Application.ActivityLifecycleCallbacks
+            > mActivityLifecycleCallbacksMap = new HashMap<>();
 
     public void registerActivityLifecycleCallbacks(
-            ShadowActivityLifecycleCallbacks callback) {
+            ShadowActivityLifecycleCallbacks callback
+    ) {
         synchronized (mActivityLifecycleCallbacksMap) {
             final ShadowActivityLifecycleCallbacks.Wrapper wrapper
                     = new ShadowActivityLifecycleCallbacks.Wrapper(callback, this);
@@ -117,7 +138,8 @@ public class ShadowActivity extends PluginActivity {
     }
 
     public void unregisterActivityLifecycleCallbacks(
-            ShadowActivityLifecycleCallbacks callback) {
+            ShadowActivityLifecycleCallbacks callback
+    ) {
         synchronized (mActivityLifecycleCallbacksMap) {
             final Application.ActivityLifecycleCallbacks activityLifecycleCallbacks
                     = mActivityLifecycleCallbacksMap.get(callback);
@@ -129,32 +151,58 @@ public class ShadowActivity extends PluginActivity {
     }
 
     @Override
-    public void startIntentSenderFromChild(ShadowActivity arg0, IntentSender arg1, int arg2, Intent arg3, int arg4, int arg5, int arg6) throws IntentSender.SendIntentException {
+    public void startIntentSenderFromChild(
+            ShadowActivity arg0,
+            IntentSender arg1,
+            int arg2,
+            Intent arg3,
+            int arg4,
+            int arg5,
+            int arg6
+    ) throws IntentSender.SendIntentException {
         throw new UnsupportedOperationException("Unsupported Yet");
     }
 
     @Override
-    public void startIntentSenderFromChild(ShadowActivity arg0, IntentSender arg1, int arg2, Intent arg3, int arg4, int arg5, int arg6, Bundle arg7) throws IntentSender.SendIntentException {
+    public void startIntentSenderFromChild(
+            ShadowActivity arg0,
+            IntentSender arg1,
+            int arg2,
+            Intent arg3,
+            int arg4,
+            int arg5,
+            int arg6,
+            Bundle arg7
+    ) throws IntentSender.SendIntentException {
         throw new UnsupportedOperationException("Unsupported Yet");
     }
 
     @Override
-    public boolean navigateUpToFromChild(ShadowActivity arg0, Intent arg1) {
+    public boolean navigateUpToFromChild(
+            ShadowActivity arg0,
+            Intent arg1
+    ) {
         throw new UnsupportedOperationException("Unsupported Yet");
     }
 
     @Override
-    public void finishFromChild(ShadowActivity arg0) {
+    public void finishFromChild(
+            ShadowActivity arg0
+    ) {
         throw new UnsupportedOperationException("Unsupported Yet");
     }
 
     @Override
-    public void finishActivityFromChild(ShadowActivity arg0, int arg1) {
+    public void finishActivityFromChild(
+            ShadowActivity arg0,
+            int arg1
+    ) {
         throw new UnsupportedOperationException("Unsupported Yet");
     }
 
     @Override
-    public ComponentName getCallingActivity() {
+    public ComponentName getCallingActivity(
+    ) {
         return mCallingActivity;
     }
 
@@ -167,7 +215,11 @@ public class ShadowActivity extends PluginActivity {
      * 不计划支持这个方法了。
      */
     @Override
-    public void startActivityFromChild(ShadowActivity arg0, Intent arg1, int arg2) {
+    public void startActivityFromChild(
+            ShadowActivity arg0,
+            Intent arg1,
+            int arg2
+    ) {
         throw new UnsupportedOperationException("Unsupported");
     }
 
@@ -180,7 +232,13 @@ public class ShadowActivity extends PluginActivity {
      * 不计划支持这个方法了。
      */
     @Override
-    public void startActivityFromChild(ShadowActivity arg0, Intent arg1, int arg2, Bundle arg3) {
+    public void startActivityFromChild(
+            ShadowActivity arg0,
+            Intent arg1,
+            int arg2,
+            Bundle arg3
+    ) {
         throw new UnsupportedOperationException("Unsupported");
     }
+
 }

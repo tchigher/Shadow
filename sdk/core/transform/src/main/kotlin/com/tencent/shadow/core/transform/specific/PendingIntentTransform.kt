@@ -14,7 +14,9 @@ class PendingIntentTransform : SpecificTransform() {
 
     val codeConverter = CodeConverter()
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val pendingIntentMethod = mClassPool[AndroidPendingIntentClassname].methods!!
         val shadowPendingIntentMethod = mClassPool[ShadowPendingIntentClassname].methods!!
 
@@ -29,18 +31,21 @@ class PendingIntentTransform : SpecificTransform() {
             }
         }
 
-        newStep(object : TransformStep {
-            override fun filter(allInputClass: Set<CtClass>) =
-                    filterRefClasses(allInputClass, listOf(AndroidPendingIntentClassname))
+        newStep(
+                object : TransformStep {
+                    override fun filter(allInputClass: Set<CtClass>) =
+                            filterRefClasses(allInputClass, listOf(AndroidPendingIntentClassname))
 
-            override fun transform(ctClass: CtClass) {
-                try {
-                    ctClass.instrument(codeConverter)
-                } catch (e: Exception) {
-                    System.err.println("处理" + ctClass.name + "时出错")
-                    throw e
+                    override fun transform(ctClass: CtClass) {
+                        try {
+                            ctClass.instrument(codeConverter)
+                        } catch (e: Exception) {
+                            System.err.println("处理" + ctClass.name + "时出错")
+                            throw e
+                        }
+                    }
                 }
-            }
-        })
+        )
     }
+
 }

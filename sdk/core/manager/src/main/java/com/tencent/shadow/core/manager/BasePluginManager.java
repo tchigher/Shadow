@@ -62,7 +62,8 @@ public abstract class BasePluginManager {
      * PluginManager 的名字
      * 用于和其它 PluginManager 区分持续化存储的名字
      */
-    abstract protected String getName();
+    abstract protected String getName(
+    );
 
     /**
      * 从压缩包中解压插件
@@ -282,7 +283,8 @@ public abstract class BasePluginManager {
     /**
      * 业务插件的 abi
      */
-    public String getAbi() {
+    public String getAbi(
+    ) {
         return null;
     }
 

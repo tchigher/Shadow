@@ -15,14 +15,18 @@ import static com.tencent.shadow.core.runtime.container.DelegateProvider.PROCESS
  * 插件的容器Activity。PluginLoader将把插件的Activity放在其中。
  * PluginContainerActivity以委托模式将Activity的所有回调方法委托给DelegateProviderHolder提供的Delegate。
  */
-public class PluginContainerActivity extends GeneratedPluginContainerActivity implements HostActivity, HostActivityDelegator {
+public class PluginContainerActivity
+        extends GeneratedPluginContainerActivity
+        implements HostActivity, HostActivityDelegator {
+
     private static final String TAG = "PluginContainerActivity";
 
     HostActivityDelegate hostActivityDelegate;
 
     private boolean isBeforeOnCreate = true;
 
-    public PluginContainerActivity() {
+    public PluginContainerActivity(
+    ) {
         HostActivityDelegate delegate;
         DelegateProvider delegateProvider = DelegateProviderHolder.getDelegateProvider(getDelegateProviderKey());
         if (delegateProvider != null) {
@@ -36,11 +40,13 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
         hostActivityDelegate = delegate;
     }
 
-    protected String getDelegateProviderKey() {
+    protected String getDelegateProviderKey(
+    ) {
         return DelegateProviderHolder.DEFAULT_KEY;
     }
 
-    final public Object getPluginActivity() {
+    final public Object getPluginActivity(
+    ) {
         if (hostActivityDelegate != null) {
             return hostActivityDelegate.getPluginActivity();
         } else {
@@ -49,7 +55,9 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
     }
 
     @Override
-    final protected void onCreate(Bundle savedInstanceState) {
+    final protected void onCreate(
+            Bundle savedInstanceState
+    ) {
         isBeforeOnCreate = false;
         mHostTheme = null;//释放资源
 
@@ -83,7 +91,9 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
      * @param savedInstanceState onCreate时系统还回来的savedInstanceState
      * @return <code>true</code>表示这次启动不是我们预料的，需要尽早finish并退出进程。
      */
-    private boolean isIllegalIntent(Bundle savedInstanceState) {
+    private boolean isIllegalIntent(
+            Bundle savedInstanceState
+    ) {
         Bundle extras = getIntent().getExtras();
         if (extras == null && savedInstanceState == null) {
             return true;
@@ -101,7 +111,9 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(
+            Bundle outState
+    ) {
         if (hostActivityDelegate != null) {
             hostActivityDelegate.onSaveInstanceState(outState);
         } else {
@@ -113,17 +125,20 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
     }
 
     @Override
-    public HostActivity getHostActivity() {
+    public HostActivity getHostActivity(
+    ) {
         return this;
     }
 
     @Override
-    public Activity getImplementActivity() {
+    public Activity getImplementActivity(
+    ) {
         return this;
     }
 
     @Override
-    public Window getImplementWindow() {
+    public Window getImplementWindow(
+    ) {
         return getWindow();
     }
 
@@ -136,7 +151,8 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
     private Resources.Theme mHostTheme;
 
     @Override
-    public Resources.Theme getTheme() {
+    public Resources.Theme getTheme(
+    ) {
         if (isBeforeOnCreate) {
             if (mHostTheme == null) {
                 mHostTheme = super.getResources().newTheme();
@@ -148,7 +164,9 @@ public class PluginContainerActivity extends GeneratedPluginContainerActivity im
     }
 
     @Override
-    public void setTheme(int resid) {
+    public void setTheme(
+            int resid
+    ) {
         if (!isBeforeOnCreate) {
             super.setTheme(resid);
         }

@@ -7,24 +7,31 @@ import javassist.CtClass
 import javassist.CtMethod
 import javassist.CtNewMethod
 
-class KeepHostContextTransform(private val rules: Array<String>) : SpecificTransform() {
+class KeepHostContextTransform(
+        private val rules: Array<String>
+) : SpecificTransform() {
+
     companion object {
         const val ShadowContextClassName = "com.tencent.shadow.core.runtime.ShadowContext"
     }
 
     data class Rule(
-            val ctClass: CtClass
-            , val ctMethod: CtMethod
-            , val convertArgs: Array<Int>
+            val ctClass: CtClass,
+            val ctMethod: CtMethod,
+            val convertArgs: Array<Int>
     )
 
-    private fun String.assertRuleHasOnlyOneChar(char: Char) {
+    private fun String.assertRuleHasOnlyOneChar(
+            char: Char
+    ) {
         if (this.count { it == char } != 1) {
             throw IllegalArgumentException("rule:${this}中\'$char\'的数量不为1")
         }
     }
 
-    private fun parseKeepHostContextRules(appClasses: Set<CtClass>): List<Rule> {
+    private fun parseKeepHostContextRules(
+            appClasses: Set<CtClass>
+    ): List<Rule> {
         return rules.map { rule ->
             rule.assertRuleHasOnlyOneChar('(')
             rule.assertRuleHasOnlyOneChar(')')
@@ -57,9 +64,13 @@ class KeepHostContextTransform(private val rules: Array<String>) : SpecificTrans
         }
     }
 
-    private fun wrapArg(num: Int): String = "(($ShadowContextClassName)\$${num}).getBaseContext()"
+    private fun wrapArg(
+            num: Int
+    ): String = "(($ShadowContextClassName)\$${num}).getBaseContext()"
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         val rules = parseKeepHostContextRules(allInputClass)
 
         for (rule in rules) {
@@ -98,4 +109,5 @@ class KeepHostContextTransform(private val rules: Array<String>) : SpecificTrans
             })
         }
     }
+
 }

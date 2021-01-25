@@ -9,13 +9,17 @@ import javassist.CtNewMethod
 import javassist.Modifier
 import java.util.*
 
-class PackageManagerTransform : SpecificTransform() {
+class PackageManagerTransform
+    : SpecificTransform() {
+
     companion object {
         const val AndroidPackageManagerClassname = "android.content.pm.PackageManager"
         const val ShadowAndroidPackageManagerClassname = "com.tencent.shadow.core.runtime.PackageManagerInvokeRedirect"
     }
 
-    private fun setupPackageManagerTransform(targetMethodName: Array<String>) {
+    private fun setupPackageManagerTransform(
+            targetMethodName: Array<String>
+    ) {
         val targetMethods = getTargetMethods(arrayOf(AndroidPackageManagerClassname), targetMethodName)
         targetMethods.forEach { targetMethod ->
             newStep(object : TransformStep {
@@ -78,7 +82,9 @@ class PackageManagerTransform : SpecificTransform() {
         }
     }
 
-    override fun setup(allInputClass: Set<CtClass>) {
+    override fun setup(
+            allInputClass: Set<CtClass>
+    ) {
         setupPackageManagerTransform(
                 arrayOf(
                         "getApplicationInfo",
@@ -105,4 +111,5 @@ class PackageManagerTransform : SpecificTransform() {
         }
         return method_targets
     }
+
 }

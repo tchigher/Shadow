@@ -9,40 +9,56 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 
-public class ShadowInstrumentation extends Instrumentation {
+public class ShadowInstrumentation
+        extends Instrumentation {
 
-    public void callActivityOnDestroy(ShadowActivity activity) {
+    public void callActivityOnDestroy(
+            ShadowActivity activity
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
         super.callActivityOnDestroy(hostActivity);
     }
 
-    public void callActivityOnStart(ShadowActivity activity) {
+    public void callActivityOnStart(
+            ShadowActivity activity
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
         super.callActivityOnStart(hostActivity);
     }
 
-    public void callActivityOnResume(ShadowActivity activity) {
+    public void callActivityOnResume(
+            ShadowActivity activity
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
         super.callActivityOnResume(hostActivity);
     }
 
-    public void callActivityOnPause(ShadowActivity activity) {
+    public void callActivityOnPause(
+            ShadowActivity activity
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
         super.callActivityOnPause(hostActivity);
     }
 
-    public void callActivityOnStop(ShadowActivity activity) {
+    public void callActivityOnStop(
+            ShadowActivity activity
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
         super.callActivityOnStop(hostActivity);
     }
 
-    public void callActivityOnSaveInstanceState(ShadowActivity activity, Bundle outState) {
+    public void callActivityOnSaveInstanceState(
+            ShadowActivity activity,
+            Bundle outState
+    ) {
         Activity hostActivity = (Activity) activity.hostActivityDelegator.getHostActivity();
-        super.callActivityOnSaveInstanceState(hostActivity,outState);
+        super.callActivityOnSaveInstanceState(hostActivity, outState);
     }
 
-    static public ShadowApplication newShadowApplication(Class<?> clazz, Context context)
-            throws InstantiationException, IllegalAccessException,
+    static public ShadowApplication newShadowApplication(
+            Class<?> clazz,
+            Context context
+    ) throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         ShadowApplication app = (ShadowApplication) clazz.newInstance();
 
@@ -53,13 +69,15 @@ public class ShadowInstrumentation extends Instrumentation {
         return app;
     }
 
-
     /**
      * 因为参数签名和newActivity一样,但是返回值不一样,所以无法override
      * 只能通过transform,让newApplication转移到newShadowApplication上来
      */
-    public ShadowApplication newShadowApplication(ClassLoader cl, String className, Context context)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public ShadowApplication newShadowApplication(
+            ClassLoader cl,
+            String className,
+            Context context
+    ) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         ShadowApplication app = (ShadowApplication) cl.loadClass(className).newInstance();
         app.attachBaseContext(context);
         return app;
@@ -69,12 +87,17 @@ public class ShadowInstrumentation extends Instrumentation {
      * 因为参数签名和newActivity一样,但是返回值不一样,所以无法override
      * 只能通过transform,让newActivity转移到newShadowActivity上来
      */
-    public ShadowActivity newShadowActivity(ClassLoader cl, String className, Intent intent)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public ShadowActivity newShadowActivity(
+            ClassLoader cl,
+            String className,
+            Intent intent
+    ) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         return (ShadowActivity) cl.loadClass(className).newInstance();
     }
 
-    public void callApplicationOnCreate(ShadowApplication app) {
+    public void callApplicationOnCreate(
+            ShadowApplication app
+    ) {
         app.onCreate();
     }
 
@@ -86,19 +109,50 @@ public class ShadowInstrumentation extends Instrumentation {
      * 像com.didi.virtualapk是用自定义的Instrumentation做了一层代理,替换intent中合适的activity
      * 但是shadow的activity不是这样启动的,这个方法也不会执行,仅仅保证编译通过,能正常打出插件包,而virtualapk其实是完全失效的
      */
-    public ActivityResult execStartActivity(Context who, IBinder contextThread, IBinder token, ShadowActivity target, Intent intent, int requestCode) {
+    public ActivityResult execStartActivity(
+            Context who,
+            IBinder contextThread,
+            IBinder token,
+            ShadowActivity target,
+            Intent intent,
+            int requestCode
+    ) {
         return new ActivityResult(requestCode, intent);
     }
 
-    public ActivityResult execStartActivity(Context who, IBinder contextThread, IBinder token, ShadowActivity target, Intent intent, int requestCode, Bundle options) {
+    public ActivityResult execStartActivity(
+            Context who,
+            IBinder contextThread,
+            IBinder token,
+            ShadowActivity target,
+            Intent intent,
+            int requestCode,
+            Bundle options
+    ) {
         return new ActivityResult(requestCode, intent);
     }
 
-    public ActivityResult execStartActivity(Context who, IBinder contextThread, IBinder token, Fragment target, Intent intent, int requestCode, Bundle options) {
+    public ActivityResult execStartActivity(
+            Context who,
+            IBinder contextThread,
+            IBinder token,
+            Fragment target,
+            Intent intent,
+            int requestCode,
+            Bundle options
+    ) {
         return new ActivityResult(requestCode, intent);
     }
 
-    public ActivityResult execStartActivity(Context who, IBinder contextThread, IBinder token, String target, Intent intent, int requestCode, Bundle options) {
+    public ActivityResult execStartActivity(
+            Context who,
+            IBinder contextThread,
+            IBinder token,
+            String target,
+            Intent intent,
+            int requestCode,
+            Bundle options
+    ) {
         return new ActivityResult(requestCode, intent);
     }
 
@@ -106,11 +160,17 @@ public class ShadowInstrumentation extends Instrumentation {
      * 同execStartActivity方法一样,其实插件中并不会调用到这里
      * 而且这个方法里面都大量的UnsupportedAppUsage方法调用,如果重写并不符合shadow零反射的原则
      */
-    public void callActivityOnCreate(ShadowActivity activity, Bundle icicle) {
+    public void callActivityOnCreate(
+            ShadowActivity activity,
+            Bundle icicle
+    ) {
     }
 
-    public void callActivityOnCreate(ShadowActivity activity, Bundle icicle, PersistableBundle persistentState) {
+    public void callActivityOnCreate(
+            ShadowActivity activity,
+            Bundle icicle,
+            PersistableBundle persistentState
+    ) {
     }
-
 
 }

@@ -9,17 +9,22 @@ package com.tencent.shadow.core.runtime.container;
  * @author owenguo
  */
 public class ContentProviderDelegateProviderHolder {
+
     static ContentProviderDelegateProvider contentProviderDelegateProvider;
 
 
-    public static void setContentProviderDelegateProvider(ContentProviderDelegateProvider contentProviderDelegateProvider) {
+    public static void setContentProviderDelegateProvider(
+            ContentProviderDelegateProvider contentProviderDelegateProvider
+    ) {
         ContentProviderDelegateProviderHolder.contentProviderDelegateProvider = contentProviderDelegateProvider;
         notifyDelegateProviderHolderPrepare();
     }
 
     private static DelegateProviderHolderPrepareListener sPrepareListener;
 
-    public static void setDelegateProviderHolderPrepareListener(DelegateProviderHolderPrepareListener prepareListener) {
+    public static void setDelegateProviderHolderPrepareListener(
+            DelegateProviderHolderPrepareListener prepareListener
+    ) {
         sPrepareListener = prepareListener;
     }
 
@@ -30,7 +35,7 @@ public class ContentProviderDelegateProviderHolder {
     }
 
     interface DelegateProviderHolderPrepareListener {
-         void onPrepare();
+        void onPrepare();
     }
 
 }

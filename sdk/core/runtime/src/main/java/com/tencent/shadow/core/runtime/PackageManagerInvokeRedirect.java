@@ -21,37 +21,67 @@ import java.util.List;
  */
 public class PackageManagerInvokeRedirect {
 
-    private static PluginPackageManager getPluginPackageManager(ClassLoader classLoaderOfInvokeCode) {
+    private static PluginPackageManager getPluginPackageManager(
+            ClassLoader classLoaderOfInvokeCode
+    ) {
         return PluginPartInfoManager.getPluginInfo(classLoaderOfInvokeCode).packageManager;
     }
 
-    public static ApplicationInfo getApplicationInfo(ClassLoader classLoaderOfInvokeCode, String packageName, int flags) throws PackageManager.NameNotFoundException {
+    public static ApplicationInfo getApplicationInfo(
+            ClassLoader classLoaderOfInvokeCode,
+            String packageName,
+            int flags
+    ) throws PackageManager.NameNotFoundException {
         return getPluginPackageManager(classLoaderOfInvokeCode).getApplicationInfo(packageName, flags);
     }
 
-    public static ActivityInfo getActivityInfo(ClassLoader classLoaderOfInvokeCode, ComponentName component, int flags) throws PackageManager.NameNotFoundException {
+    public static ActivityInfo getActivityInfo(
+            ClassLoader classLoaderOfInvokeCode,
+            ComponentName component,
+            int flags
+    ) throws PackageManager.NameNotFoundException {
         return getPluginPackageManager(classLoaderOfInvokeCode).getActivityInfo(component, flags);
     }
 
-    public static PackageInfo getPackageInfo(ClassLoader classLoaderOfInvokeCode, String packageName, int flags) throws PackageManager.NameNotFoundException {
+    public static PackageInfo getPackageInfo(
+            ClassLoader classLoaderOfInvokeCode,
+            String packageName,
+            int flags
+    ) throws PackageManager.NameNotFoundException {
         return getPluginPackageManager(classLoaderOfInvokeCode).getPackageInfo(packageName, flags);
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public static PackageInfo getPackageInfo(ClassLoader classLoaderOfInvokeCode, VersionedPackage versionedPackage,
-                                             int flags) throws PackageManager.NameNotFoundException {
+    public static PackageInfo getPackageInfo(
+            ClassLoader classLoaderOfInvokeCode,
+            VersionedPackage versionedPackage,
+            int flags
+    ) throws PackageManager.NameNotFoundException {
         return getPluginPackageManager(classLoaderOfInvokeCode).getPackageInfo(versionedPackage.getPackageName(), flags);
     }
 
-    public static ProviderInfo resolveContentProvider(ClassLoader classLoaderOfInvokeCode, String name, int flags) {
+    public static ProviderInfo resolveContentProvider(
+            ClassLoader classLoaderOfInvokeCode,
+            String name,
+            int flags
+    ) {
         return getPluginPackageManager(classLoaderOfInvokeCode).resolveContentProvider(name, flags);
     }
 
-    public static List<ProviderInfo> queryContentProviders(ClassLoader classLoaderOfInvokeCode, String processName, int uid, int flags) {
+    public static List<ProviderInfo> queryContentProviders(
+            ClassLoader classLoaderOfInvokeCode,
+            String processName,
+            int uid,
+            int flags
+    ) {
         return getPluginPackageManager(classLoaderOfInvokeCode).queryContentProviders(processName, uid, flags);
     }
 
-    public static ResolveInfo resolveActivity(ClassLoader classLoaderOfInvokeCode, Intent intent, int flags) {
+    public static ResolveInfo resolveActivity(
+            ClassLoader classLoaderOfInvokeCode,
+            Intent intent,
+            int flags
+    ) {
         return getPluginPackageManager(classLoaderOfInvokeCode).resolveActivity(intent, flags);
     }
 

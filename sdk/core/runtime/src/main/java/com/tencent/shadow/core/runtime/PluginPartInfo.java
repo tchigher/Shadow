@@ -12,11 +12,16 @@ public class PluginPartInfo {
 
     PluginPackageManager packageManager;
 
-
-    public PluginPartInfo(ShadowApplication application, Resources resources, ClassLoader classLoader, PluginPackageManager packageManager) {
+    public PluginPartInfo(
+            ShadowApplication application,
+            Resources resources,
+            ClassLoader classLoader,
+            PluginPackageManager packageManager
+    ) {
         this.application = application;
         this.resources = resources;
         this.classLoader = classLoader;
         this.packageManager = packageManager;
     }
+
 }
