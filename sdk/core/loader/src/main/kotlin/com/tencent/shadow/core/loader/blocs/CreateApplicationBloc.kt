@@ -10,10 +10,8 @@ import com.tencent.shadow.core.loader.managers.ComponentManager
 import com.tencent.shadow.core.runtime.ShadowAppComponentFactory
 import com.tencent.shadow.core.runtime.ShadowApplication
 
-/**
+/*
  * 初始化插件Application类
- *
- * @author cubershi
  */
 object CreateApplicationBloc {
     @Throws(CreateApplicationException::class)

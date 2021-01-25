@@ -11,11 +11,9 @@ import com.tencent.shadow.core.container.BuildConfig;
 import static com.tencent.shadow.core.runtime.container.DelegateProvider.LOADER_VERSION_KEY;
 import static com.tencent.shadow.core.runtime.container.DelegateProvider.PROCESS_ID_KEY;
 
-/**
+/*
  * 插件的容器Activity。PluginLoader将把插件的Activity放在其中。
  * PluginContainerActivity以委托模式将Activity的所有回调方法委托给DelegateProviderHolder提供的Delegate。
- *
- * @author cubershi
  */
 public class PluginContainerActivity extends GeneratedPluginContainerActivity implements HostActivity, HostActivityDelegator {
     private static final String TAG = "PluginContainerActivity";

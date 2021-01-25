@@ -17,10 +17,8 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-/**
+/*
  * 类转换基类
- *
- * @author cubershi
  */
 abstract class ClassTransform(val project: Project) : Transform() {
     val inputSet: MutableSet<TransformInput> = mutableSetOf()

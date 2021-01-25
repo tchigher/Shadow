@@ -10,10 +10,8 @@ import com.tencent.shadow.core.loader.infos.PluginInfo
 import com.tencent.shadow.core.loader.infos.PluginProviderInfo
 import com.tencent.shadow.core.loader.infos.PluginServiceInfo
 
-/**
+/*
  * 解析插件apk逻辑
- *
- * @author cubershi
  */
 object ParsePluginApkBloc {
     /**

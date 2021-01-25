@@ -27,11 +27,9 @@ import com.tencent.shadow.core.runtime.ShadowLayoutInflater
 import com.tencent.shadow.core.runtime.container.HostActivityDelegate
 import com.tencent.shadow.core.runtime.container.HostActivityDelegator
 
-/**
+/*
  * 壳子Activity与插件Activity转调关系的实现类
  * 它是抽象的是因为它缺少必要的业务信息.业务必须继承这个类提供业务信息.
- *
- * @author cubershi
  */
 class ShadowActivityDelegate(private val mDI: DI) : GeneratedShadowActivityDelegate(), HostActivityDelegate {
     companion object {

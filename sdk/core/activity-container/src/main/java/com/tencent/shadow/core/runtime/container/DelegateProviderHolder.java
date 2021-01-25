@@ -6,12 +6,10 @@ import android.os.SystemClock;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*
  * DelegateProvider依赖注入类
  * <p>
  * dynamic-pluginloader通过这个类实现将PluginLoader中的DelegateProvider实现注入到plugincontainer中。
- *
- * @author cubershi
  */
 public class DelegateProviderHolder {
     public static final String DEFAULT_KEY = "DEFAULT_KEY";

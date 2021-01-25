@@ -1,11 +1,9 @@
 package com.tencent.shadow.core.runtime.container;
 
-/**
+/*
  * 宿主容器委托提供者
  * <p>
  * 负责提供宿主容器委托实现
- *
- * @author cubershi
  */
 public interface DelegateProvider {
     String LOADER_VERSION_KEY = "LOADER_VERSION";

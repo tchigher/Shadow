@@ -16,11 +16,9 @@ import com.tencent.shadow.core.runtime.container.DelegateProvider.PROCESS_ID_KEY
 import com.tencent.shadow.core.runtime.container.DelegateProviderHolder
 import com.tencent.shadow.core.runtime.container.GeneratedHostActivityDelegator
 
-/**
+/*
  * 插件组件管理
  * 主要功能是管理组件和宿主中注册的壳子之间的配对关系
- *
- * @author cubershi
  */
 abstract class ComponentManager : PluginComponentLauncher {
     companion object {
