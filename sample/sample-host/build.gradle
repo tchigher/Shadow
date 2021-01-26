@@ -48,9 +48,6 @@ android {
             assets.srcDir('build/generated/assets/samplePluginManager/release/')
             assets.srcDir('build/generated/assets/mgmoviePlugins/release/')
         }
-        main {
-            jniLibs.srcDir(['libs'])
-        }
     }
 
     lintOptions {

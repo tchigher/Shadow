@@ -7,14 +7,17 @@ import java.io.File;
 
 public class Shadow {
 
-    public static PluginManager getPluginManager(
+    public static PluginManager createPluginManagerWrappedByUpdater(
             File pluginManagerApk
-    ){
-        final SampleJustSetAndGetPluginManagerUpdater sampleJustSetAndGetPluginManagerUpdater = new SampleJustSetAndGetPluginManagerUpdater(pluginManagerApk);
-        File tempPm = sampleJustSetAndGetPluginManagerUpdater.getLocalLatestApk();
-        if (tempPm != null) {
+    ) {
+        final SampleJustSetAndGetPluginManagerUpdater sampleJustSetAndGetPluginManagerUpdater =
+                new SampleJustSetAndGetPluginManagerUpdater(pluginManagerApk);
+
+        File localLatestPluginManagerApk = sampleJustSetAndGetPluginManagerUpdater.getLocalLatestApk();
+        if (localLatestPluginManagerApk != null) {
             return new DynamicPluginManager(sampleJustSetAndGetPluginManagerUpdater);
         }
+
         return null;
     }
 

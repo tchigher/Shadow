@@ -18,7 +18,8 @@ public class SampleJustSetAndGetPluginManagerUpdater
     }
 
     @Override
-    public File getLocalLatestApk() {
+    public File getLocalLatestApk(
+    ) {
         return mPluginManagerApk;
     }
 

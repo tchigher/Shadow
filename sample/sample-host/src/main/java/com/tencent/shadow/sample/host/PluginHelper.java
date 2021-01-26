@@ -23,11 +23,13 @@ public class PluginHelper {
      * 插件框架 APK(loader APK 和 runtime APK),
      * APK 信息配置关系 JSON 文件
      */
-    public final static String sMgMoviePluginZipFileName = BuildConfig.DEBUG ? "mgmoviePlugins-debug.zip" : "mgmoviePlugins-release.zip";
+    public final static String sMgMoviePluginZipFileName = BuildConfig.DEBUG
+            ? "mgmoviePlugins-debug.zip"
+            : "mgmoviePlugins-release.zip";
 
     public File mPluginManagerApkFile;
 
-    public File mMgMoviePluginsZipFile;
+    public File mMgMoviePluginZipFile;
 
     public ExecutorService mSinglePool = Executors.newSingleThreadExecutor();
 
@@ -35,37 +37,35 @@ public class PluginHelper {
 
     private static PluginHelper sInstance = new PluginHelper();
 
-    public static PluginHelper getInstance() {
+    public static PluginHelper getInstance(
+    ) {
         return sInstance;
     }
 
-    private PluginHelper() {
+    private PluginHelper(
+    ) {
     }
 
-    public void init(Context context) {
+    public void init(
+            Context context
+    ) {
         mPluginManagerApkFile = new File(context.getFilesDir(), sSamplePluginManagerApkFileName);
 
-        mMgMoviePluginsZipFile = new File(context.getFilesDir(), sMgMoviePluginZipFileName);
+        mMgMoviePluginZipFile = new File(context.getFilesDir(), sMgMoviePluginZipFileName);
 
         mContext = context.getApplicationContext();
 
-        mSinglePool.execute(new Runnable() {
-            @Override
-            public void run() {
-                preparePlugin();
-            }
-        });
+        mSinglePool.execute(this::preparePlugin);
     }
 
-    private void preparePlugin() {
+    private void preparePlugin(
+    ) {
         try {
-            System.loadLibrary("aes");
-
             InputStream samplePluginManagerApkInputStream = mContext.getAssets().open(sSamplePluginManagerApkFileName);
             FileUtils.copyInputStreamToFile(samplePluginManagerApkInputStream, mPluginManagerApkFile);
 
             InputStream mgMoviePluginZipInputStream = mContext.getAssets().open(sMgMoviePluginZipFileName);
-            FileUtils.copyInputStreamToFile(mgMoviePluginZipInputStream, mMgMoviePluginsZipFile);
+            FileUtils.copyInputStreamToFile(mgMoviePluginZipInputStream, mMgMoviePluginZipFile);
         } catch (IOException e) {
             throw new RuntimeException("从 assets 中复制 APK/ZIP 出错", e);
         }

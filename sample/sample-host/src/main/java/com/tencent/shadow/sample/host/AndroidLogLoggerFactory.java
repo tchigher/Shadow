@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class AndroidLogLoggerFactory implements ILoggerFactory {
+public class AndroidLogLoggerFactory
+        implements ILoggerFactory {
 
     private static final int LOG_LEVEL_TRACE = 5;
     private static final int LOG_LEVEL_DEBUG = 4;
@@ -20,13 +21,16 @@ public class AndroidLogLoggerFactory implements ILoggerFactory {
 
     private static AndroidLogLoggerFactory sInstance = new AndroidLogLoggerFactory();
 
-    public static ILoggerFactory getInstance() {
+    public static ILoggerFactory getInstance(
+    ) {
         return sInstance;
     }
 
-    final private ConcurrentMap<String, Logger> loggerMap = new ConcurrentHashMap<String, Logger>();
+    final private ConcurrentMap<String, Logger> loggerMap = new ConcurrentHashMap<>();
 
-    public Logger getLogger(String name) {
+    public Logger getLogger(
+            String name
+    ) {
         Logger simpleLogger = loggerMap.get(name);
         if (simpleLogger != null) {
             return simpleLogger;
@@ -37,19 +41,28 @@ public class AndroidLogLoggerFactory implements ILoggerFactory {
         }
     }
 
-    class IVLogger implements Logger {
+    class IVLogger
+            implements Logger {
+
         private String name;
 
-        IVLogger(String name) {
+        IVLogger(
+                String name
+        ) {
             this.name = name;
         }
 
         @Override
-        public String getName() {
+        public String getName(
+        ) {
             return name;
         }
 
-        private void log(int level, String message, Throwable t) {
+        private void log(
+                int level,
+                String message,
+                Throwable t
+        ) {
             final String tag = String.valueOf(name);
 
             switch (level) {
@@ -84,170 +97,251 @@ public class AndroidLogLoggerFactory implements ILoggerFactory {
         }
 
         @Override
-        public boolean isTraceEnabled() {
+        public boolean isTraceEnabled(
+        ) {
             return true;
         }
 
         @Override
-        public void trace(String msg) {
+        public void trace(
+                String msg
+        ) {
             log(LOG_LEVEL_TRACE, msg, null);
         }
 
         @Override
-        public void trace(String format, Object o) {
+        public void trace(
+                String format,
+                Object o
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o);
             log(LOG_LEVEL_TRACE, tuple.getMessage(), null);
         }
 
         @Override
-        public void trace(String format, Object o, Object o1) {
+        public void trace(
+                String format,
+                Object o,
+                Object o1
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o, o1);
             log(LOG_LEVEL_TRACE, tuple.getMessage(), null);
         }
 
         @Override
-        public void trace(String format, Object... objects) {
+        public void trace(
+                String format,
+                Object... objects
+        ) {
             FormattingTuple tuple = MessageFormatter.arrayFormat(format, objects);
             log(LOG_LEVEL_TRACE, tuple.getMessage(), null);
         }
 
         @Override
-        public void trace(String msg, Throwable throwable) {
+        public void trace(
+                String msg,
+                Throwable throwable
+        ) {
             log(LOG_LEVEL_TRACE, msg, throwable);
         }
 
         @Override
-        public boolean isDebugEnabled() {
+        public boolean isDebugEnabled(
+        ) {
             return true;
         }
 
         @Override
-        public void debug(String msg) {
+        public void debug(
+                String msg
+        ) {
             log(LOG_LEVEL_DEBUG, msg, null);
         }
 
         @Override
-        public void debug(String format, Object o) {
+        public void debug(
+                String format,
+                Object o
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o);
             log(LOG_LEVEL_DEBUG, tuple.getMessage(), null);
         }
 
         @Override
-        public void debug(String format, Object o, Object o1) {
+        public void debug(
+                String format,
+                Object o,
+                Object o1
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o, o1);
             log(LOG_LEVEL_DEBUG, tuple.getMessage(), null);
         }
 
         @Override
-        public void debug(String format, Object... objects) {
+        public void debug(
+                String format,
+                Object... objects
+        ) {
             FormattingTuple tuple = MessageFormatter.arrayFormat(format, objects);
             log(LOG_LEVEL_DEBUG, tuple.getMessage(), null);
         }
 
         @Override
-        public void debug(String msg, Throwable throwable) {
+        public void debug(
+                String msg,
+                Throwable throwable
+        ) {
             log(LOG_LEVEL_DEBUG, msg, throwable);
         }
 
         @Override
-        public boolean isInfoEnabled() {
+        public boolean isInfoEnabled(
+        ) {
             return true;
         }
 
         @Override
-        public void info(String msg) {
+        public void info(
+                String msg
+        ) {
             log(LOG_LEVEL_INFO, msg, null);
         }
 
         @Override
-        public void info(String format, Object o) {
+        public void info(
+                String format,
+                Object o
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o);
             log(LOG_LEVEL_INFO, tuple.getMessage(), null);
         }
 
         @Override
-        public void info(String format, Object o, Object o1) {
+        public void info(
+                String format,
+                Object o,
+                Object o1
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o, o1);
             log(LOG_LEVEL_INFO, tuple.getMessage(), null);
         }
 
         @Override
-        public void info(String format, Object... objects) {
+        public void info(
+                String format,
+                Object... objects
+        ) {
             FormattingTuple tuple = MessageFormatter.arrayFormat(format, objects);
             log(LOG_LEVEL_INFO, tuple.getMessage(), null);
         }
 
         @Override
-        public void info(String msg, Throwable throwable) {
+        public void info(
+                String msg,
+                Throwable throwable
+        ) {
             log(LOG_LEVEL_INFO, msg, throwable);
         }
 
         @Override
-        public boolean isWarnEnabled() {
+        public boolean isWarnEnabled(
+        ) {
             return true;
         }
 
         @Override
-        public void warn(String msg) {
+        public void warn(
+                String msg
+        ) {
             log(LOG_LEVEL_WARN, msg, null);
         }
 
         @Override
-        public void warn(String format, Object o) {
+        public void warn(
+                String format,
+                Object o
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o);
             log(LOG_LEVEL_WARN, tuple.getMessage(), null);
         }
 
         @Override
-        public void warn(String format, Object o, Object o1) {
+        public void warn(
+                String format,
+                Object o,
+                Object o1
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o, o1);
             log(LOG_LEVEL_WARN, tuple.getMessage(), null);
         }
 
         @Override
-        public void warn(String format, Object... objects) {
+        public void warn(
+                String format,
+                Object... objects
+        ) {
             FormattingTuple tuple = MessageFormatter.arrayFormat(format, objects);
             log(LOG_LEVEL_WARN, tuple.getMessage(), null);
         }
 
         @Override
-        public void warn(String msg, Throwable throwable) {
+        public void warn(
+                String msg,
+                Throwable throwable
+        ) {
             log(LOG_LEVEL_WARN, msg, throwable);
         }
 
         @Override
-        public boolean isErrorEnabled() {
+        public boolean isErrorEnabled(
+        ) {
             return true;
         }
 
         @Override
-        public void error(String msg) {
+        public void error(
+                String msg
+        ) {
             log(LOG_LEVEL_ERROR, msg, null);
         }
 
         @Override
-        public void error(String format, Object o) {
+        public void error(
+                String format,
+                Object o
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o);
             log(LOG_LEVEL_ERROR, tuple.getMessage(), null);
         }
 
         @Override
-        public void error(String format, Object o, Object o1) {
+        public void error(
+                String format,
+                Object o,
+                Object o1
+        ) {
             FormattingTuple tuple = MessageFormatter.format(format, o, o1);
             log(LOG_LEVEL_ERROR, tuple.getMessage(), null);
         }
 
         @Override
-        public void error(String format, Object... objects) {
+        public void error(
+                String format,
+                Object... objects
+        ) {
             FormattingTuple tuple = MessageFormatter.arrayFormat(format, objects);
             log(LOG_LEVEL_ERROR, tuple.getMessage(), null);
         }
 
         @Override
-        public void error(String msg, Throwable throwable) {
+        public void error(
+                String msg,
+                Throwable throwable
+        ) {
             log(LOG_LEVEL_ERROR, msg, throwable);
         }
     }
+
 }
 
 class FormattingTuple {
@@ -258,31 +352,41 @@ class FormattingTuple {
     private Throwable throwable;
     private Object[] argArray;
 
-    public FormattingTuple(String message) {
+    public FormattingTuple(
+            String message
+    ) {
         this(message, null, null);
     }
 
-    public FormattingTuple(String message, Object[] argArray, Throwable throwable) {
+    public FormattingTuple(
+            String message,
+            Object[] argArray,
+            Throwable throwable
+    ) {
         this.message = message;
         this.throwable = throwable;
         this.argArray = argArray;
     }
 
-    public String getMessage() {
+    public String getMessage(
+    ) {
         return message;
     }
 
-    public Object[] getArgArray() {
+    public Object[] getArgArray(
+    ) {
         return argArray;
     }
 
-    public Throwable getThrowable() {
+    public Throwable getThrowable(
+    ) {
         return throwable;
     }
 
 }
 
 final class MessageFormatter {
+
     static final char DELIM_START = '{';
     static final char DELIM_STOP = '}';
     static final String DELIM_STR = "{}";
@@ -305,7 +409,10 @@ final class MessageFormatter {
      * @param arg            The argument to be substituted in place of the formatting anchor
      * @return The formatted message
      */
-    final public static FormattingTuple format(String messagePattern, Object arg) {
+    public static FormattingTuple format(
+            String messagePattern,
+            Object arg
+    ) {
         return arrayFormat(messagePattern, new Object[]{arg});
     }
 
@@ -328,12 +435,18 @@ final class MessageFormatter {
      *                       anchor
      * @return The formatted message
      */
-    final public static FormattingTuple format(final String messagePattern, Object arg1, Object arg2) {
+    public static FormattingTuple format(
+            final String messagePattern,
+            Object arg1,
+            Object arg2
+    ) {
         return arrayFormat(messagePattern, new Object[]{arg1, arg2});
     }
 
 
-    static final Throwable getThrowableCandidate(Object[] argArray) {
+    static Throwable getThrowableCandidate(
+            Object[] argArray
+    ) {
         if (argArray == null || argArray.length == 0) {
             return null;
         }
@@ -345,7 +458,10 @@ final class MessageFormatter {
         return null;
     }
 
-    final public static FormattingTuple arrayFormat(final String messagePattern, final Object[] argArray) {
+    public static FormattingTuple arrayFormat(
+            final String messagePattern,
+            final Object[] argArray
+    ) {
         Throwable throwableCandidate = getThrowableCandidate(argArray);
         Object[] args = argArray;
         if (throwableCandidate != null) {
@@ -364,7 +480,11 @@ final class MessageFormatter {
         return trimmed;
     }
 
-    final public static FormattingTuple arrayFormat(final String messagePattern, final Object[] argArray, Throwable throwable) {
+    public static FormattingTuple arrayFormat(
+            final String messagePattern,
+            final Object[] argArray,
+            Throwable throwable
+    ) {
 
         if (messagePattern == null) {
             return new FormattingTuple(null, argArray, throwable);
@@ -381,9 +501,7 @@ final class MessageFormatter {
 
         int L;
         for (L = 0; L < argArray.length; L++) {
-
             j = messagePattern.indexOf(DELIM_STR, i);
-
             if (j == -1) {
                 // no more variables
                 if (i == 0) { // this is a simple string
@@ -421,8 +539,10 @@ final class MessageFormatter {
         return new FormattingTuple(sbuf.toString(), argArray, throwable);
     }
 
-    final static boolean isEscapedDelimeter(String messagePattern, int delimeterStartIndex) {
-
+    static boolean isEscapedDelimeter(
+            String messagePattern,
+            int delimeterStartIndex
+    ) {
         if (delimeterStartIndex == 0) {
             return false;
         }
@@ -434,8 +554,12 @@ final class MessageFormatter {
         }
     }
 
-    final static boolean isDoubleEscaped(String messagePattern, int delimeterStartIndex) {
-        if (delimeterStartIndex >= 2 && messagePattern.charAt(delimeterStartIndex - 2) == ESCAPE_CHAR) {
+    static boolean isDoubleEscaped(
+            String messagePattern,
+            int delimeterStartIndex
+    ) {
+        if (delimeterStartIndex >= 2
+                && messagePattern.charAt(delimeterStartIndex - 2) == ESCAPE_CHAR) {
             return true;
         } else {
             return false;
@@ -443,7 +567,11 @@ final class MessageFormatter {
     }
 
     // special treatment of array values was suggested by 'lizongbo'
-    private static void deeplyAppendParameter(StringBuilder sbuf, Object o, Map<Object[], Object> seenMap) {
+    private static void deeplyAppendParameter(
+            StringBuilder sbuf,
+            Object o,
+            Map<Object[], Object> seenMap
+    ) {
         if (o == null) {
             sbuf.append("null");
             return;
@@ -475,17 +603,23 @@ final class MessageFormatter {
         }
     }
 
-    private static void safeObjectAppend(StringBuilder sbuf, Object o) {
+    private static void safeObjectAppend(
+            StringBuilder sbuf,
+            Object o
+    ) {
         try {
             String oAsString = o.toString();
             sbuf.append(oAsString);
         } catch (Throwable t) {
             sbuf.append("[FAILED toString()]");
         }
-
     }
 
-    private static void objectArrayAppend(StringBuilder sbuf, Object[] a, Map<Object[], Object> seenMap) {
+    private static void objectArrayAppend(
+            StringBuilder sbuf,
+            Object[] a,
+            Map<Object[], Object> seenMap
+    ) {
         sbuf.append('[');
         if (!seenMap.containsKey(a)) {
             seenMap.put(a, null);
@@ -503,7 +637,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void booleanArrayAppend(StringBuilder sbuf, boolean[] a) {
+    private static void booleanArrayAppend(
+            StringBuilder sbuf,
+            boolean[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -514,7 +651,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void byteArrayAppend(StringBuilder sbuf, byte[] a) {
+    private static void byteArrayAppend(
+            StringBuilder sbuf,
+            byte[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -525,7 +665,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void charArrayAppend(StringBuilder sbuf, char[] a) {
+    private static void charArrayAppend(
+            StringBuilder sbuf,
+            char[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -536,7 +679,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void shortArrayAppend(StringBuilder sbuf, short[] a) {
+    private static void shortArrayAppend(
+            StringBuilder sbuf,
+            short[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -547,7 +693,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void intArrayAppend(StringBuilder sbuf, int[] a) {
+    private static void intArrayAppend(
+            StringBuilder sbuf,
+            int[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -558,7 +707,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void longArrayAppend(StringBuilder sbuf, long[] a) {
+    private static void longArrayAppend(
+            StringBuilder sbuf,
+            long[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -569,7 +721,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void floatArrayAppend(StringBuilder sbuf, float[] a) {
+    private static void floatArrayAppend(
+            StringBuilder sbuf,
+            float[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -580,7 +735,10 @@ final class MessageFormatter {
         sbuf.append(']');
     }
 
-    private static void doubleArrayAppend(StringBuilder sbuf, double[] a) {
+    private static void doubleArrayAppend(
+            StringBuilder sbuf,
+            double[] a
+    ) {
         sbuf.append('[');
         final int len = a.length;
         for (int i = 0; i < len; i++) {
