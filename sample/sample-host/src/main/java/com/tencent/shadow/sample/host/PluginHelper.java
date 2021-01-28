@@ -61,6 +61,8 @@ public class PluginHelper {
     private void preparePlugin(
     ) {
         try {
+            System.loadLibrary("aes");
+
             InputStream samplePluginManagerApkInputStream = mContext.getAssets().open(sSamplePluginManagerApkFileName);
             FileUtils.copyInputStreamToFile(samplePluginManagerApkInputStream, mPluginManagerApkFile);
 
