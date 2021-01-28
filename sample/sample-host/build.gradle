@@ -92,6 +92,7 @@ def generateAssets(generateAssetsTask, buildType) {
             "assemble${buildType.capitalize()}"
     )
 
+    // 影院的
     def fromMgMoviePluginsZipFile = file(
             "${getRootProject().getBuildDir()}" +
                     "/mgmoviePlugins-${buildType}.zip"

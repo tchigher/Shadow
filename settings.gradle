@@ -21,10 +21,7 @@ def includeSample() {
             'sample-manager',
 
             'sample-loader',
-            'sample-runtime',
-
-            'mgmovie-normal-app',
-            'mgmovie-plugin-app'
+            'sample-runtime'
 
     project(':sample-constant').projectDir = file('sample/sample-constant')
     project(':sample-host').projectDir = file('sample/sample-host')
@@ -33,6 +30,10 @@ def includeSample() {
 
     project(':sample-loader').projectDir = file('sample/sample-plugin/sample-loader')
     project(':sample-runtime').projectDir = file('sample/sample-plugin/sample-runtime')
+
+    // 影院的
+    include 'mgmovie-normal-app',
+            'mgmovie-plugin-app'
 
     project(':mgmovie-normal-app').projectDir = file('sample/sample-plugin/mgmovie/app')
     project(':mgmovie-plugin-app').projectDir = file('sample/sample-plugin/mgmovie-plugin-app')
