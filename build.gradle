@@ -17,6 +17,8 @@ buildscript {
 
 apply from: 'buildScripts/gradle/common.gradle'
 
+apply from: "buildScripts/gradle/maven.gradle"
+
 task clean(type: Delete) {
     delete rootProject.buildDir
     dependsOn gradle.includedBuild('coding').task(':checks:clean')
